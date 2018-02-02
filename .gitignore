@@ -4,3 +4,4 @@
 *.exists
 *.patched
 setup.complete
+cmake-build-debug/
