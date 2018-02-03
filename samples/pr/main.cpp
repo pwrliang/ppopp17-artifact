@@ -53,8 +53,8 @@ namespace pr
 
         static bool Single()            {
 //            return TestPageRankSingle();
-            return MyTestPageRankSingle();
-//            return MyTestPageRankSingleOutlining();
+//            return MyTestPageRankSingle();
+            return MyTestPageRankSingleOutlining();
         }
         static bool AsyncMulti(int G)   {
 //            return FLAGS_opt ? TestPageRankAsyncMultiOptimized(G) : TestPageRankAsyncMulti(G);

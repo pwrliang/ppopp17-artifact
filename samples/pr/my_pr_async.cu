@@ -45,7 +45,7 @@
 #include <moderngpu/context.hxx>
 #include <moderngpu/kernel_scan.hxx>
 #include "pr_common.h"
-//#include "pr_common.h"
+#include "my_pr_balanced.h"
 
 DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
@@ -190,6 +190,7 @@ namespace mypr {
         }
     }
 
+
     template<template<typename> class RankDatum,
             template<typename> class ResidualDatum>
     __global__ void PageRankPrint__Single__(RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual,
@@ -216,7 +217,8 @@ namespace mypr {
         }
     }
 
-    template<typename TGraph,
+    template<const int BLOCK_SIZE,
+            typename TGraph,
             template<typename> class RankDatum,
             template<typename> class ResidualDatum,
             template<typename> class DQueue>
@@ -226,7 +228,7 @@ namespace mypr {
                                        DQueue<index_t> input_worklist, DQueue<index_t> output_worklist) {
         unsigned tid = TID_1D;
 
-        dim3 block_dims(256, 1, 1);
+        dim3 block_dims(BLOCK_SIZE, 1, 1);
         dim3 grid_dims(round_up(input_worklist.count(), block_dims.x), 1, 1);
 
         DQueue<index_t> *wl1 = &input_worklist, *wl2 = &output_worklist, *wl_tmp;
@@ -235,11 +237,14 @@ namespace mypr {
             int iteration = 0;
 
             while (wl1->count() > 0) {
-                PageRankDevice__Single__ << < grid_dims, block_dims >> > (graph,
-                        current_ranks,
-                        residual,
-                        *wl1,
-                        *wl2);
+//                PageRankDevice__Single__ << < grid_dims, block_dims >> > (graph,
+//                        current_ranks,
+//                        residual,
+//                        *wl1,
+//                        *wl2);
+                PageRankDeviceBalanced__Single__ << < grid_dims, block_dims >> > (
+                        graph, current_ranks, residual, *wl1, *wl2
+                );
                 cudaDeviceSynchronize();
 
                 printf("iteration %d active nodes %d\n", iteration++, wl2->count());
@@ -343,8 +348,11 @@ namespace mypr {
 
             PageRankWorkList__Init__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
                                                                     (m_graph, wl1.DeviceObject());
+            stream.Sync();
+
             stopwatch.start();
-            PageRank__Single__ << < 1, 1, 0, stream.cuda_stream >> >
+
+            PageRank__Single__<256> << < 1, 1, 0, stream.cuda_stream >> >
                                              (m_graph, m_current_ranks, m_residual, wl1.DeviceObject(),
                                                      wl2.DeviceObject());
             stream.Sync();
@@ -377,19 +385,19 @@ bool MyTestPageRankSingleOutlining() {
     solver.Init__Single__(stream);
     solver.DoPageRank(stream);
 
+    dev_graph_allocator.GatherDatum(current_ranks);
+    std::vector<rank_t> host_current_ranks = current_ranks.GetHostData();
+    if (FLAGS_output.length() != 0)
+        PageRankOutput(FLAGS_output.c_str(), host_current_ranks);
 }
 
-__global__ void test(){
-    for(int i=0;i<32;i++){
-        printf("%d\n",__ffs(i));
+__global__ void test() {
+    for (int i = 0; i < 32; i++) {
+        printf("%d\n", __ffs(i));
     }
 }
 
 bool MyTestPageRankSingle() {
-    test<<<1,1>>>();
-    cudaDeviceSynchronize();
-
-    return false;
     utils::traversal::Context<mypr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
@@ -454,7 +462,7 @@ bool MyTestPageRankSingle() {
 
     stopwatch.stop();
 
-    printf("MyTestPageRankSingle PR:%f\n",stopwatch.ms());
+    printf("MyTestPageRankSingle PR:%f\n", stopwatch.ms());
 
     dev_graph_allocator.GatherDatum(current_ranks);
 
