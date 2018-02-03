@@ -120,9 +120,14 @@ namespace dev {
             //
             // First scheduler: processing high-degree work items using the entire block
             //
+
+            //because multi-thread in the thread block can carry data more than thread block
+            // so we use loop to elect next owner of thread block to do the task
             while (true)
             {
-                if (np_local.size >= NP_TB_CROSSOVER)
+                //multi-threads will overwrite owner field because of shared type np_shared
+                //maybe more threads in blocks's task more than block size, elect one thread to manage other threads in block
+                if (np_local.size >= NP_TB_CROSSOVER) //if neighbors more than thread block size
                 {
                     // 'Elect' one owner for the entire thread block 
                     np_shared.tb.owner = threadIdx.x;
@@ -138,6 +143,7 @@ namespace dev {
                     // No need to sync threads before moving on to WP scheduler  
                     // because it does not use shared memory
 #else
+                    //have to sync, because we can not use tb or warp field concurrently
                     __syncthreads(); // Necessary do to the shared memory union used by both TB and WP schedulers    
 #endif
                     break;
@@ -155,19 +161,21 @@ namespace dev {
                     np_local.size = 0;
                 }
 
-                __syncthreads();
+                __syncthreads();// wait for last owner who done for his task
 
+                //threads in the block get the owner information
                 index_type start = np_shared.tb.start;
                 index_type size = np_shared.tb.size;
                 TMetaData meta_data = np_shared.tb.meta_data;
 
+                //owner reset the flag
                 if (np_shared.tb.owner == threadIdx.x)
                 {
                     np_shared.tb.owner = TB_SIZE + 1;
                 }
 
                 // Use all threads in thread block to execute individual work  
-                for (int ii = threadIdx.x; ii < size; ii += TB_SIZE)
+                for (int ii = threadIdx.x; ii < size; ii += TB_SIZE) // TB stride style
                 {
                     work(start + ii, meta_data);
                 }
@@ -183,14 +191,16 @@ namespace dev {
 #endif
             const int lane_id = cub::LaneId();
 
+            // if any len of threads's tasks in warp more than warp size, then parallel do it
             while (__any(np_local.size >= NP_WP_CROSSOVER))
             {
 
 #ifndef NO_CTA_WARP_INTRINSICS
                 // Compete for work scheduling  
                 int mask = __ballot(np_local.size >= NP_WP_CROSSOVER ? 1 : 0); 
-                // Select a deterministic winner  
-                int leader = __ffs(mask) - 1;   
+                // Select a deterministic winner
+                // __ffs to get the smallest lane id
+                int leader = __ffs(mask) - 1;   // Find the position of the least significant bit set to 1 in a 32 bit integer.
 
                 // Broadcast data from the leader  
                 index_type start = cub::ShuffleIndex(np_local.start, leader);
@@ -224,7 +234,7 @@ namespace dev {
                 index_type size = np_shared.warp.size[warp_id];
                 TMetaData meta_data = np_shared.warp.meta_data[warp_id];          
 #endif
-
+                // Use all threads in warp to execute individual work
                 for (int ii = lane_id; ii < size; ii += WP_SIZE)
                 {
                     work(start + ii, meta_data);

@@ -379,7 +379,17 @@ bool MyTestPageRankSingleOutlining() {
 
 }
 
+__global__ void test(){
+    for(int i=0;i<32;i++){
+        printf("%d\n",__ffs(i));
+    }
+}
+
 bool MyTestPageRankSingle() {
+    test<<<1,1>>>();
+    cudaDeviceSynchronize();
+
+    return false;
     utils::traversal::Context<mypr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
