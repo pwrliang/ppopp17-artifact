@@ -3,8 +3,11 @@ project (groute)
 
 ############## DEPENDENCIES ##############
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
+SET(CUDA_SEPARABLE_COMPILATION ON)
 find_package(CUDA 7 REQUIRED)
+
+#Dynamic Parallelism
+link_directories(/usr/local/cuda/lib64)
 
 # GFlags
 add_subdirectory(deps/gflags)
@@ -49,13 +52,14 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/cub)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(EXTRA_LIBS gflags_static pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so)
+set(EXTRA_LIBS gflags_static pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   message("Debug mode")
   set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-g;-lineinfo;-Xcompiler;-ggdb;-std=c++11;--expt-extended-lambda)
 else()
-  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-O3;-DNDEBUG;-Xcompiler;-DNDEBUG;-std=c++11)
+  message("Release mode")
+  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-O3;-DNDEBUG;-Xcompiler;-DNDEBUG;-std=c++11;--expt-extended-lambda)
 endif()
 
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
@@ -63,55 +67,55 @@ set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 # Addresses a bug where code is not compiled as C++11 in non-CUDA code and older g++ versions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 
-include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${METIS_INCLUDE_DIRS})
-cuda_add_executable(cc src/utils/parser.cpp src/utils/utils.cpp
-                    samples/cc/cc_async.cu samples/cc/main.cpp)
-target_link_libraries(cc ${EXTRA_LIBS})
+#include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${METIS_INCLUDE_DIRS})
+#cuda_add_executable(cc src/utils/parser.cpp src/utils/utils.cpp
+#                    samples/cc/cc_async.cu samples/cc/main.cpp)
+#target_link_libraries(cc ${EXTRA_LIBS})
 
-cuda_add_executable(bfs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp 
-                    samples/bfs/bfs_async.cu
-                    samples/bfs/bfs_host.cpp 
-					samples/bfs/main.cpp)
-target_link_libraries(bfs ${EXTRA_LIBS})
+#cuda_add_executable(bfs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+#                    samples/bfs/bfs_async.cu
+#                    samples/bfs/bfs_host.cpp
+#					samples/bfs/main.cpp)
+#target_link_libraries(bfs ${EXTRA_LIBS})
 
-cuda_add_executable(sssp src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-                    samples/sssp/sssp_async.cu
-                    samples/sssp/sssp_host.cpp 
-					samples/sssp/main.cpp)
-target_link_libraries(sssp ${EXTRA_LIBS})
+#cuda_add_executable(sssp src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+#                    samples/sssp/sssp_async.cu
+#                    samples/sssp/sssp_host.cpp
+#					samples/sssp/main.cpp)
+#target_link_libraries(sssp ${EXTRA_LIBS})
 
 cuda_add_executable(pr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-					samples/pr/my_pr_async.cu samples/pr/pr_host.cpp
+					samples/pr/my_pr_async.cu samples/pr/pr_async.cu samples/pr/pr_host.cpp
 					samples/pr/main.cpp)
 target_link_libraries(pr ${EXTRA_LIBS})
 
-cuda_add_executable(pbf samples/pbf/pbf_async.cu samples/pbf/main.cpp)
-target_link_libraries(pbf ${EXTRA_LIBS})
+#cuda_add_executable(pbf samples/pbf/pbf_async.cu samples/pbf/main.cpp)
+#target_link_libraries(pbf ${EXTRA_LIBS})
 
 
 # Unit tests
-enable_testing()
+#enable_testing()
 
 # GTest directory settings
-if(NOT GTEST_FOUND)
-  include_directories(
-    ${gtest_SOURCE_DIR}/include
-    ${gtest_SOURCE_DIR})
-  link_directories(${gtest_BINARY_DIR}/src)
-endif()
+#if(NOT GTEST_FOUND)
+#  include_directories(
+#    ${gtest_SOURCE_DIR}/include
+#    ${gtest_SOURCE_DIR})
+#  link_directories(${gtest_BINARY_DIR}/src)
+#endif()
 				
 # Groute async component tests
-cuda_add_executable(async-tests test/async-tests/main.cpp
-                    test/async-tests/router_test.cu
-                    test/async-tests/dwl_test.cu
-                    test/async-tests/pc_queue_test.cu)
-
-target_link_libraries(async-tests gtest pthread dl ${EXTRA_LIBS})
-cuda_add_cublas_to_target(async-tests)
+#cuda_add_executable(async-tests test/async-tests/main.cpp
+#                    test/async-tests/router_test.cu
+#                    test/async-tests/dwl_test.cu
+#                    test/async-tests/pc_queue_test.cu)
+#
+#target_link_libraries(async-tests gtest pthread dl ${EXTRA_LIBS})
+#cuda_add_cublas_to_target(async-tests)
 				
 # Groute async component micro-benchmark tests
-cuda_add_executable(mb-tests test/micro-benchmarks/main.cpp
-                    test/micro-benchmarks/timed_kernel.cu test/micro-benchmarks/high_priority_copy.cu)
-
-target_link_libraries(mb-tests gtest pthread)
-cuda_add_cublas_to_target(mb-tests)
+#cuda_add_executable(mb-tests test/micro-benchmarks/main.cpp
+#                    test/micro-benchmarks/timed_kernel.cu test/micro-benchmarks/high_priority_copy.cu)
+#
+#target_link_libraries(mb-tests gtest pthread)
+#cuda_add_cublas_to_target(mb-tests)

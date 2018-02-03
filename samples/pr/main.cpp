@@ -36,6 +36,7 @@
 #include <utils/interactor.h>
 #include <utils/app_skeleton.h>
 
+bool MyTestPageRankSingleOutlining();
 bool MyTestPageRankSingle();
 bool TestPageRankSingle();
 bool TestPageRankAsyncMulti(int ngpus);
@@ -53,6 +54,7 @@ namespace pr
         static bool Single()            {
 //            return TestPageRankSingle();
             return MyTestPageRankSingle();
+//            return MyTestPageRankSingleOutlining();
         }
         static bool AsyncMulti(int G)   {
 //            return FLAGS_opt ? TestPageRankAsyncMultiOptimized(G) : TestPageRankAsyncMulti(G);
