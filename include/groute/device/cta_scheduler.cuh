@@ -39,8 +39,7 @@
 
 #include <cub/util_ptx.cuh>
 
-
-//#define NO_CTA_WARP_INTRINSICS 
+//#define NO_CTA_WARP_INTRINSICS
 //#define NP_LAMBDA
     
 namespace groute {
@@ -230,9 +229,10 @@ namespace dev {
                     np_local.start = 0;
                     np_local.size = 0;
                 }
+                __syncthreads();
                 index_type start = np_shared.warp.start[warp_id];
                 index_type size = np_shared.warp.size[warp_id];
-                TMetaData meta_data = np_shared.warp.meta_data[warp_id];          
+                TMetaData meta_data = np_shared.warp.meta_data[warp_id];
 #endif
                 // Use all threads in warp to execute individual work
                 for (int ii = lane_id; ii < size; ii += WP_SIZE)

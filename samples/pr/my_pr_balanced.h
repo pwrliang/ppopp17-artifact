@@ -232,6 +232,75 @@ namespace mypr {
                      });
         }
     }
+//    I give up to do this, because append_warp did it.......
+//    template<
+//            typename TGraph,
+//            template<typename> class RankDatum,
+//            template<typename> class ResidualDatum,
+//            typename WorkSource,
+//            template<typename> class TWorkList>
+//    __global__ void PageRankKernelShfl__Single__(
+//            TGraph graph,
+//            RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual,
+//            WorkSource work_source, TWorkList<index_t> output_worklist) {
+//        unsigned tid = TID_1D;
+//        unsigned nthreads = TOTAL_THREADS_1D;
+//
+//        uint32_t work_size = work_source.get_size();
+//
+//
+//        for (index_t i = 0 + tid; i < work_size; i += nthreads) {
+//            index_t node = work_source.get_work(i);
+//
+//            rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+//
+//            if (res == 0)continue;
+//
+//            current_ranks[node] += res;
+//
+//            index_t begin_edge = graph.begin_edge(node),
+//                    end_edge = graph.end_edge(node),
+//                    out_degree = end_edge - begin_edge;
+//
+//            if (out_degree == 0) continue;
+//
+//            rank_t update = ALPHA * res / out_degree;
+//
+//            for (index_t edge = begin_edge; edge < end_edge; ++edge) {
+//                index_t dest = graph.edge_dest(edge);
+//
+//                rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
+//
+//                int add = prev + update > EPSILON && prev < EPSILON ?1:0;
+//                if(add) {
+//                    int mask = __ballot(add);
+//                    int leader = __ffs(mask) - 1;
+//
+//                    //calculate the total number to add
+//                    int val = add;
+//                    for (int offset = 16; offset > 0; offset /= 2)
+//                        val += __shfl_down_sync(0xffffffff, val, offset);
+//
+//                    int last_unused_pos;
+//                    if (leader == cub::LaneId()) {
+//                        last_unused_pos = atomicAdd(&output_worklist.len, val);
+//                    }
+//                    //broadcast last unused position
+//                    last_unused_pos = cub::ShuffleIndex(last_unused_pos, leader);
+//
+//                    int m = (1<<cub::LaneId()) - 1;
+//                    int relative_pos = __popc(mask & m);
+//
+//                    //relative_index is the position of '1' of mask
+//                    output_worklist[last_len+relative_pos] = dest;
+//                }
+//
+//
+//                //output_worklist.append_warp(dest);
+//
+//            }
+//        }
+//    }
 }
 
 #endif //GROUTE_MY_PR_BALANCED_H

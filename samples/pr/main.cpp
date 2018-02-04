@@ -43,7 +43,7 @@ bool TestPageRankAsyncMulti(int ngpus);
 bool TestPageRankAsyncMultiOptimized(int ngpus);
 void CleanupGraphs();
 
-
+//-num_gpus=1 -graphfile /home/xiayang/diskb/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -single -verbose -output=/home/liang/USA-road-d.USA.gr -print_ranks -cta_np
 namespace pr
 {
     struct App
@@ -53,8 +53,8 @@ namespace pr
 
         static bool Single()            {
 //            return TestPageRankSingle();
-//            return MyTestPageRankSingle();
-            return MyTestPageRankSingleOutlining();
+            return MyTestPageRankSingle();
+//            return MyTestPageRankSingleOutlining();
         }
         static bool AsyncMulti(int G)   {
 //            return FLAGS_opt ? TestPageRankAsyncMultiOptimized(G) : TestPageRankAsyncMulti(G);
@@ -67,6 +67,7 @@ namespace pr
 
 int main(int argc, char **argv)
 {
+    printf("PR Begin\n");
     Skeleton<pr::App> app;
     int exit = app(argc, argv);
 

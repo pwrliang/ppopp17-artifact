@@ -117,9 +117,6 @@ namespace mypr {
             rank_t res = atomicExch(residual.get_item_ptr(node), 0);
 
             if (res == 0)continue;
-//            if (res > 0.0000000001) {
-//                output_worklist.append_warp(node);
-//            }
 
             current_ranks[node] += res;
 
@@ -127,22 +124,17 @@ namespace mypr {
                     end_edge = graph.end_edge(node),
                     out_degree = end_edge - begin_edge;
 
-            if (out_degree == 0) {
-//                rank_t update = ALPHA * res;
-//                atomicAdd(residual.get_item_ptr(node), update);
-            } else {
-                rank_t update = ALPHA * res / out_degree;
+            if (out_degree == 0) continue;
 
-                for (index_t edge = begin_edge; edge < end_edge; ++edge) {
-                    index_t dest = graph.edge_dest(edge);
+            rank_t update = ALPHA * res / out_degree;
 
-                    rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
+            for (index_t edge = begin_edge; edge < end_edge; ++edge) {
+                index_t dest = graph.edge_dest(edge);
 
-                    if (prev + update > EPSILON && prev < EPSILON) {
-                        output_worklist.append_warp(dest);
-                    }
-//                rank_t prev = atomicAdd(&residual[dest], update);
-//                printf("%d %d\n", node, dest);
+                rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
+
+                if (prev + update > EPSILON && prev < EPSILON) {
+                    output_worklist.append_warp(dest);
                 }
             }
         }
@@ -243,8 +235,7 @@ namespace mypr {
 //                        *wl1,
 //                        *wl2);
                 PageRankDeviceBalanced__Single__ << < grid_dims, block_dims >> > (
-                        graph, current_ranks, residual, *wl1, *wl2
-                );
+                        graph, current_ranks, residual, *wl1, *wl2);
                 cudaDeviceSynchronize();
 
                 printf("iteration %d active nodes %d\n", iteration++, wl2->count());
@@ -353,8 +344,8 @@ namespace mypr {
             stopwatch.start();
 
             PageRank__Single__<256> << < 1, 1, 0, stream.cuda_stream >> >
-                                             (m_graph, m_current_ranks, m_residual, wl1.DeviceObject(),
-                                                     wl2.DeviceObject());
+                                                  (m_graph, m_current_ranks, m_residual, wl1.DeviceObject(),
+                                                          wl2.DeviceObject());
             stream.Sync();
 
             stopwatch.stop();
@@ -366,6 +357,7 @@ namespace mypr {
 
 //-num_gpus=1 -graphfile /home/xiayang/diskb/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -single
 bool MyTestPageRankSingleOutlining() {
+    printf("Run MyTestPageRankSingleOutlining");
     utils::traversal::Context<mypr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
@@ -391,13 +383,32 @@ bool MyTestPageRankSingleOutlining() {
         PageRankOutput(FLAGS_output.c_str(), host_current_ranks);
 }
 
+
+__device__ int get_pos_function(int mask, int pos) {
+    int m = (1 << pos) - 1;
+    return __popc(mask & m);
+}
+
 __global__ void test() {
-    for (int i = 0; i < 32; i++) {
-        printf("%d\n", __ffs(i));
+    if (cub::LaneId() < 8) {
+        int mask = 0xb6;
+        int val = 0;
+        if (cub::LaneId() == 1 || cub::LaneId() == 2 || cub::LaneId() == 4 || cub::LaneId() == 5 || cub::LaneId() == 7)
+            val = 1;
+        if (val == 1) {
+            int relative_post = get_pos_function(mask, cub::LaneId());
+            printf("%d %d\n", cub::LaneId(), relative_post);
+        }
     }
+
 }
 
 bool MyTestPageRankSingle() {
+    test << < 1, 32 >> > ();
+    cudaDeviceSynchronize();
+    return true;
+
+    printf("Run MyTestPageRankSingle");
     utils::traversal::Context<mypr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 

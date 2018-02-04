@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="groute"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\deps\;CMake Files\deps\gflags\;CMake Files\deps\gflags\cmake\;CMake Files\deps\gflags\src\;CMake Files\deps\googletest\;CMake Files\deps\googletest\googletest\;CMake Files\deps\googletest\googletest\cmake\;CMake Files\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pr">
+				<Option output="/home/liang/groute-dev/cmake-build-release/pr" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_METIS"/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/cub"/>
+					<Add directory="/home/liang/groute-dev/include"/>
+					<Add directory="/usr/local/cuda/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 pr"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pr/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/pr" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_METIS"/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/cub"/>
+					<Add directory="/home/liang/groute-dev/include"/>
+					<Add directory="/usr/local/cuda/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 pr/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_nothreads_static">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags_nothreads.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add option="-DNO_THREADS"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_nothreads_static"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_nothreads_static/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags_nothreads.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add option="-DNO_THREADS"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_nothreads_static/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_static">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_static"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_static/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_static/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/libgtest_main.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/libgtest_main.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/libgtest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/libgtest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest/include"/>
+					<Add directory="/home/liang/groute-dev/deps/googletest/googletest"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/pr_intermediate_link.o">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/pr_intermediate_link.o.rule">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/config.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags_completions.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags_declare.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags_gflags.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags.cc">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_completions.cc">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_reporting.cc">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/mutex.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/util.h">
+			<Option target="gflags_nothreads_static"/>
+			<Option target="gflags_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/src/gtest-all.cc">
+			<Option target="gtest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/src/gtest_main.cc">
+			<Option target="gtest_main"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/main.cpp">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/my_pr_async.cu">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/pr_async.cu">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/pr_host.cpp">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/src/groute/graphs/csr_graph.cpp">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/src/utils/parser.cpp">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/src/utils/utils.cpp">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/utils.cmake">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/config.cmake.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/version.cmake.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/package.pc.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/config.cmake.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/utils.cmake">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/config.cmake.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/version.cmake.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/package.pc.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/cmake/config.cmake.in">
+			<Option virtualFolder="CMake Files\deps\gflags\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_ns.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_declare.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_completions.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/config.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_ns.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_declare.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_completions.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/src/config.h.in">
+			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\googletest\googletest\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\googletest\googletest\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\deps\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\deps\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake/FindMETIS.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
