@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 2.8)
-project (groute)
+cmake_minimum_required(VERSION 2.8)
+project(groute)
 
 ############## DEPENDENCIES ##############
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -16,33 +16,38 @@ link_directories(${PROJECT_BINARY_DIR}/deps/gflags/lib)
 
 # GTest
 find_package(GTest QUIET)
-if(NOT GTEST_FOUND)
-  add_subdirectory(deps/googletest/googletest)
-endif()
+if (NOT GTEST_FOUND)
+    add_subdirectory(deps/googletest/googletest)
+endif ()
+
+#GLog
+add_subdirectory(deps/glog)
+include_directories(${PROJECT_BINARY_DIR}/deps/glog/include)
+link_directories(${PROJECT_BINARY_DIR}/deps/glog/lib)
 
 # Try to find METIS
 find_package(METIS QUIET)
 if (NOT METIS_FOUND)
-  # Otherwise, try to find a local copy
-  if (EXISTS "${PROJECT_SOURCE_DIR}/metis/")
-    set(GKLIB_PATH ${PROJECT_SOURCE_DIR}/metis/GKlib CACHE PATH "path to GKlib" FORCE)
-    add_subdirectory(metis)
-    set(METIS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/metis/include)
-    set(METIS_LIBRARIES metis)
-    set(METIS_FOUND "true")
-  else()
-    message(WARNING "Compiling without METIS partitioning. To install METIS, run 'sudo apt-get install libmetis-dev' or manually download metis and extract to a subdirectory called 'metis'")
+    # Otherwise, try to find a local copy
+    if (EXISTS "${PROJECT_SOURCE_DIR}/metis/")
+        set(GKLIB_PATH ${PROJECT_SOURCE_DIR}/metis/GKlib CACHE PATH "path to GKlib" FORCE)
+        add_subdirectory(metis)
+        set(METIS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/metis/include)
+        set(METIS_LIBRARIES metis)
+        set(METIS_FOUND "true")
+    else ()
+        message(WARNING "Compiling without METIS partitioning. To install METIS, run 'sudo apt-get install libmetis-dev' or manually download metis and extract to a subdirectory called 'metis'")
 
-    set(METIS_INCLUDE_DIRS "")
-    set(METIS_LIBRARIES "")
-    
-  endif()
-endif()
+        set(METIS_INCLUDE_DIRS "")
+        set(METIS_LIBRARIES "")
+
+    endif ()
+endif ()
 
 if (METIS_FOUND)
-  message("-- Found METIS: ${METIS_LIBRARIES}")
-  add_definitions(-DHAVE_METIS)
-endif()
+    message("-- Found METIS: ${METIS_LIBRARIES}")
+    add_definitions(-DHAVE_METIS)
+endif ()
 
 
 # CUB
@@ -52,15 +57,15 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/cub)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(EXTRA_LIBS gflags_static pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
+set(EXTRA_LIBS gflags_static glog pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  message("Debug mode")
-  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-g;-lineinfo;-Xcompiler;-ggdb;-std=c++11;--expt-extended-lambda)
-else()
-  message("Release mode")
-  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-O3;-DNDEBUG;-Xcompiler;-DNDEBUG;-std=c++11;-rdc=true;--expt-extended-lambda)
-endif()
+    message("Debug mode")
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-g;-lineinfo;-Xcompiler;-ggdb;-std=c++11;--expt-extended-lambda)
+else ()
+    message("Release mode")
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_52,code=sm_52;-gencode;arch=compute_52,code=compute_52;-O3;-DNDEBUG;-Xcompiler;-DNDEBUG;-std=c++11;-rdc=true;--expt-extended-lambda)
+endif ()
 
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
@@ -85,10 +90,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #target_link_libraries(sssp ${EXTRA_LIBS})
 
 cuda_add_executable(pr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-					samples/pr/my_pr_async.cu samples/pr/pr_async.cu samples/pr/pr_host.cpp
-					samples/pr/main.cpp)
+        samples/pr/my_pr_async.cu samples/pr/pr_async.cu samples/pr/pr_host.cpp
+        samples/pr/main.cpp)
 target_link_libraries(pr ${EXTRA_LIBS})
 
+
+cuda_add_executable(cusha src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+        samples/cusha/cusha.cu samples/cusha/main.cpp)
+target_link_libraries(cusha ${EXTRA_LIBS})
 #cuda_add_executable(pbf samples/pbf/pbf_async.cu samples/pbf/main.cpp)
 #target_link_libraries(pbf ${EXTRA_LIBS})
 
@@ -103,7 +112,7 @@ target_link_libraries(pr ${EXTRA_LIBS})
 #    ${gtest_SOURCE_DIR})
 #  link_directories(${gtest_BINARY_DIR}/src)
 #endif()
-				
+
 # Groute async component tests
 #cuda_add_executable(async-tests test/async-tests/main.cpp
 #                    test/async-tests/router_test.cu
@@ -112,7 +121,7 @@ target_link_libraries(pr ${EXTRA_LIBS})
 #
 #target_link_libraries(async-tests gtest pthread dl ${EXTRA_LIBS})
 #cuda_add_cublas_to_target(async-tests)
-				
+
 # Groute async component micro-benchmark tests
 #cuda_add_executable(mb-tests test/micro-benchmarks/main.cpp
 #                    test/micro-benchmarks/timed_kernel.cu test/micro-benchmarks/high_priority_copy.cu)

@@ -32,7 +32,7 @@
 #include <cstdio>
 #include <cuda_runtime.h>
 #include <gflags/gflags.h>
-
+#include <glog/logging.h>
 #include <iostream>
 
 #include <utils/utils.h>
@@ -116,6 +116,7 @@ struct Skeleton
 {
     int operator() (int argc, char **argv)
     {
+//        google::InitGoogleLogging(argv[0]);
         gflags::ParseCommandLineFlags(&argc, &argv, true);
         int exit = 0;
 
