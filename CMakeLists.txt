@@ -90,14 +90,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #target_link_libraries(sssp ${EXTRA_LIBS})
 
 cuda_add_executable(pr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-        samples/pr/my_pr_async.cu samples/pr/pr_async.cu samples/pr/pr_host.cpp
+        samples/pr/my_pr_async.cu samples/pr/deltapr.cu samples/pr/persist_pr_async.cu samples/pr/pr_async.cu samples/pr/pr_host.cpp
         samples/pr/main.cpp)
 target_link_libraries(pr ${EXTRA_LIBS})
 
 
-cuda_add_executable(cusha src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-        samples/cusha/cusha.cu samples/cusha/main.cpp)
-target_link_libraries(cusha ${EXTRA_LIBS})
+#cuda_add_executable(cusha src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+#        samples/cusha/cusha.cu samples/cusha/main.cpp)
+#target_link_libraries(cusha ${EXTRA_LIBS})
 #cuda_add_executable(pbf samples/pbf/pbf_async.cu samples/pbf/main.cpp)
 #target_link_libraries(pbf ${EXTRA_LIBS})
 

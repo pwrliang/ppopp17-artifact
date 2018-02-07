@@ -56,7 +56,7 @@ DECLARE_bool(verbose);
 
 typedef float rank_t;
 
-namespace mypr {
+namespace persistpr {
     struct Algo {
 
         static const char *Name() { return "PR"; }
@@ -229,13 +229,8 @@ namespace mypr {
             int iteration = 0;
 
             while (wl1->count() > 0) {
-//                PageRankDevice__Single__ << < grid_dims, block_dims >> > (graph,
-//                        current_ranks,
-//                        residual,
-//                        *wl1,
-//                        *wl2);
-                PageRankDeviceBalanced__Single__ << < grid_dims, block_dims >> > (
-                        graph, current_ranks, residual, *wl1, *wl2);
+//                PageRankDeviceBalanced1__Single__ << < grid_dims, block_dims >> > (
+//                        graph, current_ranks, residual, *wl1, *wl2);
                 cudaDeviceSynchronize();
 
                 printf("iteration %d active nodes %d\n", iteration++, wl2->count());
@@ -308,20 +303,8 @@ namespace mypr {
                                          scanned_offsets, mgpu::plus_t<rank_t>(), checkSum.data(), context);
             rank_t pr_sum = mgpu::from_mem(checkSum)[0];
             std::cout << "checking...sum " << pr_sum << std::endl;
-//            printf("pr_sum:%f\n", pr_sum / work_source.get_size());
-//            return pr_sum / work_source.get_size() < 0.982861;
             return pr_sum < THRESHOLD;
         }
-
-//        template<typename TGraph,
-//                template<typename> class RankDatum,
-//                template<typename> class ResidualDatum,
-//                typename WorkSource,
-//                template<typename> class DQueue>
-//        __global__ void PageRank__Single__(TGraph graph,
-//                                           RankDatum<rank_t> current_ranks,
-//                                           ResidualDatum<rank_t> residual,
-//                                           DQueue<index_t> input_worklist, DQueue<index_t> output_worklist)
 
         void DoPageRank(groute::Stream &stream) {
             groute::Queue<index_t> wl1(m_graph.nnodes, 0, "input queue");
@@ -357,8 +340,7 @@ namespace mypr {
 
 //-num_gpus=1 -graphfile /home/xiayang/diskb/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -single
 bool MyTestPageRankSingleOutlining() {
-    printf("Run MyTestPageRankSingleOutlining");
-    utils::traversal::Context<mypr::Algo> context(1);
+    utils::traversal::Context<persistpr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
@@ -370,46 +352,27 @@ bool MyTestPageRankSingleOutlining() {
 
     mgpu::standard_context_t mgpu_context;
 
-    mypr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
+    persistpr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
             solver(dev_graph_allocator.DeviceObject(),
                    current_ranks.DeviceObject(), residual.DeviceObject());
+    Stopwatch sw(true);
 
     solver.Init__Single__(stream);
     solver.DoPageRank(stream);
+
+    sw.stop();
+
+    printf("cta-balancing PR:%fms\n", sw.ms());
 
     dev_graph_allocator.GatherDatum(current_ranks);
     std::vector<rank_t> host_current_ranks = current_ranks.GetHostData();
     if (FLAGS_output.length() != 0)
         PageRankOutput(FLAGS_output.c_str(), host_current_ranks);
-}
-
-
-__device__ int get_pos_function(int mask, int pos) {
-    int m = (1 << pos) - 1;
-    return __popc(mask & m);
-}
-
-__global__ void test() {
-    if (cub::LaneId() < 8) {
-        int mask = 0xb6;
-        int val = 0;
-        if (cub::LaneId() == 1 || cub::LaneId() == 2 || cub::LaneId() == 4 || cub::LaneId() == 5 || cub::LaneId() == 7)
-            val = 1;
-        if (val == 1) {
-            int relative_post = get_pos_function(mask, cub::LaneId());
-            printf("%d %d\n", cub::LaneId(), relative_post);
-        }
-    }
-
+    return true;
 }
 
 bool MyTestPageRankSingle() {
-    test << < 1, 32 >> > ();
-    cudaDeviceSynchronize();
-    return true;
-
-    printf("Run MyTestPageRankSingle");
-    utils::traversal::Context<mypr::Algo> context(1);
+    utils::traversal::Context<persistpr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
@@ -421,21 +384,17 @@ bool MyTestPageRankSingle() {
 
     mgpu::standard_context_t mgpu_context;
 
-    mypr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
+    persistpr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
             solver(dev_graph_allocator.DeviceObject(),
                    current_ranks.DeviceObject(), residual.DeviceObject());
 
+    Stopwatch stopwatch;
+    stopwatch.start();
     solver.Init__Single__(stream);
 
 
     int iteration = 0;
 
-    index_t *queue_space = static_cast<index_t *>(context.Alloc(0, sizeof(index_t) * context.host_graph.nnodes,
-                                                                sizeof(index_t)));
-//    GROUTE_CUDA_CHECK(cudaMalloc(&queue_space, sizeof(index_t) * context.host_graph.nnodes));
-
-
-//    groute::dev::Queue<index_t> worklist(queue_space, 0, context.host_graph.nnodes);
     groute::Queue<index_t> wl1(context.host_graph.nnodes, 0, "input queue");
     groute::Queue<index_t> wl2(context.host_graph.nnodes, 0, "output queue");
 
@@ -445,8 +404,6 @@ bool MyTestPageRankSingle() {
 
     groute::Queue<index_t> *in_wl = &wl1, *out_wl = &wl2;
 
-    Stopwatch stopwatch;
-    stopwatch.start();
 
     solver.Relax__Single__(groute::dev::WorkSourceRange<index_t>(
             dev_graph_allocator.DeviceObject().owned_start_node(),
@@ -465,15 +422,11 @@ bool MyTestPageRankSingle() {
         stream.Sync();
         std::swap(in_wl, out_wl);
         work_seg = in_wl->GetSeg(stream);
-//        running = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
-//                dev_graph_allocator.DeviceObject().owned_start_node(),
-//                dev_graph_allocator.DeviceObject().owned_nnodes()),
-//                                             mgpu_context);
     }
 
     stopwatch.stop();
 
-    printf("MyTestPageRankSingle PR:%f\n", stopwatch.ms());
+    printf("non-balancing PR:%f\n", stopwatch.ms());
 
     dev_graph_allocator.GatherDatum(current_ranks);
 
@@ -481,4 +434,5 @@ bool MyTestPageRankSingle() {
 
     if (FLAGS_output.length() != 0)
         PageRankOutput(FLAGS_output.c_str(), host_current_ranks);
+    return true;
 }

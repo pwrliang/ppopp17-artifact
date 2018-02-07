@@ -96,3 +96,9 @@ if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMP
 file(INSTALL DESTINATION "/home/liang/.cmake/packages/gflags" TYPE FILE RENAME "e5f7ce61772240490d3164df06f58ce9" FILES "/home/liang/groute-dev/cmake-build-release/deps/gflags/gflags-registry-entry")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for each subdirectory.
+  include("/home/liang/groute-dev/cmake-build-release/deps/gflags/test/cmake_install.cmake")
+
+endif()
+

@@ -38,45 +38,39 @@ DEFINE_bool(norm, false, "Normalize PR output ranks (L1)");
 DECLARE_bool(verbose);
 
 
-std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph& graph)
-{
+std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph) {
     Stopwatch sw(true);
 
     std::vector<rank_t> residual(graph.nnodes, 0.0);
     std::vector<rank_t> ranks(graph.nnodes, 1.0 - ALPHA);
 
-    for (index_t node = 0; node < graph.nnodes; ++node)
-    {
+    for (index_t node = 0; node < graph.nnodes; ++node) {
         index_t
-            begin_edge = graph.begin_edge(node),
-            end_edge = graph.end_edge(node),
-            out_degree = end_edge - begin_edge;
+                begin_edge = graph.begin_edge(node),
+                end_edge = graph.end_edge(node),
+                out_degree = end_edge - begin_edge;
 
         if (out_degree == 0) continue;
 
         rank_t update = ((1.0 - ALPHA) * ALPHA) / out_degree;
 
-        for (index_t edge = begin_edge; edge < end_edge; ++edge)
-        {
+        for (index_t edge = begin_edge; edge < end_edge; ++edge) {
             index_t dest = graph.edge_dest(edge);
             residual[dest] += update;
         }
     }
 
     std::queue<index_t> wl1, wl2;
-    std::queue<index_t>* in_wl = &wl1, *out_wl = &wl2;
+    std::queue<index_t> *in_wl = &wl1, *out_wl = &wl2;
 
-    for (index_t node = 0; node < graph.nnodes; ++node)
-    {
+    for (index_t node = 0; node < graph.nnodes; ++node) {
         in_wl->push(node);
     }
 
     int iteration = 0;
 
-    while (!in_wl->empty())
-    {
-        while (!in_wl->empty())
-        {
+    while (!in_wl->empty()) {
+        while (!in_wl->empty()) {
             index_t node = in_wl->front();
             in_wl->pop();
 
@@ -85,22 +79,20 @@ std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph& graph)
             residual[node] = 0;
 
             index_t
-                begin_edge = graph.begin_edge(node),
-                end_edge = graph.end_edge(node),
-                out_degree = end_edge - begin_edge;
+                    begin_edge = graph.begin_edge(node),
+                    end_edge = graph.end_edge(node),
+                    out_degree = end_edge - begin_edge;
 
             if (out_degree == 0) continue;
 
             rank_t update = res * ALPHA / out_degree;
 
-            for (index_t edge = begin_edge; edge < end_edge; ++edge)
-            {
+            for (index_t edge = begin_edge; edge < end_edge; ++edge) {
                 index_t dest = graph.edge_dest(edge);
                 rank_t prev = residual[dest];
                 residual[dest] += update;
 
-                if (prev + update > EPSILON && prev < EPSILON)
-                {
+                if (prev + update > EPSILON && prev < EPSILON) {
                     out_wl->push(dest);
                 }
             }
@@ -112,8 +104,7 @@ std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph& graph)
 
     sw.stop();
 
-    if (FLAGS_verbose)
-    {
+    if (FLAGS_verbose) {
         printf("\nPR Host: %f ms. \n", sw.ms());
         printf("PR Host converged after %d iterations \n\n", iteration);
     }
@@ -121,10 +112,9 @@ std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph& graph)
     return ranks;
 }
 
-int PageRankCheckErrors(std::vector<rank_t>& ranks, std::vector<rank_t>& regression)
-{
+int PageRankCheckErrors(std::vector<rank_t> &ranks, std::vector<rank_t> &regression) {
     if (ranks.size() != regression.size()) {
-        return std::abs((int64_t)ranks.size() - (int64_t)regression.size());
+        return std::abs((int64_t) ranks.size() - (int64_t) regression.size());
     }
 
     if (FLAGS_norm) // L1 normalization  
@@ -132,25 +122,27 @@ int PageRankCheckErrors(std::vector<rank_t>& ranks, std::vector<rank_t>& regress
         rank_t ranks_sum = 0.0, regression_sum = 0.0;
         for (auto val : ranks) ranks_sum += val;
         for (auto val : regression) regression_sum += val;
-        for (auto& val : ranks) val /= ranks_sum;
-        for (auto& val : regression) val /= regression_sum;
+        for (auto &val : ranks) val /= ranks_sum;
+        for (auto &val : regression) val /= regression_sum;
     }
 
     struct pr_pair {
-            index_t node;
-            rank_t rank;
-            pr_pair(index_t node, rank_t rank) : node(node), rank(rank) { }
-            pr_pair() : node(-1), rank(-1) { }
-            inline bool operator< (const pr_pair& rhs) const {
-                return rank < rhs.rank;
-            }
-        };
+        index_t node;
+        rank_t rank;
+
+        pr_pair(index_t node, rank_t rank) : node(node), rank(rank) {}
+
+        pr_pair() : node(-1), rank(-1) {}
+
+        inline bool operator<(const pr_pair &rhs) const {
+            return rank < rhs.rank;
+        }
+    };
 
     std::vector<pr_pair> ranks_pairs(ranks.size());
     std::vector<pr_pair> regression_pairs(ranks.size());
 
-    for (size_t i = 0; i < ranks.size(); i++)
-    {
+    for (size_t i = 0; i < ranks.size(); i++) {
         ranks_pairs[i] = pr_pair(i, ranks[i]);
         regression_pairs[i] = pr_pair(i, regression[i]);
     }
@@ -158,26 +150,21 @@ int PageRankCheckErrors(std::vector<rank_t>& ranks, std::vector<rank_t>& regress
     std::stable_sort(ranks_pairs.rbegin(), ranks_pairs.rend());
     std::stable_sort(regression_pairs.rbegin(), regression_pairs.rend()); // reversed sort, we want the top ranks
 
-    int top = std::min((size_t)FLAGS_top_ranks, ranks.size());
+    int top = std::min((size_t) FLAGS_top_ranks, ranks.size());
 
     float mean_diff = 0.0f;
     int num_diffs = 0, missing_nodes = 0;
 
     std::unordered_set<index_t> top_nodes;
-    for (int i = 0, t = std::min((size_t)(top*1.01), ranks.size()); i < t; ++i)
-    {
+    for (int i = 0, t = std::min((size_t) (top * 1.01), ranks.size()); i < t; ++i) {
         top_nodes.insert(regression_pairs[i].node);
     }
 
-    for (int i = 0; i < top; ++i)
-    {
+    for (int i = 0; i < top; ++i) {
         float diff = ranks_pairs[i].rank - regression_pairs[i].rank;
-        if (top_nodes.find(ranks_pairs[i].node) == top_nodes.end())
-        {
+        if (top_nodes.find(ranks_pairs[i].node) == top_nodes.end()) {
             missing_nodes++; // <-- nodes may switch locations in the rank because of small diffs as well
-        }
-        else if (fabs(1.0f - (ranks_pairs[i].rank / regression_pairs[i].rank)) > 1e-2)
-        {
+        } else if (fabs(1.0f - (ranks_pairs[i].rank / regression_pairs[i].rank)) > 1e-2) {
             if (FLAGS_verbose)
                 printf("Difference in index %d: %f != %f\n", i, ranks_pairs[i].rank, regression_pairs[i].rank);
             num_diffs++;
@@ -187,22 +174,20 @@ int PageRankCheckErrors(std::vector<rank_t>& ranks, std::vector<rank_t>& regress
     mean_diff /= top;
 
     bool res = num_diffs + missing_nodes == 0 && mean_diff <= 1e-2;
-    if (!res || FLAGS_verbose)
-    {
+    if (!res || FLAGS_verbose) {
         printf("[regression]\t\t\t[result]\n");
-        for (int i = 0; i < 10; ++i)
-        {
-            printf("(%d, %f)\t\t(%d, %f)\n", 
-                regression_pairs[i].node, regression_pairs[i].rank, ranks_pairs[i].node, ranks_pairs[i].rank);
+        for (int i = 0; i < 10; ++i) {
+            printf("(%d, %f)\t\t(%d, %f)\n",
+                   regression_pairs[i].node, regression_pairs[i].rank, ranks_pairs[i].node, ranks_pairs[i].rank);
         }
-        printf("\nSummary: %d/%d large differences, %d/%d missing nodes, total mean diff: %f\n\n", num_diffs, (int)top, missing_nodes, (int)top, mean_diff);
+        printf("\nSummary: %d/%d large differences, %d/%d missing nodes, total mean diff: %f\n\n", num_diffs, (int) top,
+               missing_nodes, (int) top, mean_diff);
     }
 
     return res ? 0 : num_diffs + missing_nodes;
 }
 
-int PageRankOutput(const char *file, const std::vector<rank_t>& ranks)
-{
+int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
     FILE *f;
     f = fopen(file, "w");
 
@@ -210,7 +195,8 @@ int PageRankOutput(const char *file, const std::vector<rank_t>& ranks)
         struct pr_value {
             index_t node;
             rank_t rank;
-            inline bool operator< (const pr_value& rhs) const {
+
+            inline bool operator<(const pr_value &rhs) const {
                 return rank < rhs.rank;
             }
         } *pr;
@@ -234,8 +220,13 @@ int PageRankOutput(const char *file, const std::vector<rank_t>& ranks)
         fprintf(stderr, "Writing to file ...\n");
 
         fprintf(f, "ALPHA %*e EPSILON %*e\n", FLT_DIG, ALPHA, FLT_DIG, EPSILON);
-        fprintf(f, "RANKS 1--%d of %d\n", FLAGS_top_ranks, (int)ranks.size());
-        for (int i = 1; i <= FLAGS_top_ranks; i++) {
+        fprintf(f, "RANKS 1--%d of %d\n", FLAGS_top_ranks, (int) ranks.size());
+        int output_num = FLAGS_top_ranks;
+        if (output_num == -1) {
+            fprintf(stderr, "WARN:output all ranks\n");
+            output_num = ranks.size();
+        }
+        for (int i = 1; i <= output_num; i++) {
             if (!FLAGS_print_ranks)
                 fprintf(f, "%d %d\n", i, pr[ranks.size() - i].node);
             else
@@ -244,8 +235,7 @@ int PageRankOutput(const char *file, const std::vector<rank_t>& ranks)
 
         free(pr);
         return 1;
-    }
-    else {
+    } else {
         fprintf(stderr, "Could not open '%s' for writing\n", file);
         return 0;
     }

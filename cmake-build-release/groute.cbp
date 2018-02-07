@@ -5,7 +5,7 @@
 		<Option title="groute"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\deps\;CMake Files\deps\gflags\;CMake Files\deps\gflags\cmake\;CMake Files\deps\gflags\src\;CMake Files\deps\googletest\;CMake Files\deps\googletest\googletest\;CMake Files\deps\googletest\googletest\cmake\;CMake Files\cmake\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\deps\;CMake Files\deps\gflags\;CMake Files\deps\gflags\cmake\;CMake Files\deps\gflags\src\;CMake Files\deps\gflags\test\;CMake Files\deps\glog\;CMake Files\deps\glog\cmake\;CMake Files\deps\glog\src\;CMake Files\deps\glog\src\glog\;CMake Files\deps\googletest\;CMake Files\deps\googletest\googletest\;CMake Files\deps\googletest\googletest\cmake\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\xiayang\;CMake Files\..\..\xiayang\diskb\;CMake Files\..\..\xiayang\diskb\liang\;CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\;CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\;CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\;CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\;CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\;CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\;CMake Files\cmake\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
@@ -77,6 +77,26 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="package_source">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="pr">
 				<Option output="/home/liang/groute-dev/cmake-build-release/pr" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
@@ -86,10 +106,16 @@
 				<Compiler>
 					<Add option="-DHAVE_METIS"/>
 					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
 					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog/include"/>
 					<Add directory="/home/liang/groute-dev/deps/cub"/>
 					<Add directory="/home/liang/groute-dev/include"/>
 					<Add directory="/usr/local/cuda/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -115,10 +141,16 @@
 				<Compiler>
 					<Add option="-DHAVE_METIS"/>
 					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
 					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog/include"/>
 					<Add directory="/home/liang/groute-dev/deps/cub"/>
 					<Add directory="/home/liang/groute-dev/include"/>
 					<Add directory="/usr/local/cuda/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
@@ -133,6 +165,80 @@
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Continuous">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 Continuous"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_static">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_static"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_static/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_static/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Nightly">
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 Nightly"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gflags_nothreads_static">
@@ -191,43 +297,27 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="gflags_static">
-				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags.a" prefix_auto="0" extension_auto="0"/>
+			<Target title="Experimental">
 				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DGFLAGS_IS_A_DLL=0"/>
-					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
-					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
-					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
-				</Compiler>
+				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_static"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 Experimental"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="gflags_static/fast">
-				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/libgflags.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags"/>
+			<Target title="gflags_strip_flags_test">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_strip_flags_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
 				<Option object_output="./"/>
-				<Option type="2"/>
+				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DGFLAGS_IS_A_DLL=0"/>
-					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
 					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
 					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
 					<Add directory="/usr/include/c++/5"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
@@ -239,10 +329,262 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 gflags_static/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_strip_flags_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_strip_flags_test/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_strip_flags_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_strip_flags_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_unittest-main">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_unittest-main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_unittest-main"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_unittest-main/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_unittest-main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_unittest-main/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_unittest_main">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_unittest_main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_unittest_main"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_unittest_main/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_unittest_main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_unittest_main/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_declare_test">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_declare_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_declare_test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gflags_declare_test/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin/gflags_declare_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/gflags/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/test"/>
+					<Add directory="/home/liang/groute-dev/deps/gflags/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 gflags_declare_test/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/gflags/test/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="gtest_main">
@@ -349,6 +691,492 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/googletest/googletest/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="glog">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/libglog.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 glog"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="glog/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/libglog.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 glog/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="logging_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/logging_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 logging_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="logging_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/logging_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 logging_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stl_logging_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/stl_logging_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLOG_STL_LOGGING_FOR_TR1_UNORDERED"/>
+					<Add option="-DGLOG_STL_LOGGING_FOR_EXT_HASH"/>
+					<Add option="-DGLOG_STL_LOGGING_FOR_EXT_SLIST"/>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 stl_logging_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stl_logging_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/stl_logging_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGLOG_STL_LOGGING_FOR_TR1_UNORDERED"/>
+					<Add option="-DGLOG_STL_LOGGING_FOR_EXT_HASH"/>
+					<Add option="-DGLOG_STL_LOGGING_FOR_EXT_SLIST"/>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 stl_logging_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="utilities_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/utilities_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 utilities_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="utilities_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/utilities_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 utilities_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="symbolize_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/symbolize_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 symbolize_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="symbolize_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/symbolize_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 symbolize_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="demangle_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/demangle_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 demangle_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="demangle_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/demangle_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 demangle_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stacktrace_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/stacktrace_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 stacktrace_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stacktrace_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/stacktrace_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 stacktrace_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="signalhandler_unittest">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/signalhandler_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 signalhandler_unittest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="signalhandler_unittest/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/deps/glog/signalhandler_unittest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGFLAGS_DLL_DECLARE_FLAG="/>
+					<Add option="-DGFLAGS_DLL_DEFINE_FLAG="/>
+					<Add option="-DGOOGLE_GLOG_DLL_DECL="/>
+					<Add option="-DGFLAGS_IS_A_DLL=0"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/gflags/include"/>
+					<Add directory="/home/liang/groute-dev/cmake-build-release/deps/glog"/>
+					<Add directory="/home/liang/groute-dev/deps/glog/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 signalhandler_unittest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/deps/glog/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 		</Build>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/pr_intermediate_link.o">
 			<Option target="pr"/>
@@ -356,51 +1184,150 @@
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/pr_intermediate_link.o.rule">
 			<Option target="pr"/>
 		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o">
+			<Option target="pr"/>
+		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o">
 			<Option target="pr"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o">
 			<Option target="pr"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/config.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags_completions.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags_declare.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/include/gflags/gflags_gflags.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/test/gflags_unittest-main.cc">
+			<Option target="gflags_unittest-main"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/gflags/test/gflags_unittest_main.cc">
+			<Option target="gflags_unittest_main"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/glog/glog/logging.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/glog/glog/raw_logging.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/glog/glog/stl_logging.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/deps/glog/glog/vlog_is_on.h">
+			<Option target="glog"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags.cc">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_completions.cc">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/gflags/src/gflags_reporting.cc">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/gflags/src/mutex.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/gflags/src/util.h">
-			<Option target="gflags_nothreads_static"/>
 			<Option target="gflags_static"/>
+			<Option target="gflags_nothreads_static"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_declare_flags.cc">
+			<Option target="gflags_declare_test"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_declare_test.cc">
+			<Option target="gflags_declare_test"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_strip_flags_test.cc">
+			<Option target="gflags_strip_flags_test"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_unittest.cc">
+			<Option target="gflags_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/base/commandlineflags.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/base/googleinit.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/base/mutex.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/demangle.cc">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/demangle.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/demangle_unittest.cc">
+			<Option target="demangle_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/log_severity.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/logging.cc">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/logging_unittest.cc">
+			<Option target="logging_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/raw_logging.cc">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/signalhandler.cc">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/signalhandler_unittest.cc">
+			<Option target="signalhandler_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/stacktrace_unittest.cc">
+			<Option target="stacktrace_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/stl_logging_unittest.cc">
+			<Option target="stl_logging_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/symbolize.cc">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/symbolize.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/symbolize_unittest.cc">
+			<Option target="symbolize_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/utilities.cc">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/utilities.h">
+			<Option target="glog"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/utilities_unittest.cc">
+			<Option target="utilities_unittest"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/vlog_is_on.cc">
+			<Option target="glog"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/src/gtest-all.cc">
 			<Option target="gtest"/>
@@ -408,10 +1335,16 @@
 		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/src/gtest_main.cc">
 			<Option target="gtest_main"/>
 		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/deltapr.cu">
+			<Option target="pr"/>
+		</Unit>
 		<Unit filename="/home/liang/groute-dev/samples/pr/main.cpp">
 			<Option target="pr"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/samples/pr/my_pr_async.cu">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/persist_pr_async.cu">
 			<Option target="pr"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/samples/pr/pr_async.cu">
@@ -498,6 +1431,72 @@
 		<Unit filename="/home/liang/groute-dev/deps/gflags/src/config.h.in">
 			<Option virtualFolder="CMake Files\deps\gflags\src\"/>
 		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\gflags\test\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_unittest.cc">
+			<Option virtualFolder="CMake Files\deps\gflags\test\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_unittest.cc">
+			<Option virtualFolder="CMake Files\deps\gflags\test\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\gflags\test\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_unittest.cc">
+			<Option virtualFolder="CMake Files\deps\gflags\test\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/gflags/test/gflags_unittest.cc">
+			<Option virtualFolder="CMake Files\deps\gflags\test\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/glog-config.cmake.in">
+			<Option virtualFolder="CMake Files\deps\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\deps\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/glog-config.cmake.in">
+			<Option virtualFolder="CMake Files\deps\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/cmake/DetermineGflagsNamespace.cmake">
+			<Option virtualFolder="CMake Files\deps\glog\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/cmake/DetermineGflagsNamespace.cmake">
+			<Option virtualFolder="CMake Files\deps\glog\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/config.h.cmake.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/config.h.cmake.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/logging.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/raw_logging.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/stl_logging.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/vlog_is_on.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/logging.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/raw_logging.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/stl_logging.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/deps/glog/src/glog/vlog_is_on.h.in">
+			<Option virtualFolder="CMake Files\deps\glog\src\glog\"/>
+		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\deps\googletest\googletest\"/>
 		</Unit>
@@ -509,6 +1508,24 @@
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/deps/googletest/googletest/cmake/internal_utils.cmake">
 			<Option virtualFolder="CMake Files\deps\googletest\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/../../xiayang/diskb/liang/ppopp17-artifact/code/mgbench/build/deps/gflags/gflags-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/../../xiayang/diskb/liang/ppopp17-artifact/code/mgbench/build/deps/gflags/gflags-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/../../xiayang/diskb/liang/ppopp17-artifact/code/mgbench/build/deps/gflags/gflags-export.cmake">
+			<Option virtualFolder="CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/../../xiayang/diskb/liang/ppopp17-artifact/code/mgbench/build/deps/gflags/gflags-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/../../xiayang/diskb/liang/ppopp17-artifact/code/mgbench/build/deps/gflags/gflags-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/../../xiayang/diskb/liang/ppopp17-artifact/code/mgbench/build/deps/gflags/gflags-export.cmake">
+			<Option virtualFolder="CMake Files\..\..\xiayang\diskb\liang\ppopp17-artifact\code\mgbench\build\deps\gflags\"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake/FindMETIS.cmake">
 			<Option virtualFolder="CMake Files\cmake\"/>

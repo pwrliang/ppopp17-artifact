@@ -140,7 +140,7 @@ namespace mypr {
                 // elect smallest lane_id in filtered threads
                 int leader = __ffs(mask) - 1;
 
-                index_t start = cub::ShuffleIndex(local_work.start, leader);
+                index_t start = cub::ShuffleIndex(local_work.start, leader);//__shfl_sync
                 index_t size = cub::ShuffleIndex(local_work.size, leader);
                 rank_t meta_data = cub::ShuffleIndex(local_work.meta_data, leader);
 

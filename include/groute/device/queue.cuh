@@ -57,7 +57,7 @@
 namespace groute {
     namespace dev {
 
-        __device__ __forceinline__ void warp_active_count(int &first, int& offset, int& total) {
+        __device__ __forceinline__ void warp_active_count(int &first, int &offset, int &total) {
             unsigned int active = __ballot(1);
             total = __popc(active);
             offset = __popc(active & cub::LaneMaskLt());
@@ -72,206 +72,198 @@ namespace groute {
         * @brief A device-level Queue (see host controller object below for usage)
         */
         template<typename T>
-        class Queue
-        {
-            T* m_data;
-            uint32_t* m_count;
+        class Queue {
+            T *m_data;
+            uint32_t *m_count;
             uint32_t m_capacity;
-            
-        public:
-            __host__ __device__ Queue(T* data, uint32_t* count, uint32_t capacity) : 
-                m_data(data), m_count(count), m_capacity(capacity) { }
 
-            __device__ __forceinline__ void append(const T& item) const
-            {
+        public:
+            __host__ __device__ Queue(T *data, uint32_t *count, uint32_t capacity) :
+                    m_data(data), m_count(count), m_capacity(capacity) {}
+
+            __device__ __forceinline__ void append(const T &item) const {
                 uint32_t allocation = atomicAdd(m_count, 1); // Just a naive atomic add
                 m_data[allocation] = item;
             }
 
-            __device__ void append_warp(const T& item) const
-            {
-                int leader, total, offset; 
+            __device__ void append_warp(const T &item) const {
+                int leader, total, offset;
                 uint32_t allocation = 0;
 
                 warp_active_count(leader, offset, total);
 
                 if (offset == 0) {
-                    allocation = atomicAdd((uint32_t *)m_count, total);
+                    allocation = atomicAdd((uint32_t *) m_count, total);
                     assert(allocation + total <= m_capacity);
                 }
-    
+
                 allocation = cub::ShuffleIndex(allocation, leader);
                 m_data[allocation + offset] = item;
             }
 
-            __device__ void append_warp(const T& item, int leader, int total, int offset) const
-            {
+            __device__ void append_warp(const T &item, int leader, int total, int offset) const {
                 uint32_t allocation = 0;
 
                 if (offset == 0) // The leader thread  
                 {
-                    allocation = atomicAdd((uint32_t *)m_count, total);
+                    allocation = atomicAdd((uint32_t *) m_count, total);
                     assert(allocation + total <= m_capacity);
                 }
-    
+
                 allocation = cub::ShuffleIndex(allocation, leader);
                 m_data[allocation + offset] = item;
             }
 
-            __device__ __forceinline__ void reset() const
-            {
+            __device__ __forceinline__ void reset() const {
                 *m_count = 0;
             }
 
-            __device__ __forceinline__ T read(int i) const
-            {
+            __device__ __forceinline__ T read(int i) const {
                 return m_data[i];
             }
-                        
-            __device__ __forceinline__ uint32_t count() const
-            {
+
+            __device__ __forceinline__ uint32_t count() const {
                 return *m_count;
             }
 
-            __device__ __forceinline__ void pop(uint32_t count) const
-            {
+            __device__ __forceinline__ void pop(uint32_t count) const {
                 assert(*m_count >= count);
                 *m_count -= count;
             }
 
-            __device__ __forceinline__  T* data_ptr() { return m_data; }
+            __device__ __forceinline__  T *data_ptr() { return m_data; }
         };
 
         /*
         * @brief A device-level Producer-Consumer Queue (see host controller object below for usage and notes)
         */
         template<typename T>
-        class PCQueue
-        {
-            T* m_data;
+        class PCQueue {
+            T *m_data;
             volatile uint32_t *m_start, *m_end, *m_pending;
             uint32_t m_capacity_mask;
 
         public:
-            __host__ __device__ PCQueue(T* data, uint32_t *start, uint32_t *end, uint32_t *pending, uint32_t capacity) : 
-                m_data(data), m_start(start), m_end(end), m_pending(pending), m_capacity_mask((capacity - 1))
-            {
-                assert((capacity - 1 & capacity) == 0); // Must be a power of two for handling circular overflow correctly  
+            __host__ __device__ PCQueue(T *data, uint32_t *start, uint32_t *end, uint32_t *pending, uint32_t capacity) :
+                    m_data(data), m_start(start), m_end(end), m_pending(pending), m_capacity_mask((capacity - 1)) {
+                assert((capacity - 1 & capacity) ==
+                       0); // Must be a power of two for handling circular overflow correctly
             }
 
-            __device__ __forceinline__ void reset() const
-            {
-                *m_start = 0; 
+            __device__ __forceinline__ void reset() const {
+                *m_start = 0;
                 *m_end = 0;
                 *m_pending = 0;
             }
 
-            __device__ __forceinline__ void pop(uint32_t count) const
-            {
-                (*m_start) += count; 
+            __device__ __forceinline__ void pop(uint32_t count) const {
+                (*m_start) += count;
             }
 
-            __device__ __forceinline__ void append(const T& item)
-            {
-                uint32_t allocation = atomicAdd((uint32_t *)m_pending, 1);
+            __device__ __forceinline__ T pop_and_get() const {
+                int old_pos = atomicAdd((uint32_t *) m_start, 1);
+                return m_data[old_pos & m_capacity_mask];
+            }
+
+//            __device__ __forceinline__ T blocked_pop_and_get() const {
+//                while (m_start >= m_end);//can not do this should lock the queue
+//                int old_pos = atomicAdd((uint32_t *) m_start, 1);
+//
+//                return m_data[old_pos & m_capacity_mask];
+//            }
+
+            __device__ __forceinline__ void append(const T &item) {
+                uint32_t allocation = atomicAdd((uint32_t *) m_pending, 1);
                 m_data[allocation & m_capacity_mask] = item;
             }
 
-            __device__ void append_warp(const T& item)
-            {
-                int leader, total, offset; 
+            __device__ void append_warp(const T &item) {
+                int leader, total, offset;
                 uint32_t allocation = 0;
 
                 warp_active_count(leader, offset, total);
 
                 if (offset == 0) // The leader thread  
                 {
-                    allocation = atomicAdd((uint32_t *)m_pending, total);
+                    allocation = atomicAdd((uint32_t *) m_pending, total);
                     assert((allocation + total) - *m_start < (m_capacity_mask + 1));
                 }
-    
+
                 allocation = cub::ShuffleIndex(allocation, leader);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
-            __device__ void append_warp(const T& item, int leader, int total, int offset)
-            {
+            __device__ void append_warp(const T &item, int leader, int total, int offset) {
                 uint32_t allocation = 0;
 
                 if (offset == 0) // The leader thread  
                 {
-                    allocation = atomicAdd((uint32_t *)m_pending, total);
+                    allocation = atomicAdd((uint32_t *) m_pending, total);
                     assert((allocation + total) - *m_start < (m_capacity_mask + 1));
                 }
-    
+
                 allocation = cub::ShuffleIndex(allocation, leader);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
-            __device__ __forceinline__ void prepend(const T& item)
-            {
-                uint32_t allocation = atomicSub((uint32_t *)m_start, 1) - 1;
+            __device__ __forceinline__ void prepend(const T &item) {
+                uint32_t allocation = atomicSub((uint32_t *) m_start, 1) - 1;
                 m_data[allocation & m_capacity_mask] = item;
             }
 
-            __device__ void prepend_warp(const T& item)
-            {
-                int leader, total, offset; 
+            __device__ void prepend_warp(const T &item) {
+                int leader, total, offset;
                 uint32_t allocation = 0;
 
                 warp_active_count(leader, offset, total);
 
                 if (offset == 0) // The leader thread  
                 {
-                    allocation = atomicSub((uint32_t *)m_start, total) - total; // Allocate 'total' items from the start
+                    allocation =
+                            atomicSub((uint32_t *) m_start, total) - total; // Allocate 'total' items from the start
                     assert(*m_end - allocation < (m_capacity_mask + 1));
                 }
-    
+
                 allocation = cub::ShuffleIndex(allocation, leader);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
-                        
-            __device__ void prepend_warp(const T& item, int leader, int total, int offset)
-            {
+
+            __device__ void prepend_warp(const T &item, int leader, int total, int offset) {
                 uint32_t allocation = 0;
 
                 if (offset == 0) // The leader thread  
                 {
-                    allocation = atomicSub((uint32_t *)m_start, total) - total; // Allocate 'total' items from the start
+                    allocation =
+                            atomicSub((uint32_t *) m_start, total) - total; // Allocate 'total' items from the start
                     assert(*m_end - allocation < (m_capacity_mask + 1));
                 }
-    
+
                 allocation = cub::ShuffleIndex(allocation, leader);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
-            __device__ __forceinline__ T read(uint32_t i) const
-            {
+            __device__ __forceinline__ T read(uint32_t i) const {
                 return m_data[(*m_start + i) & m_capacity_mask];
             }
-                        
-            __device__ __forceinline__ uint32_t count() const
-            {
+
+            __device__ __forceinline__ uint32_t count() const {
                 return *m_end - *m_start;
             }
 
             // Returns the 'count' of pending items and commits
-            __device__ __forceinline__ uint32_t commit_pending() const
-            {
+            __device__ __forceinline__ uint32_t commit_pending() const {
                 uint32_t count = *m_pending - *m_end;
-                
+
                 // Sync end with pending, this makes the pushed items visible to the consumer
                 *m_end = *m_pending;
                 return count;
             }
 
-            __device__ __forceinline__ uint32_t get_start() const
-            {
+            __device__ __forceinline__ uint32_t get_start() const {
                 return *m_start;
             }
 
-            __device__ __forceinline__ uint32_t get_start_delta(uint32_t prev_start) const
-            {
+            __device__ __forceinline__ uint32_t get_start_delta(uint32_t prev_start) const {
                 return prev_start - *m_start;
             }
         };
@@ -282,105 +274,93 @@ namespace groute {
     // Queue control kernels:  
     //
 
-    namespace queue     {
-    namespace kernels   {
+    namespace queue {
+        namespace kernels {
 
-        template<typename T>
-        __global__ void QueueReset(dev::Queue<T> queue)
-        {
-            if (threadIdx.x == 0 && blockIdx.x == 0)
-                queue.reset();
-        }
+            template<typename T>
+            __global__ void QueueReset(dev::Queue<T> queue) {
+                if (threadIdx.x == 0 && blockIdx.x == 0)
+                    queue.reset();
+            }
 
-        static __global__ void ResetCounters(uint32_t* counters, uint32_t num_counters)
-        {
-            if (TID_1D < num_counters)
-                counters[TID_1D] = 0;
-        }
+            static __global__ void ResetCounters(uint32_t *counters, uint32_t num_counters) {
+                if (TID_1D < num_counters)
+                    counters[TID_1D] = 0;
+            }
 
-        template<typename T>
-        __global__ void QueueAppendItem(dev::Queue<T> queue, T item)
-        {
-            if (threadIdx.x == 0 && blockIdx.x == 0)
-                queue.append(item);
-        }
+            template<typename T>
+            __global__ void QueueAppendItem(dev::Queue<T> queue, T item) {
+                if (threadIdx.x == 0 && blockIdx.x == 0)
+                    queue.append(item);
+            }
 
-        template<typename T>
-        __global__ void PCQueueReset(dev::PCQueue<T> pcqueue)
-        {
-            if (threadIdx.x == 0 && blockIdx.x == 0)
-                pcqueue.reset();
-        }
+            template<typename T>
+            __global__ void PCQueueReset(dev::PCQueue<T> pcqueue) {
+                if (threadIdx.x == 0 && blockIdx.x == 0)
+                    pcqueue.reset();
+            }
 
-        template<typename T>
-        __global__ void PCQueuePop(dev::PCQueue<T> pcqueue, uint32_t count)
-        {
-            if (threadIdx.x == 0 && blockIdx.x == 0)
-                pcqueue.pop(count);
-        }
+            template<typename T>
+            __global__ void PCQueuePop(dev::PCQueue<T> pcqueue, uint32_t count) {
+                if (threadIdx.x == 0 && blockIdx.x == 0)
+                    pcqueue.pop(count);
+            }
 
-        template<typename T>
-        __global__ void PCQueueAppendItem(dev::PCQueue<T> pcqueue, T item)
-        {
-            if (threadIdx.x == 0 && blockIdx.x == 0)
-            {
-                pcqueue.append(item);
-                pcqueue.commit_pending();
+            template<typename T>
+            __global__ void PCQueueAppendItem(dev::PCQueue<T> pcqueue, T item) {
+                if (threadIdx.x == 0 && blockIdx.x == 0) {
+                    pcqueue.append(item);
+                    pcqueue.commit_pending();
+                }
+            }
+
+            template<typename T>
+            __global__ void PCQueueCommitPending(dev::PCQueue<T> pcqueue) {
+                if (threadIdx.x == 0 && blockIdx.x == 0)
+                    pcqueue.commit_pending();
             }
         }
-
-        template<typename T>
-        __global__ void PCQueueCommitPending(dev::PCQueue<T> pcqueue)
-        {
-            if (threadIdx.x == 0 && blockIdx.x == 0)
-                pcqueue.commit_pending();
-        }
-    }
     }
 
     //
     // Queue memory monitor
     //
-    class QueueMemoryMonitor
-    {
-        struct Entry
-        {
+    class QueueMemoryMonitor {
+        struct Entry {
             Endpoint endpoint;
-            const char* name;
+            const char *name;
             uint32_t capacity;
             uint32_t max_usage;
 
-            Entry() : endpoint(), name(nullptr), capacity(0), max_usage(0) { }
-            Entry(Endpoint endpoint, const char* name, uint32_t capacity) : endpoint(endpoint), name(name), capacity(capacity), max_usage(0) { }
+            Entry() : endpoint(), name(nullptr), capacity(0), max_usage(0) {}
+
+            Entry(Endpoint endpoint, const char *name, uint32_t capacity) : endpoint(endpoint), name(name),
+                                                                            capacity(capacity), max_usage(0) {}
         };
 
         int m_index_gen;
         std::map<int, Entry> m_entries;
         std::atomic<bool> m_exiting;
 
-        QueueMemoryMonitor() : m_index_gen(0), m_exiting(false) { }
+        QueueMemoryMonitor() : m_index_gen(0), m_exiting(false) {}
 
-        static QueueMemoryMonitor& Instance()
-        {
+        static QueueMemoryMonitor &Instance() {
             static QueueMemoryMonitor monitor; // Lazy singleton (per compilation unit)
             return monitor;
         }
 
-        int RegisterInternal(uint32_t capacity, Endpoint endpoint, const char* name)
-        {
+        int RegisterInternal(uint32_t capacity, Endpoint endpoint, const char *name) {
             int index = m_index_gen++;
             m_entries[index] = Entry(endpoint, name, capacity);
             return index;
         }
 
-        void UnregisterInternal(int index)
-        {
+        void UnregisterInternal(int index) {
             if (m_entries.find(index) == m_entries.end()) return;
             m_entries.erase(m_entries.find(index));
         }
 
-        void ReportUsageInternal(int index, uint32_t usage)
-        {
+        void ReportUsageInternal(int index, uint32_t usage) {
             if (m_entries.find(index) == m_entries.end()) return;
 
             // Keeping the max_usage update not thread-safe.
@@ -389,48 +369,50 @@ namespace groute {
             if (usage > m_entries.at(index).max_usage)
                 m_entries.at(index).max_usage = usage;
 
-            if (usage > m_entries.at(index).capacity)
-            {
+            if (usage > m_entries.at(index).capacity) {
                 //
                 // We got an overflow, report overall usage stats and exit 
                 //
 
                 bool exiting = m_exiting;
-                if (exiting || !m_exiting.compare_exchange_strong(exiting, true)) return; // Avoid printing stats by more than one thread  
+                if (exiting || !m_exiting.compare_exchange_strong(exiting, true))
+                    return; // Avoid printing stats by more than one thread
 
                 std::map<Endpoint, std::map<std::string, std::vector<Entry>>> grouped_entries;
                 size_t name_max = 0;
 
-                for (const auto& ep : m_entries)
-                {
-                    const Entry& entry = ep.second;
+                for (const auto &ep : m_entries) {
+                    const Entry &entry = ep.second;
                     std::string name(entry.name);
                     name_max = std::max(name.size(), name_max);
 
                     grouped_entries[entry.endpoint][name].push_back(entry); // Group by endpoint and name
                 }
-                
+
                 printf("\nQueue has overflowed, dumping overall queue memory statistics: ");
 
-                for (const auto& ep : grouped_entries)
-                {
+                for (const auto &ep : grouped_entries) {
                     Endpoint endpoint = ep.first;
-                    printf("\nEndpoint %d: ", (Endpoint::identity_type)endpoint);
-                    for (const auto& np : ep.second)
-                    {
+                    printf("\nEndpoint %d: ", (Endpoint::identity_type) endpoint);
+                    for (const auto &np : ep.second) {
                         std::string name = np.first;
 
-                        for (size_t i = 0; i < np.second.size(); ++i)
-                        {
-                            const Entry& entry = np.second[i];
+                        for (size_t i = 0; i < np.second.size(); ++i) {
+                            const Entry &entry = np.second[i];
 
-                            if(i == 0)  printf("\n\t[name: '%s'%s", name.c_str(), std::string(name_max + 3 - name.size(), ' ').c_str());
-                            else        printf("\n\t[name: '%s(%llu)'%s", name.c_str(), i + 1, std::string(name_max - name.size(), ' ').c_str());
+                            if (i == 0)
+                                printf("\n\t[name: '%s'%s", name.c_str(),
+                                       std::string(name_max + 3 - name.size(), ' ').c_str());
+                            else
+                                printf("\n\t[name: '%s(%llu)'%s", name.c_str(), i + 1,
+                                       std::string(name_max - name.size(), ' ').c_str());
 
-                            printf(", capacity: %10d, usage: %10d, ratio: %.3f", entry.capacity, entry.max_usage, (double)entry.max_usage/entry.capacity);
+                            printf(", capacity: %10d, usage: %10d, ratio: %.3f", entry.capacity, entry.max_usage,
+                                   (double) entry.max_usage / entry.capacity);
 
-                            if (entry.max_usage > entry.capacity)   printf(", OVERFLOW: %10d]", entry.max_usage - entry.capacity);
-                            else                                    printf("]");
+                            if (entry.max_usage > entry.capacity)
+                                printf(", OVERFLOW: %10d]", entry.max_usage - entry.capacity);
+                            else printf("]");
                         }
                     }
                 }
@@ -442,18 +424,15 @@ namespace groute {
         }
 
     public:
-        static int Register(uint32_t capacity, Endpoint endpoint, const char* name)
-        {
+        static int Register(uint32_t capacity, Endpoint endpoint, const char *name) {
             return Instance().RegisterInternal(capacity, endpoint, name);
         }
 
-        static void Unregister(int index)
-        {
+        static void Unregister(int index) {
             return Instance().UnregisterInternal(index);
         }
 
-        static void ReportUsage(int instance_id, uint32_t usage)
-        {
+        static void ReportUsage(int instance_id, uint32_t usage) {
             Instance().ReportUsageInternal(instance_id, usage);
         }
     };
@@ -467,29 +446,29 @@ namespace groute {
     * @brief Host controller object for dev::Queue (see above)
     */
     template<typename T>
-    class Queue
-    {
-        enum { NUM_COUNTERS = 32 }; // Number of counter slots
+    class Queue {
+        enum {
+            NUM_COUNTERS = 32
+        }; // Number of counter slots
 
         // device buffer / counters 
-        T* m_data;
+        T *m_data;
         uint32_t *m_counters;
 
         // Pinned host counter
         uint32_t *m_host_count;
-        
+
         uint32_t m_capacity;
         int32_t m_current_slot; // The currently used counter slot (see ResetAsync method)
 
         bool m_mem_owner;
         int m_instance_id;
 
-        Queue& operator=(const Queue& other) = default; // For private use only
-        
-        void Alloc(Endpoint endpoint, const char* name)
-        {
+        Queue &operator=(const Queue &other) = default; // For private use only
+
+        void Alloc(Endpoint endpoint, const char *name) {
             if (m_capacity == 0) return;
-            
+
             m_instance_id = QueueMemoryMonitor::Register(m_capacity, endpoint, name);
 
             if (m_mem_owner)
@@ -497,11 +476,10 @@ namespace groute {
             GROUTE_CUDA_CHECK(cudaMalloc(&m_counters, NUM_COUNTERS * sizeof(uint32_t)));
             GROUTE_CUDA_CHECK(cudaMallocHost(&m_host_count, sizeof(uint32_t)));
         }
-    
-        void Free()
-        {
+
+        void Free() {
             if (m_capacity == 0) return;
-            
+
             QueueMemoryMonitor::Unregister(m_instance_id);
 
             if (m_mem_owner)
@@ -509,102 +487,92 @@ namespace groute {
             GROUTE_CUDA_CHECK(cudaFree(m_counters));
             GROUTE_CUDA_CHECK(cudaFreeHost(m_host_count));
         }
-    
+
     public:
-        Queue(uint32_t capacity = 0, Endpoint endpoint = Endpoint(), const char* name = "") : 
-            m_data(nullptr), m_mem_owner(true), m_counters(nullptr), m_capacity(capacity), m_current_slot(-1), m_instance_id(-1)
-        {
+        Queue(uint32_t capacity = 0, Endpoint endpoint = Endpoint(), const char *name = "") :
+                m_data(nullptr), m_mem_owner(true), m_counters(nullptr), m_capacity(capacity), m_current_slot(-1),
+                m_instance_id(-1) {
             Alloc(endpoint, name);
         }
 
-        Queue(T* mem_buffer, uint32_t mem_size, Endpoint endpoint = Endpoint(), const char* name = "") : 
-            m_data(mem_buffer), m_mem_owner(false), m_counters(nullptr), m_capacity(mem_size), m_current_slot(-1), m_instance_id(-1)
-        {
+        Queue(T *mem_buffer, uint32_t mem_size, Endpoint endpoint = Endpoint(), const char *name = "") :
+                m_data(mem_buffer), m_mem_owner(false), m_counters(nullptr), m_capacity(mem_size), m_current_slot(-1),
+                m_instance_id(-1) {
             Alloc(endpoint, name);
         }
 
-        Queue(const Queue& other) = delete;
+        Queue(const Queue &other) = delete;
 
-        Queue(Queue&& other)
-        {
+        Queue(Queue &&other) {
             *this = std::move(other);
         }
 
-        Queue& operator=(Queue&& other)
-        {
+        Queue &operator=(Queue &&other) {
             *this = other;           // First copy all fields  
-            new (&other) Queue(0);   // Clear up other
+            new(&other) Queue(0);   // Clear up other
 
             return (*this);
         }
 
-        ~Queue()
-        {
+        ~Queue() {
             Free();
         }
 
-        T* GetDeviceDataPtr() const { return m_data; }
+        T *GetDeviceDataPtr() const { return m_data; }
 
         typedef dev::Queue<T> DeviceObjectType;
 
-        DeviceObjectType DeviceObject() const
-        {
+        DeviceObjectType DeviceObject() const {
             assert(m_current_slot >= 0 && m_current_slot < NUM_COUNTERS);
             return dev::Queue<T>(m_data, m_counters + m_current_slot, m_capacity);
         }
-        
-        void ResetAsync(cudaStream_t stream)
-        {
+
+        void ResetAsync(cudaStream_t stream) {
             //
             // We use multiple counter slots to avoid running a kernel each time a reset is required  
             //
 
             m_current_slot = (m_current_slot + 1) % NUM_COUNTERS;
-            if (m_current_slot == 0)
-            {
-                queue::kernels::ResetCounters <<< 1, NUM_COUNTERS, 0, stream >>>(m_counters, NUM_COUNTERS);
+            if (m_current_slot == 0) {
+                queue::kernels::ResetCounters << < 1, NUM_COUNTERS, 0, stream >> > (m_counters, NUM_COUNTERS);
             }
         }
 
-        void AppendItemAsync(cudaStream_t stream, const T& item) const
-        {
-            queue::kernels::QueueAppendItem <<<1, 1, 0, stream >>>(DeviceObject(), item);
+        void AppendItemAsync(cudaStream_t stream, const T &item) const {
+            queue::kernels::QueueAppendItem << < 1, 1, 0, stream >> > (DeviceObject(), item);
         }
 
-        void ResetAsync(const Stream& stream)
-        {
+        void ResetAsync(const Stream &stream) {
             ResetAsync(stream.cuda_stream);
         }
-                
-        void AppendItemAsync(const Stream& stream, const T& item) const
-        {
+
+        void AppendItemAsync(const Stream &stream, const T &item) const {
             AppendItemAsync(stream.cuda_stream, item);
         }
-        
-        uint32_t GetCount(const Stream& stream) const
-        {
+
+        uint32_t GetCount(const Stream &stream) const {
             assert(m_current_slot >= 0 && m_current_slot < NUM_COUNTERS);
 
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_count, m_counters + m_current_slot, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
+            GROUTE_CUDA_CHECK(
+                    cudaMemcpyAsync(m_host_count, m_counters + m_current_slot, sizeof(uint32_t), cudaMemcpyDeviceToHost,
+                                    stream.cuda_stream));
             stream.Sync();
-            
+
             QueueMemoryMonitor::ReportUsage(m_instance_id, *m_host_count);
 
             return *m_host_count;
         }
 
-        Segment<T> GetSeg(const Stream& stream) const
-        {
+        Segment<T> GetSeg(const Stream &stream) const {
             return Segment<T>(GetDeviceDataPtr(), GetCount(stream));
         }
 
-        void PrintOffsets(const Stream& stream) const
-        {
-            printf("\nQueue (Debug): count: %u (capacity: %u)", 
-                GetCount(stream), m_capacity);
+        void PrintOffsets(const Stream &stream) const {
+            printf("\nQueue (Debug): count: %u (capacity: %u)",
+                   GetCount(stream), m_capacity);
         }
     };
-    
+
     /*
     * @brief Host controller object for dev::PCQueue (see above)
     * @notes:
@@ -618,31 +586,29 @@ namespace groute {
         -> The queue does not support blocking writers when it's full, instead, a memory overflow is reported and the application will terminate  
     */
     template<typename T>
-    class PCQueue
-    {
+    class PCQueue {
         // Device buffer / counters 
-        T* m_data;
+        T *m_data;
         uint32_t *m_start, *m_end, *m_pending;
 
         // Pinned host counters  
         uint32_t *m_host_start, *m_host_end, *m_host_pending;
-        
+
         // Capacity, must be a power-of-two 
         uint32_t m_capacity;
-        
+
         bool m_mem_owner;
         int m_instance_id;
 
-        PCQueue& operator=(const PCQueue& other) = default; // For private use only
+        PCQueue &operator=(const PCQueue &other) = default; // For private use only
 
-        void Alloc(Endpoint endpoint, const char* name)
-        {
+        void Alloc(Endpoint endpoint, const char *name) {
             if (m_capacity == 0) return;
 
             if ((m_capacity - 1 & m_capacity) != 0) throw groute::exception("PCQueue must have power-of-two capacity");
 
             m_instance_id = QueueMemoryMonitor::Register(m_capacity, endpoint, name);
-    
+
             if (m_mem_owner)
                 GROUTE_CUDA_CHECK(cudaMalloc(&m_data, sizeof(T) * m_capacity));
 
@@ -654,11 +620,10 @@ namespace groute {
             GROUTE_CUDA_CHECK(cudaMallocHost(&m_host_end, sizeof(uint32_t)));
             GROUTE_CUDA_CHECK(cudaMallocHost(&m_host_pending, sizeof(uint32_t)));
         }
-    
-        void Free()
-        {
+
+        void Free() {
             if (m_capacity == 0) return;
-            
+
             QueueMemoryMonitor::Unregister(m_instance_id);
 
             if (m_mem_owner)
@@ -671,13 +636,14 @@ namespace groute {
             GROUTE_CUDA_CHECK(cudaFreeHost(m_host_start));
             GROUTE_CUDA_CHECK(cudaFreeHost(m_host_end));
             GROUTE_CUDA_CHECK(cudaFreeHost(m_host_pending));
-        }       
+        }
 
-        void GetActualBounds(uint32_t& start, uint32_t& end, const Stream& stream) const
-        {
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_start, m_start, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_end, m_end, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            
+        void GetActualBounds(uint32_t &start, uint32_t &end, const Stream &stream) const {
+            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_start, m_start, sizeof(uint32_t), cudaMemcpyDeviceToHost,
+                                              stream.cuda_stream));
+            GROUTE_CUDA_CHECK(
+                    cudaMemcpyAsync(m_host_end, m_end, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
+
             stream.Sync();
 
             start = *m_host_start;
@@ -685,9 +651,8 @@ namespace groute {
 
             QueueMemoryMonitor::ReportUsage(m_instance_id, end - start);
         }
-        
-        void GetBounds(uint32_t& start, uint32_t& end, uint32_t& size, const Stream& stream) const
-        {
+
+        void GetBounds(uint32_t &start, uint32_t &end, uint32_t &size, const Stream &stream) const {
             GetActualBounds(start, end, stream);
 
             start = start % m_capacity;
@@ -696,11 +661,12 @@ namespace groute {
             size = end >= start ? end - start : (m_capacity - start + end); // normal and circular cases
         }
 
-        void GetPendingCount(uint32_t& end, uint32_t& pending, uint32_t& count, const Stream& stream) const
-        {
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_end, m_end, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_pending, m_pending, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            
+        void GetPendingCount(uint32_t &end, uint32_t &pending, uint32_t &count, const Stream &stream) const {
+            GROUTE_CUDA_CHECK(
+                    cudaMemcpyAsync(m_host_end, m_end, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
+            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_pending, m_pending, sizeof(uint32_t), cudaMemcpyDeviceToHost,
+                                              stream.cuda_stream));
+
             stream.Sync();
 
             end = *m_host_end;
@@ -711,162 +677,140 @@ namespace groute {
 
             count = pending >= end ? pending - end : (m_capacity - end + pending); // normal and circular cases
         }
-    
+
     public:
-        PCQueue(uint32_t capacity = 0, Endpoint endpoint = Endpoint(), const char* name = "") : 
-            m_data(nullptr), m_mem_owner(true), 
-            m_start(nullptr), m_end(nullptr), m_pending(nullptr), 
-            m_host_start(nullptr), m_host_end(nullptr), m_host_pending(nullptr), 
-            m_capacity(capacity == 0 ? 0 : next_power_2(capacity)),
-            m_instance_id(-1)
-        {
+        PCQueue(uint32_t capacity = 0, Endpoint endpoint = Endpoint(), const char *name = "") :
+                m_data(nullptr), m_mem_owner(true),
+                m_start(nullptr), m_end(nullptr), m_pending(nullptr),
+                m_host_start(nullptr), m_host_end(nullptr), m_host_pending(nullptr),
+                m_capacity(capacity == 0 ? 0 : next_power_2(capacity)),
+                m_instance_id(-1) {
             Alloc(endpoint, name);
         }
 
-        PCQueue(T *mem_buffer, uint32_t mem_size, Endpoint endpoint = Endpoint(), const char* name = "") : 
-            m_data(mem_buffer), m_mem_owner(false), 
-            m_start(nullptr), m_end(nullptr), m_pending(nullptr), 
-            m_host_start(nullptr), m_host_end(nullptr), m_host_pending(nullptr), 
-            m_capacity(mem_size),
-            m_instance_id(-1)
-        {
+        PCQueue(T *mem_buffer, uint32_t mem_size, Endpoint endpoint = Endpoint(), const char *name = "") :
+                m_data(mem_buffer), m_mem_owner(false),
+                m_start(nullptr), m_end(nullptr), m_pending(nullptr),
+                m_host_start(nullptr), m_host_end(nullptr), m_host_pending(nullptr),
+                m_capacity(mem_size),
+                m_instance_id(-1) {
             Alloc(endpoint, name);
         }
 
-        PCQueue(const PCQueue& other) = delete;
+        PCQueue(const PCQueue &other) = delete;
 
-        PCQueue(PCQueue&& other)
-        {
+        PCQueue(PCQueue &&other) {
             *this = std::move(other);
         }
 
-        PCQueue& operator=(PCQueue&& other)
-        {
+        PCQueue &operator=(PCQueue &&other) {
             *this = other;             // First copy all fields 
-            new (&other) PCQueue(0);   // Clear up other
+            new(&other) PCQueue(0);   // Clear up other
 
             return (*this);
         }
 
-        ~PCQueue()
-        {
+        ~PCQueue() {
             Free();
         }
-        
+
         typedef dev::PCQueue<T> DeviceObjectType;
 
-        DeviceObjectType DeviceObject() const
-        {
+        DeviceObjectType DeviceObject() const {
             return dev::PCQueue<T>(m_data, m_start, m_end, m_pending, m_capacity);
         }
 
-        void ResetAsync(cudaStream_t stream) const
-        {
-            queue::kernels::PCQueueReset<<<1, 1, 0, stream >>>(DeviceObject());
+        void ResetAsync(cudaStream_t stream) const {
+            queue::kernels::PCQueueReset << < 1, 1, 0, stream >> > (DeviceObject());
         }
 
-        void CommitPendingAsync(cudaStream_t stream) const 
-        {
-            queue::kernels::PCQueueCommitPending<<<1, 1, 0, stream >>>(DeviceObject());
+        void CommitPendingAsync(cudaStream_t stream) const {
+            queue::kernels::PCQueueCommitPending << < 1, 1, 0, stream >> > (DeviceObject());
         }
 
-        void AppendItemAsync(cudaStream_t stream, const T& item) const
-        {
-            queue::kernels::PCQueueAppendItem <<<1, 1, 0, stream >>>(DeviceObject(), item);
+        void AppendItemAsync(cudaStream_t stream, const T &item) const {
+            queue::kernels::PCQueueAppendItem << < 1, 1, 0, stream >> > (DeviceObject(), item);
         }
 
-        void PopAsync(uint32_t count, cudaStream_t stream) const 
-        {
+        void PopAsync(uint32_t count, cudaStream_t stream) const {
             if (count == 0) return;
 
-            queue::kernels::PCQueuePop <<<1, 1, 0, stream >>>(DeviceObject(), count);
+            queue::kernels::PCQueuePop << < 1, 1, 0, stream >> > (DeviceObject(), count);
         }
 
         //
         // groute::Stream overloads  
         //
-        void ResetAsync(const Stream& stream) const
-        {
+        void ResetAsync(const Stream &stream) const {
             ResetAsync(stream.cuda_stream);
         }
 
-        void CommitPendingAsync(const Stream& stream) const
-        {
+        void CommitPendingAsync(const Stream &stream) const {
             CommitPendingAsync(stream.cuda_stream);
         }
 
-        void AppendItemAsync(const Stream& stream, const T& item) const
-        {
+        void AppendItemAsync(const Stream &stream, const T &item) const {
             AppendItemAsync(stream.cuda_stream);
         }
 
-        void PopAsync(uint32_t count, const Stream& stream) const 
-        {
+        void PopAsync(uint32_t count, const Stream &stream) const {
             PopAsync(count, stream.cuda_stream);
         }
 
-        uint32_t GetCount(const Stream& stream) const
-        {
+        uint32_t GetCount(const Stream &stream) const {
             uint32_t start, end, size;
             GetBounds(start, end, size, stream);
 
             return size;
         }
-        
-        uint32_t GetPendingCount(const Stream& stream) const
-        {
+
+        uint32_t GetPendingCount(const Stream &stream) const {
             uint32_t end, pending, count;
             GetPendingCount(end, pending, count, stream);
 
             return count;
         }
 
-        uint32_t GetSpace(const Stream& stream) const
-        {
+        uint32_t GetSpace(const Stream &stream) const {
             return m_capacity - GetCount(stream);
         }
 
         //
         // Helper class for queue bounds
         //
-        struct Bounds
-        {
+        struct Bounds {
             uint32_t start, end;
 
-            Bounds(uint32_t start, uint32_t end) : start(start), end(end) { }
-            Bounds() : start(0), end(0) { }
+            Bounds(uint32_t start, uint32_t end) : start(start), end(end) {}
+
+            Bounds() : start(0), end(0) {}
 
             int GetCount() const { return end - start; } // Works also if numbers over/under flow
             Bounds Exclude(Bounds other) const { return Bounds(other.end, end); }
         };
 
-        Bounds GetBounds(const Stream& stream)
-        {
+        Bounds GetBounds(const Stream &stream) {
             Bounds bounds;
             GetActualBounds(bounds.start, bounds.end, stream);
             return bounds;
         }
 
-        uint32_t GetSpace(Bounds bounds) const
-        {
+        uint32_t GetSpace(Bounds bounds) const {
             return m_capacity - bounds.GetCount();
         }
 
-        std::vector< Segment<T> > GetSegs(Bounds bounds)
-        {
+        std::vector<Segment<T> > GetSegs(Bounds bounds) {
             uint32_t start = bounds.start, end = bounds.end, size = bounds.GetCount();
 
             start = start % m_capacity;
             end = end % m_capacity;
 
-            std::vector< Segment<T> > segs;
+            std::vector<Segment<T> > segs;
 
             if (end > start) // normal case
             {
                 segs.push_back(Segment<T>(m_data + start, size));
-            }
-            else if (start > end)
-            {
+            } else if (start > end) {
                 segs.push_back(Segment<T>(m_data + start, size - end));
                 if (end > 0) {
                     segs.push_back(Segment<T>(m_data, end));
@@ -878,20 +822,22 @@ namespace groute {
             return segs;
         }
 
-        std::vector< Segment<T> > GetSegs(const Stream& stream)
-        {
+        std::vector<Segment<T> > GetSegs(const Stream &stream) {
             return GetSegs(GetBounds(stream));
         }
 
         //
         // Debug methods
         //
-        void GetOffsets(uint32_t& capacity, uint32_t& start, uint32_t& end, uint32_t& pending, uint32_t& size, const Stream& stream) const
-        {
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_start, m_start, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_end, m_end, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_pending, m_pending, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
-            
+        void GetOffsets(uint32_t &capacity, uint32_t &start, uint32_t &end, uint32_t &pending, uint32_t &size,
+                        const Stream &stream) const {
+            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_start, m_start, sizeof(uint32_t), cudaMemcpyDeviceToHost,
+                                              stream.cuda_stream));
+            GROUTE_CUDA_CHECK(
+                    cudaMemcpyAsync(m_host_end, m_end, sizeof(uint32_t), cudaMemcpyDeviceToHost, stream.cuda_stream));
+            GROUTE_CUDA_CHECK(cudaMemcpyAsync(m_host_pending, m_pending, sizeof(uint32_t), cudaMemcpyDeviceToHost,
+                                              stream.cuda_stream));
+
             stream.Sync();
             capacity = m_capacity;
             start = *m_host_start;
@@ -900,12 +846,11 @@ namespace groute {
             size = end - start;
         }
 
-        void PrintOffsets(const Stream& stream) const
-        {
+        void PrintOffsets(const Stream &stream) const {
             uint32_t capacity, start, end, pending, size;
             GetOffsets(capacity, start, end, pending, size, stream);
-            printf("\nPCQueue (Debug): start: %u, end: %u, pending: %u, size: %u (capacity: %u)", 
-                start, end, pending, size, capacity);
+            printf("\nPCQueue (Debug): start: %u, end: %u, pending: %u, size: %u (capacity: %u)",
+                   start, end, pending, size, capacity);
         }
     };
 }

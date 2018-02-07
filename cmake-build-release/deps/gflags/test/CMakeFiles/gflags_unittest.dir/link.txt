@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG  -rdynamic CMakeFiles/gflags_unittest.dir/gflags_unittest.cc.o  -o ../bin/gflags_unittest  -L/usr/local/cuda/lib64 -Wl,-rpath,/usr/local/cuda/lib64 ../libgflags.a -lpthread 

@@ -103,7 +103,7 @@ DEFINE_double(wl_alloc_factor_pass, 0.2, "Worklist allocation factor: pass-throu
 
 DEFINE_bool(stats, false, "Print graph statistics and exit");
 DEFINE_bool(cta_np, true, "Use nested parallelism withing traversal kernels");
-
+DEFINE_bool(groute, false, "Using Groute Code");
 #ifdef HAVE_METIS
 DEFINE_bool(pn, true, "Partition the input graph using METIS (requires a symmetric graph)");
 #else
@@ -116,8 +116,8 @@ struct Skeleton
 {
     int operator() (int argc, char **argv)
     {
-//        google::InitGoogleLogging(argv[0]);
         gflags::ParseCommandLineFlags(&argc, &argv, true);
+//        google::InitGoogleLogging(argv[0]);
         int exit = 0;
 
         if (FLAGS_stats)

@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../deps/glog/src/glog/log_severity.h
+
 ../include/groute/common.h
 map
 -
@@ -184,6 +186,8 @@ cstdio
 cuda_runtime.h
 -
 gflags/gflags.h
+-
+glog/logging.h
 -
 iostream
 -
@@ -843,4 +847,40 @@ inttypes.h
 -
 
 deps/gflags/include/gflags/gflags_gflags.h
+
+deps/glog/glog/logging.h
+errno.h
+-
+string.h
+-
+time.h
+-
+iosfwd
+-
+ostream
+-
+sstream
+-
+string
+-
+unistd.h
+-
+vector
+-
+stdint.h
+-
+sys/types.h
+-
+inttypes.h
+-
+gflags/gflags.h
+-
+glog/log_severity.h
+deps/glog/glog/glog/log_severity.h
+glog/vlog_is_on.h
+deps/glog/glog/glog/vlog_is_on.h
+
+deps/glog/glog/vlog_is_on.h
+glog/log_severity.h
+deps/glog/glog/glog/log_severity.h
 

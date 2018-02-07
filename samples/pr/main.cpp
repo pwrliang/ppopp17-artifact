@@ -35,38 +35,59 @@
 #include <utils/utils.h>
 #include <utils/interactor.h>
 #include <utils/app_skeleton.h>
-
+bool MyTestPageRankSinglePersist();
+bool PageRankDeltaBased();
 bool MyTestPageRankSingleOutlining();
+
 bool MyTestPageRankSingle();
+
 bool TestPageRankSingle();
+
 bool TestPageRankAsyncMulti(int ngpus);
+
 bool TestPageRankAsyncMultiOptimized(int ngpus);
+
 void CleanupGraphs();
 
-//-num_gpus=1 -graphfile /home/xiayang/diskb/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -single -verbose -output=/home/liang/USA-road-d.USA.gr -print_ranks -cta_np
-namespace pr
-{
-    struct App
-    {
-        static const char* Name()       { return "page rank"; }
-        static const char* NameUpper()  { return "Page Rank"; }
+DECLARE_bool(groute);
+DEFINE_bool(balance, false, "using cta-work");
+/*
+ /home/liang/groute-dev/cmake-build-debug/pr \
+ -num_gpus 1 -startwith 1 -single -print_ranks \
+ -graphfile /home/xiayang/diskb/liang/ppopp17-artifact/dataset/USA/USA-road-d.USA.gr \
+ -output /home/liang/groute_dev.log
+ */
+namespace pr {
+    struct App {
+        static const char *Name() { return "page rank"; }
 
-        static bool Single()            {
-//            return TestPageRankSingle();
-            return MyTestPageRankSingle();
-//            return MyTestPageRankSingleOutlining();
+        static const char *NameUpper() { return "Page Rank"; }
+
+        static bool Single() {
+            if (FLAGS_groute) {
+                printf("using groute code\n");
+                return TestPageRankSingle();
+            } else {
+                printf("using my code\n");
+                if (FLAGS_balance)
+                    return MyTestPageRankSingleOutlining();
+                else
+                    return MyTestPageRankSinglePersist();
+//                    return PageRankDeltaBased();
+//                    return MyTestPageRankSingle();
+            }
         }
-        static bool AsyncMulti(int G)   {
+
+        static bool AsyncMulti(int G) {
 //            return FLAGS_opt ? TestPageRankAsyncMultiOptimized(G) : TestPageRankAsyncMulti(G);
             return false;
         }
 
-        static void Cleanup()           { CleanupGraphs(); }
+        static void Cleanup() { CleanupGraphs(); }
     };
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     printf("PR Begin\n");
     Skeleton<pr::App> app;
     int exit = app(argc, argv);
