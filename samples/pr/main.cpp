@@ -35,8 +35,11 @@
 #include <utils/utils.h>
 #include <utils/interactor.h>
 #include <utils/app_skeleton.h>
+
 bool MyTestPageRankSinglePersist();
+
 bool PageRankDeltaBased();
+
 bool MyTestPageRankSingleOutlining();
 
 bool MyTestPageRankSingle();
@@ -51,6 +54,8 @@ void CleanupGraphs();
 
 DECLARE_bool(groute);
 DEFINE_bool(balance, false, "using cta-work");
+DEFINE_bool(semi, false, "using semi async");
+
 /*
  /home/liang/groute-dev/cmake-build-debug/pr \
  -num_gpus 1 -startwith 1 -single -print_ranks \
@@ -71,10 +76,14 @@ namespace pr {
                 printf("using my code\n");
                 if (FLAGS_balance)
                     return MyTestPageRankSingleOutlining();
-                else
-                    return MyTestPageRankSinglePersist();
-//                    return PageRankDeltaBased();
+                else {
+                    if (FLAGS_semi)
+                        return PageRankDeltaBased();
+                    else
+                        return MyTestPageRankSinglePersist();
+
 //                    return MyTestPageRankSingle();
+                }
             }
         }
 
@@ -88,7 +97,6 @@ namespace pr {
 }
 
 int main(int argc, char **argv) {
-    printf("PR Begin\n");
     Skeleton<pr::App> app;
     int exit = app(argc, argv);
 

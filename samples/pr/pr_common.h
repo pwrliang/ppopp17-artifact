@@ -37,7 +37,7 @@
 #include <groute/graphs/csr_graph.h>
 
 typedef float rank_t;
-
+#define THRESHOLD 0.9999
 #define ALPHA 0.85
 #define EPSILON 0.01
 

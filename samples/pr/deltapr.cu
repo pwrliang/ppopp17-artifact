@@ -52,9 +52,7 @@ DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
 DEFINE_bool(sync, false, "using sync mode to run pagerank algorithm");
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
-#define THRESHOLD 0.8
 #define FILTER_THRESHOLD 0.0000000001
-typedef float rank_t;
 
 namespace deltapr {
     struct Algo {
@@ -340,16 +338,19 @@ bool PageRankDeltaBased() {
     Stopwatch stopwatch(true);
 
 
-    std::vector<float> host_accu_ranks(context.host_graph.nnodes);
-    ReadRanks("/home/liang/groute_dev.log", &host_accu_ranks);
+//    std::vector<float> host_accu_ranks(context.host_graph.nnodes);
+//    ReadRanks("/home/liang/groute_dev.log", &host_accu_ranks);
 
-    GROUTE_CUDA_CHECK(cudaMemcpy(accu_ranks.DeviceObject().data_ptr, host_accu_ranks.data(),
-                                 host_accu_ranks.size() * sizeof(rank_t), cudaMemcpyHostToDevice));
+//    GROUTE_CUDA_CHECK(cudaMemcpy(accu_ranks.DeviceObject().data_ptr, host_accu_ranks.data(),
+//                                 host_accu_ranks.size() * sizeof(rank_t), cudaMemcpyHostToDevice));
 
     if (FLAGS_sync) {
         printf("Running in Sync mode\n");
 
-        for (index_t iteration = 0; iteration < 1000; iteration++) {
+//        for (index_t iteration = 0; iteration < 1000; iteration++)
+        bool running = true;
+        int iteration = 0;
+        while (running) {
             solver.RelaxSync__Single__(iteration, groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), stream);
@@ -358,8 +359,8 @@ bool PageRankDeltaBased() {
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
             stream.Sync();
-
-            printf("iteration:%d pr sum:%f\n", iteration, pr_sum);
+            running = pr_sum < THRESHOLD;
+            printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
         }
     } else {
         printf("Running in Async mode\n");
@@ -376,14 +377,13 @@ bool PageRankDeltaBased() {
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
 
 
-            rank_t diff_sum = solver.RankCmp__Single__(groute::dev::WorkSourceRange<index_t>(
-                    dev_graph_allocator.DeviceObject().owned_start_node(),
-                    dev_graph_allocator.DeviceObject().owned_nnodes()), accu_ranks.DeviceObject(), mgpu_context);
-//            running = pr_sum < THRESHOLD;
-            running = diff_sum > 0.001;
-            printf("iteration:%d pr sum:%f diff sum:%f\n", iteration++, pr_sum, diff_sum);
-
-
+//            rank_t diff_sum = solver.RankCmp__Single__(groute::dev::WorkSourceRange<index_t>(
+//                    dev_graph_allocator.DeviceObject().owned_start_node(),
+//                    dev_graph_allocator.DeviceObject().owned_nnodes()), accu_ranks.DeviceObject(), mgpu_context);
+            running = pr_sum < THRESHOLD;
+//            running = diff_sum > 0.001;
+//            printf("iteration:%d pr sum:%f diff sum:%f\n", iteration++, pr_sum, diff_sum);
+            printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
         }
     }
 

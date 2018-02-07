@@ -34,7 +34,7 @@
 #include <gflags/gflags.h>
 
 #include <groute/event_pool.h>
-
+#include <groute/device/cta_scheduler.cuh>
 #include <groute/graphs/csr_graph.h>
 #include <groute/dwl/work_source.cuh>
 #include <utils/parser.h>
@@ -46,13 +46,13 @@
 #include <moderngpu/context.hxx>
 #include <moderngpu/kernel_scan.hxx>
 #include "pr_common.h"
-#include "my_pr_balanced.h"
 
 DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
+DEFINE_int32(grid_size, 20, "Blocks Per Grid");
 
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
-#define THRESHOLD 0.9999
+#define CHECK_INTERVAL 10000000
 #define FILTER_THRESHOLD 0.0000000001
 
 typedef float rank_t;
@@ -87,8 +87,16 @@ namespace persistpr {
         for (index_t node = start_node + tid; node < end_node; node += nthreads) {
             current_ranks[node] = 0.0;
             residual[node] = (1.0 - ALPHA) / graph.owned_nnodes();
+//            residual[node] = 1.0 - ALPHA;
         }
     }
+
+    template<typename TMetaData>
+    struct work_chunk {
+        index_t start;
+        index_t size;
+        TMetaData meta_data;
+    };
 
     template<
             typename TGraph,
@@ -97,54 +105,124 @@ namespace persistpr {
     __global__ void PageRankPersistKernel__Single__(
             TGraph graph,
             index_t *lbounds, index_t *ubounds,
-            RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual,
+            RankDatum<rank_t> current_ranks,
+            ResidualDatum<rank_t> residual,
+            rank_t *sum_buffer,
             int *running) {
         unsigned tid = TID_1D;
         unsigned nthreads = TOTAL_THREADS_1D;
         index_t node_start = lbounds[blockIdx.x];
         index_t node_end = ubounds[blockIdx.x];
-        extern __shared__ rank_t shared_mem[];
-//        int cache_size = cub::
-        int current_round;
+//        extern __shared__ rank_t shared_mem[];
+//        const int SMEMDIM = blockDim.x / warpSize;
+        int laneIdx = threadIdx.x % warpSize;
+        int warpIdx = threadIdx.x / warpSize;
+        extern __shared__ rank_t smem[];
+        int cache_size = blockDim.x / warpSize;
+
+        int current_round = 0;
+
+        uint32_t work_size = node_end - node_start;
+        uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
 
         while (*running) {
             rank_t local_sum = 0;
 
-            for (index_t node = node_start + threadIdx.x; node < node_end; node += blockDim.x) {
+            for (uint32_t i = 0 + threadIdx.x; i < work_size_rup; i += blockDim.x) {
 
-                rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+                work_chunk<rank_t> local_work = {0, 0, 0.0};
 
-                if (res == 0)continue;
+                if (i < work_size) {
+                    index_t node = i + node_start;
+                    rank_t res = atomicExch(residual.get_item_ptr(node), 0);
 
-                current_ranks[node] += res;
+                    current_ranks[node] += res;
+                    local_sum += current_ranks[node];
 
-                local_sum+=current_ranks[node];
+                    if (res > 0) {
 
-                index_t begin_edge = graph.begin_edge(node),
-                        end_edge = graph.end_edge(node),
-                        out_degree = end_edge - begin_edge;
+                        local_work.start = graph.begin_edge(node);
+                        local_work.size = graph.end_edge(node) - local_work.start;
 
-                if (out_degree == 0) continue;
+                        if (local_work.size == 0) {
+                            rank_t update = ALPHA * res;
 
-                rank_t update = ALPHA * res / out_degree;
+                            atomicAdd(residual.get_item_ptr(node), update);
+                        } else {
+                            rank_t update = ALPHA * res / local_work.size;
 
-                for (index_t edge = begin_edge; edge < end_edge; ++edge) {
-                    index_t dest = graph.edge_dest(edge);
+                            local_work.meta_data = update;
+                        }
+                    }
+                }
 
-                    rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
+                const int lane_id = cub::LaneId();
+
+                while (__any(local_work.size >= warpSize)) {
+                    int mask = __ballot(local_work.size >= warpSize ? 1 : 0);
+                    int leader = __ffs(mask) - 1;
+
+                    index_t start = cub::ShuffleIndex(local_work.start, leader);
+                    index_t size = cub::ShuffleIndex(local_work.size, leader);
+                    rank_t meta_data = cub::ShuffleIndex(local_work.meta_data, leader);
+
+                    if (leader == lane_id) {
+                        local_work.start = 0;
+                        local_work.size = 0;
+                    }
+
+                    // use all thread in warp to do the task
+                    for (int edge = lane_id; edge < size; edge += warpSize) {
+                        index_t dest = graph.edge_dest(start + edge);
+
+                        atomicAdd(residual.get_item_ptr(dest), meta_data);
+                    }
+                }
+
+                __syncthreads();
+
+                for (int edge = 0; edge < local_work.size; edge++) {
+                    index_t dest = graph.edge_dest(local_work.start + edge);
+
+                    atomicAdd(residual.get_item_ptr(dest), local_work.meta_data);
                 }
             }
 
-            if (current_round++ % 10000 == 0) {
+            if (current_round++ % CHECK_INTERVAL == 0) {
+                //naive check implementation
+//                if (tid == 0) {
+//                    double sum = 0;
+//                    for (int node = 0; node < graph.nnodes; node++) {
+//                        sum += current_ranks[node];
+//                    }
+//                    printf("sum:%f\n", sum);
+//                    *running = sum < THRESHOLD;
+//                }
+
                 local_sum = warpReduce(local_sum);
 
-                if(cub::LaneId()==0){
-                    shared_mem[cub::WarpId()] = local_sum
-                }
+                if (cub::LaneId() == 0)
+                    smem[warpIdx] = local_sum;
                 __syncthreads();
 
-                if(threadIdx.x<warpSize)
-                    local_sum = (threadIdx.x<)
+                if (threadIdx.x < warpSize)
+                    local_sum = (threadIdx.x < cache_size) ? smem[laneIdx] : 0;
+
+                if (warpIdx == 0)
+                    local_sum = warpReduce(local_sum);
+
+                if (threadIdx.x == 0)
+                    sum_buffer[blockIdx.x] = local_sum;
+
+                if (tid == 0) {
+                    double sum = 0;
+                    for (int bid = 0; bid < gridDim.x; bid++) {
+                        sum += sum_buffer[bid];
+                    }
+                    printf("%f\n", sum);
+                    *running = sum < THRESHOLD;
+                }
+                current_round = 0;
             }
         }
     }
@@ -182,9 +260,9 @@ namespace persistpr {
         p_o_ubounds[bid] = elems_num;
     }
 
-    /*
-    * The per-device Page Rank problem
-    */
+/*
+* The per-device Page Rank problem
+*/
     template<typename TGraph,
             template<typename> class ResidualDatum,
             template<typename> class RankDatum>
@@ -234,16 +312,24 @@ namespace persistpr {
 
         void DoPageRank(index_t blocksPerGrid, groute::Stream &stream) {
             utils::SharedValue<int> running;
-            running.set_val_H2D(1);
+            utils::SharedArray<rank_t> sum_buffer(blocksPerGrid);
 
-            PageRankPersistKernel__Single__ << < blocksPerGrid, FLAGS_block_size >> > (m_graph, m_lbounds, m_ubounds,
-                    m_current_ranks, m_residual, running);
+            running.set_val_H2D(1);
+            printf("bufsize:%d\n", sum_buffer.buffer_size);
+            GROUTE_CUDA_CHECK(cudaMemset(sum_buffer.dev_ptr, 0, sum_buffer.buffer_size * sizeof(rank_t)));
+            const int SMEMDIM = FLAGS_block_size / 32;
+            PageRankPersistKernel__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
+                    stream.cuda_stream >> >
+                    (m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
+                            , sum_buffer.dev_ptr, running.dev_ptr);
         }
     };
+
 }
 
 
 bool MyTestPageRankSinglePersist() {
+    printf("running MyTestPageRankSinglePersist\n");
     utils::traversal::Context<persistpr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
@@ -254,8 +340,6 @@ bool MyTestPageRankSinglePersist() {
     context.SetDevice(0);
     groute::Stream stream = context.CreateStream(0);
 
-    mgpu::standard_context_t mgpu_context;
-
     utils::SharedArray<index_t> node_lbounds(context.host_graph.nnodes);
     utils::SharedArray<index_t> node_ubounds(context.host_graph.nnodes);
     utils::SharedArray<index_t> node_outdegrees(context.host_graph.nnodes);
@@ -265,10 +349,13 @@ bool MyTestPageRankSinglePersist() {
         node_outdegrees.host_ptr()[node] = out_degree;
     }
 
-    index_t blocksPerGrid = 20;
+    index_t blocksPerGrid = FLAGS_grid_size;
 
     persistpr::balanced_alloctor(context.host_graph.nnodes, node_outdegrees.host_ptr(), blocksPerGrid,
                                  node_lbounds.host_ptr(), node_ubounds.host_ptr());
+
+    node_lbounds.H2D();
+    node_ubounds.H2D();
 
     persistpr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
             solver(dev_graph_allocator.DeviceObject(), node_lbounds.dev_ptr, node_ubounds.dev_ptr,
@@ -279,7 +366,7 @@ bool MyTestPageRankSinglePersist() {
     stopwatch.start();
 
     solver.Init__Single__(stream);
-
+    stream.Sync();
     solver.DoPageRank(blocksPerGrid, stream);
 
     stopwatch.stop();
