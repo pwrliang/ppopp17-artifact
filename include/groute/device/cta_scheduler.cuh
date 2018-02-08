@@ -186,7 +186,8 @@ namespace dev {
             // Second scheduler: tackle medium-degree work items using the warp 
             //
 #ifdef NO_CTA_WARP_INTRINSICS
-            const int warp_id = cub::WarpId();
+//            const int warp_id = cub::WarpId();
+            const int warp_id = threadIdx.x / warpSize;
 #endif
             const int lane_id = cub::LaneId();
 

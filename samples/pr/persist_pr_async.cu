@@ -32,7 +32,7 @@
 #include <memory>
 #include <random>
 #include <gflags/gflags.h>
-
+#include <cub/cub.cuh>
 #include <groute/event_pool.h>
 #include <groute/device/cta_scheduler.cuh>
 #include <groute/graphs/csr_graph.h>
@@ -102,28 +102,129 @@ namespace persistpr {
             typename TGraph,
             template<typename> class RankDatum,
             template<typename> class ResidualDatum>
-    __global__ void PageRankPersistKernel__Single__(
+    __global__ void PageRankPersistKernelCTA__Single__(
             TGraph graph,
             index_t *lbounds, index_t *ubounds,
             RankDatum<rank_t> current_ranks,
             ResidualDatum<rank_t> residual,
-            rank_t *sum_buffer,
+            rank_t *block_sum,
             int *running) {
         unsigned tid = TID_1D;
         unsigned nthreads = TOTAL_THREADS_1D;
         index_t node_start = lbounds[blockIdx.x];
         index_t node_end = ubounds[blockIdx.x];
-//        extern __shared__ rank_t shared_mem[];
-//        const int SMEMDIM = blockDim.x / warpSize;
         int laneIdx = threadIdx.x % warpSize;
         int warpIdx = threadIdx.x / warpSize;
         extern __shared__ rank_t smem[];
-        int cache_size = blockDim.x / warpSize;
+        const int SMEMDIM = blockDim.x / warpSize;
 
         int current_round = 0;
 
         uint32_t work_size = node_end - node_start;
         uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
+
+        while (*running) {
+            rank_t local_sum = 0;
+
+            for (uint32_t i = 0 + threadIdx.x; i < work_size_rup; i += blockDim.x) {
+
+                groute::dev::np_local<rank_t> local_work = {0, 0, 0.0};
+
+                if (i < work_size) {
+                    index_t node = i + node_start;
+                    rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+
+                    current_ranks[node] += res;
+                    local_sum += current_ranks[node];
+
+                    if (res > 0) {
+                        local_work.start = graph.begin_edge(node);
+                        local_work.size = graph.end_edge(node) - local_work.start;
+
+                        if (local_work.size == 0) {
+                            rank_t update = ALPHA * res;
+
+                            atomicAdd(residual.get_item_ptr(node), update);
+                        } else {
+                            rank_t update = ALPHA * res / local_work.size;
+
+                            local_work.meta_data = update;
+                        }
+                    }
+                }
+
+                groute::dev::CTAWorkScheduler<rank_t>::template schedule(
+                        local_work,
+                        [&graph, &residual](index_t edge, rank_t update) {
+                            index_t dest = graph.edge_dest(edge);
+
+                            atomicAdd(residual.get_item_ptr(dest), update);
+                        }
+                );
+            }
+
+            if (current_round++ % CHECK_INTERVAL == 0) {
+                //naive check implementation
+//                if (tid == 0) {
+//                    double sum = 0;
+//                    for (int node = 0; node < graph.nnodes; node++) {
+//                        sum += current_ranks[node];
+//                    }
+//                    printf("sum:%f\n", sum);
+//                    *running = sum < THRESHOLD;
+//                }
+
+                local_sum = warpReduce(local_sum);
+
+                if (laneIdx == 0)
+                    smem[warpIdx] = local_sum;
+                __syncthreads();
+
+                if (threadIdx.x < warpSize)
+                    local_sum = (threadIdx.x < SMEMDIM) ? smem[laneIdx] : 0;
+
+                if (warpIdx == 0)
+                    local_sum = warpReduce(local_sum);
+
+                if (threadIdx.x == 0)
+                    block_sum[blockIdx.x] = local_sum;
+
+                if (tid == 0) {
+                    double sum = 0;
+                    for (int bid = 0; bid < gridDim.x; bid++) {
+                        sum += block_sum[bid];
+                    }
+                    printf("%f\n", sum);
+                    *running = sum < THRESHOLD;
+                }
+                current_round = 0;
+            }
+        }
+    }
+
+    template<
+            typename TGraph,
+            template<typename> class RankDatum,
+            template<typename> class ResidualDatum>
+    __global__ void PageRankPersistKernel__Single__(
+            TGraph graph,
+            index_t *lbounds, index_t *ubounds,
+            RankDatum<rank_t> current_ranks,
+            ResidualDatum<rank_t> residual,
+            rank_t *block_sum,
+            int *running) {
+        unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+        index_t node_start = lbounds[blockIdx.x];
+        index_t node_end = ubounds[blockIdx.x];
+        int laneIdx = threadIdx.x % warpSize;
+        int warpIdx = threadIdx.x / warpSize;
+        extern __shared__ rank_t smem[];
+        const int SMEMDIM = blockDim.x / warpSize;
+
+        uint32_t work_size = node_end - node_start;
+        uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
+        int current_round = 0;
 
         while (*running) {
             rank_t local_sum = 0;
@@ -201,23 +302,24 @@ namespace persistpr {
 
                 local_sum = warpReduce(local_sum);
 
-                if (cub::LaneId() == 0)
+                if (laneIdx == 0)
                     smem[warpIdx] = local_sum;
                 __syncthreads();
 
                 if (threadIdx.x < warpSize)
-                    local_sum = (threadIdx.x < cache_size) ? smem[laneIdx] : 0;
+                    local_sum = (threadIdx.x < SMEMDIM) ? smem[laneIdx] : 0;
 
                 if (warpIdx == 0)
                     local_sum = warpReduce(local_sum);
 
-                if (threadIdx.x == 0)
-                    sum_buffer[blockIdx.x] = local_sum;
+                if (threadIdx.x == 0) {
+                    block_sum[blockIdx.x] = local_sum;
+                }
 
                 if (tid == 0) {
                     double sum = 0;
                     for (int bid = 0; bid < gridDim.x; bid++) {
-                        sum += sum_buffer[bid];
+                        sum += block_sum[bid];
                     }
                     printf("%f\n", sum);
                     *running = sum < THRESHOLD;
@@ -315,13 +417,21 @@ namespace persistpr {
             utils::SharedArray<rank_t> sum_buffer(blocksPerGrid);
 
             running.set_val_H2D(1);
-            printf("bufsize:%d\n", sum_buffer.buffer_size);
             GROUTE_CUDA_CHECK(cudaMemset(sum_buffer.dev_ptr, 0, sum_buffer.buffer_size * sizeof(rank_t)));
+
             const int SMEMDIM = FLAGS_block_size / 32;
-            PageRankPersistKernel__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
-                    stream.cuda_stream >> >
-                    (m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
-                            , sum_buffer.dev_ptr, running.dev_ptr);
+
+            if (FLAGS_cta_np) {
+                PageRankPersistKernelCTA__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
+                        stream.cuda_stream >> >
+                        (m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
+                                , sum_buffer.dev_ptr, running.dev_ptr);
+            } else {
+                PageRankPersistKernel__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
+                        stream.cuda_stream >> >
+                        (m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
+                                , sum_buffer.dev_ptr, running.dev_ptr);
+            }
         }
     };
 
@@ -363,6 +473,10 @@ bool MyTestPageRankSinglePersist() {
 
     Stopwatch stopwatch;
 
+    if (FLAGS_cta_np) {
+        printf("CTA enabled\n");
+    }
+
     stopwatch.start();
 
     solver.Init__Single__(stream);
@@ -371,7 +485,7 @@ bool MyTestPageRankSinglePersist() {
 
     stopwatch.stop();
 
-    printf("non-balancing PR:%f\n", stopwatch.ms());
+    printf("persist kernel PR:%f\n", stopwatch.ms());
 
     dev_graph_allocator.GatherDatum(current_ranks);
 

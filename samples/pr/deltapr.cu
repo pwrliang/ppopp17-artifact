@@ -51,6 +51,7 @@
 DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
 DEFINE_bool(sync, false, "using sync mode to run pagerank algorithm");
+DECLARE_bool(cta_np);
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
 #define FILTER_THRESHOLD 0.0000000001
 
@@ -128,6 +129,60 @@ namespace deltapr {
             template<typename> class RankDatum,
             template<typename> class ResidualDatum,
             typename WorkSource>
+    __global__ void PageRankKernelCTA__Single__(
+            TGraph graph,
+            RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual,
+            WorkSource work_source) {
+        unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.get_size();
+        uint32_t work_size_rup =
+                round_up(work_size, blockDim.x) * blockDim.x; // we want all threads in active blocks to enter the loop
+
+
+        for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+            groute::dev::np_local<rank_t> np_local = {0, 0, 0.0};
+
+            if (i < work_size) {
+                index_t node = work_source.get_work(i);
+                rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+
+                if (res > 0) {
+
+                    current_ranks[node] += res;
+
+                    np_local.start = graph.begin_edge(node);
+                    np_local.size = graph.end_edge(node) - np_local.start;
+
+                    if (np_local.size == 0) {
+                        rank_t update = ALPHA * res;
+
+                        atomicAdd(residual.get_item_ptr(node), update);
+                    } else {
+                        rank_t update = ALPHA * res / np_local.size;
+
+                        np_local.meta_data = update;
+                    }
+                }
+            }
+
+            groute::dev::CTAWorkScheduler<rank_t>::template schedule(
+                    np_local,
+                    [&graph, &residual](index_t edge, rank_t update) {
+                        index_t dest = graph.edge_dest(edge);
+
+                        atomicAdd(residual.get_item_ptr(dest), update);
+                    }
+            );
+        }
+    }
+
+    template<
+            typename TGraph,
+            template<typename> class RankDatum,
+            template<typename> class ResidualDatum,
+            typename WorkSource>
     __global__ void PageRankSyncKernel__Single__(
             TGraph graph,
             index_t iteration,
@@ -182,6 +237,78 @@ namespace deltapr {
                     }
                 }
             }
+        }
+    }
+
+
+    template<
+            typename TGraph,
+            template<typename> class RankDatum,
+            template<typename> class ResidualDatum,
+            typename WorkSource>
+    __global__ void PageRankSyncKernelCTA__Single__(
+            TGraph graph,
+            index_t iteration,
+            RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual,
+            ResidualDatum<rank_t> last_residual,
+            WorkSource work_source) {
+        unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.get_size();
+        uint32_t work_size_rup =
+                round_up(work_size, blockDim.x) * blockDim.x; // we want all threads in active blocks to enter the loop
+
+
+        for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+            groute::dev::np_local<rank_t> np_local = {0, 0, 0.0};
+
+            if (i < work_size) {
+                index_t node = work_source.get_work(i);
+
+                rank_t res;
+
+                if (iteration % 2 == 0) {
+                    res = atomicExch(residual.get_item_ptr(node), 0);
+                } else {
+                    res = atomicExch(last_residual.get_item_ptr(node), 0);
+                }
+
+                if (res > 0) {
+                    current_ranks[node] += res;
+
+                    np_local.start = graph.begin_edge(node);
+                    np_local.size = graph.end_edge(node) - np_local.start;
+
+                    if (np_local.size == 0) {
+                        rank_t update = ALPHA * res;
+
+                        if (iteration % 2 == 0) {
+                            atomicAdd(last_residual.get_item_ptr(node), update);
+                        } else {
+                            atomicAdd(residual.get_item_ptr(node), update);
+                        }
+
+                    } else {
+                        rank_t update = ALPHA * res / np_local.size;
+
+                        np_local.meta_data = update;
+                    }
+                }
+            }
+
+            groute::dev::CTAWorkScheduler<rank_t>::template schedule(
+                    np_local,
+                    [&iteration, &graph, &residual, &last_residual](index_t edge, rank_t update) {
+                        index_t dest = graph.edge_dest(edge);
+
+                        if (iteration % 2 == 0) {
+                            atomicAdd(last_residual.get_item_ptr(dest), update);
+                        } else {
+                            atomicAdd(residual.get_item_ptr(dest), update);
+                        }
+                    }
+            );
         }
     }
 
@@ -248,8 +375,13 @@ namespace deltapr {
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
             Marker::MarkWorkitems(work_source.get_size(), "PageRankKernel__Single__");
-            PageRankSyncKernel__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                                        (m_graph, iteration, m_current_ranks, m_residual, m_last_residual, work_source);
+            if (FLAGS_cta_np) {
+                PageRankSyncKernelCTA__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                               (m_graph, iteration, m_current_ranks, m_residual, m_last_residual, work_source);
+            } else {
+                PageRankSyncKernel__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                            (m_graph, iteration, m_current_ranks, m_residual, m_last_residual, work_source);
+            }
         }
 
         template<typename WorkSource,
@@ -260,8 +392,14 @@ namespace deltapr {
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
             Marker::MarkWorkitems(work_source.get_size(), "PageRankKernel__Single__");
-            PageRankKernel__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                                    (m_graph, m_current_ranks, m_residual, work_source);
+
+            if (FLAGS_cta_np) {
+                PageRankKernelCTA__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                           (m_graph, m_current_ranks, m_residual, work_source);
+            } else {
+                PageRankKernel__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                        (m_graph, m_current_ranks, m_residual, work_source);
+            }
         }
 
         template<typename WorkSource>
@@ -344,6 +482,9 @@ bool PageRankDeltaBased() {
 //    GROUTE_CUDA_CHECK(cudaMemcpy(accu_ranks.DeviceObject().data_ptr, host_accu_ranks.data(),
 //                                 host_accu_ranks.size() * sizeof(rank_t), cudaMemcpyHostToDevice));
 
+    if (FLAGS_cta_np)
+        printf("CTA enabled\n");
+
     if (FLAGS_sync) {
         printf("Running in Sync mode\n");
 
@@ -358,7 +499,6 @@ bool PageRankDeltaBased() {
             rank_t pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
-            stream.Sync();
             running = pr_sum < THRESHOLD;
             printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
         }
@@ -371,7 +511,6 @@ bool PageRankDeltaBased() {
             solver.Relax__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), *in_wl, stream);
-
             rank_t pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);

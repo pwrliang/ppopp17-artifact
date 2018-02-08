@@ -2,68 +2,67 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
     <generated>
-      <config projectName="groute" targetName="ContinuousMemCheck" />
-      <config projectName="groute" targetName="NightlyMemoryCheck" />
-      <config projectName="groute" targetName="gflags_unittest-main" />
-      <config projectName="groute" targetName="gtest" />
-      <config projectName="groute" targetName="gtest_main" />
-      <config projectName="groute" targetName="gflags_unittest_main" />
-      <config projectName="groute" targetName="logging_unittest" />
-      <config projectName="groute" targetName="gflags_nothreads_static" />
       <config projectName="groute" targetName="ExperimentalBuild" />
-      <config projectName="groute" targetName="NightlyConfigure" />
-      <config projectName="groute" targetName="ExperimentalMemCheck" />
-      <config projectName="groute" targetName="ExperimentalSubmit" />
-      <config projectName="groute" targetName="ContinuousStart" />
-      <config projectName="groute" targetName="NightlyMemCheck" />
-      <config projectName="groute" targetName="ExperimentalUpdate" />
-      <config projectName="groute" targetName="glog" />
-      <config projectName="groute" targetName="ContinuousSubmit" />
-      <config projectName="groute" targetName="gflags_static" />
-      <config projectName="groute" targetName="gflags_unittest" />
-      <config projectName="groute" targetName="gflags_declare_test" />
-      <config projectName="groute" targetName="gflags_strip_flags_test" />
-      <config projectName="groute" targetName="ContinuousTest" />
-      <config projectName="groute" targetName="ExperimentalCoverage" />
-      <config projectName="groute" targetName="NightlyBuild" />
-      <config projectName="groute" targetName="symbolize_unittest" />
       <config projectName="groute" targetName="NightlyCoverage" />
-      <config projectName="groute" targetName="Continuous" />
-      <config projectName="groute" targetName="ExperimentalStart" />
-      <config projectName="groute" targetName="Nightly" />
-      <config projectName="groute" targetName="ContinuousCoverage" />
-      <config projectName="groute" targetName="Experimental" />
-      <config projectName="groute" targetName="ContinuousBuild" />
       <config projectName="groute" targetName="signalhandler_unittest" />
-      <config projectName="groute" targetName="ExperimentalTest" />
-      <config projectName="groute" targetName="NightlyStart" />
-      <config projectName="groute" targetName="stacktrace_unittest" />
-      <config projectName="groute" targetName="ContinuousUpdate" />
       <config projectName="groute" targetName="stl_logging_unittest" />
+      <config projectName="groute" targetName="ContinuousUpdate" />
+      <config projectName="groute" targetName="Continuous" />
+      <config projectName="groute" targetName="symbolize_unittest" />
+      <config projectName="groute" targetName="NightlyTest" />
+      <config projectName="groute" targetName="ContinuousCoverage" />
+      <config projectName="groute" targetName="ContinuousBuild" />
+      <config projectName="groute" targetName="ContinuousMemCheck" />
+      <config projectName="groute" targetName="NightlyConfigure" />
+      <config projectName="groute" targetName="ExperimentalSubmit" />
+      <config projectName="groute" targetName="ContinuousSubmit" />
+      <config projectName="groute" targetName="ExperimentalStart" />
+      <config projectName="groute" targetName="gflags_declare_test" />
+      <config projectName="groute" targetName="NightlyMemCheck" />
+      <config projectName="groute" targetName="gflags_unittest" />
+      <config projectName="groute" targetName="NightlySubmit" />
+      <config projectName="groute" targetName="gtest_main" />
+      <config projectName="groute" targetName="ContinuousStart" />
+      <config projectName="groute" targetName="glog" />
+      <config projectName="groute" targetName="NightlyMemoryCheck" />
       <config projectName="groute" targetName="ContinuousConfigure" />
       <config projectName="groute" targetName="demangle_unittest" />
       <config projectName="groute" targetName="utilities_unittest" />
-      <config projectName="groute" targetName="NightlyTest" />
+      <config projectName="groute" targetName="ExperimentalMemCheck" />
+      <config projectName="groute" targetName="NightlyBuild" />
+      <config projectName="groute" targetName="gflags_unittest_main" />
+      <config projectName="groute" targetName="stacktrace_unittest" />
+      <config projectName="groute" targetName="gtest" />
+      <config projectName="groute" targetName="ContinuousTest" />
+      <config projectName="groute" targetName="gflags_unittest-main" />
+      <config projectName="groute" targetName="gflags_nothreads_static" />
+      <config projectName="groute" targetName="NightlyStart" />
+      <config projectName="groute" targetName="gflags_strip_flags_test" />
+      <config projectName="groute" targetName="Experimental" />
+      <config projectName="groute" targetName="Nightly" />
+      <config projectName="groute" targetName="gflags_static" />
       <config projectName="groute" targetName="NightlyUpdate" />
-      <config projectName="groute" targetName="NightlySubmit" />
+      <config projectName="groute" targetName="ExperimentalUpdate" />
+      <config projectName="groute" targetName="logging_unittest" />
+      <config projectName="groute" targetName="ExperimentalTest" />
       <config projectName="groute" targetName="pr" />
       <config projectName="groute" targetName="ExperimentalConfigure" />
+      <config projectName="groute" targetName="ExperimentalCoverage" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" BUILD_OPTIONS="-j 8" />
       <configuration PROFILE_NAME="Release" CONFIG_NAME="Release" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0245142e-90ac-4fba-b7a1-69c23b76114c" name="Default" comment="try cusha">
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/pr/test.cu" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh" afterPath="$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh" />
+      <change beforePath="$PROJECT_DIR$/include/utils/app_skeleton.h" afterPath="$PROJECT_DIR$/include/utils/app_skeleton.h" />
       <change beforePath="$PROJECT_DIR$/samples/pr/deltapr.cu" afterPath="$PROJECT_DIR$/samples/pr/deltapr.cu" />
-      <change beforePath="$PROJECT_DIR$/samples/pr/main.cpp" afterPath="$PROJECT_DIR$/samples/pr/main.cpp" />
       <change beforePath="$PROJECT_DIR$/samples/pr/persist_pr_async.cu" afterPath="$PROJECT_DIR$/samples/pr/persist_pr_async.cu" />
-      <change beforePath="$PROJECT_DIR$/samples/pr/pr_common.h" afterPath="$PROJECT_DIR$/samples/pr/pr_common.h" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/cmake-build-release/" />
@@ -82,32 +81,45 @@
           <file leaf-file-name="persist_pr_async.cu" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/samples/pr/persist_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="501">
-                  <caret line="382" column="1" lean-forward="true" selection-start-line="382" selection-start-column="1" selection-end-line="382" selection-end-column="1" />
+                <state relative-caret-position="2739">
+                  <caret line="461" column="25" lean-forward="false" selection-start-line="461" selection-start-column="25" selection-end-line="461" selection-end-column="25" />
                   <folding>
                     <element signature="e#1659#1676#0" expanded="true" />
-                    <element signature="e#3835#3965#0" expanded="true" />
+                    <element signature="e#3857#3987#0" expanded="true" />
+                    <element signature="e#7576#7706#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="deltapr.cu" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
+          <file leaf-file-name="util_ptx.cuh" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/include/cub/util_ptx.cuh">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-673">
-                  <caret line="306" column="5" lean-forward="false" selection-start-line="306" selection-start-column="5" selection-end-line="306" selection-end-column="5" />
+                <state relative-caret-position="190">
+                  <caret line="670" column="29" lean-forward="false" selection-start-line="670" selection-start-column="29" selection-end-line="670" selection-end-column="29" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/samples/pr/main.cpp">
+          <file leaf-file-name="util_arch.cuh" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/include/cub/util_arch.cuh">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="419">
-                  <caret line="80" column="38" lean-forward="false" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="38" />
+                <state relative-caret-position="175">
+                  <caret line="60" column="16" lean-forward="false" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="16" />
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="block_reduce.cuh" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/include/cub/block/block_reduce.cuh">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="146">
+                  <caret line="213" column="0" lean-forward="false" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#10564#10871#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -116,24 +128,38 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="my_pr_balanced.h" pinned="false" current-in-tab="true">
+          <file leaf-file-name="deltapr.cu" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="247">
+                  <caret line="297" column="13" lean-forward="false" selection-start-line="297" selection-start-column="13" selection-end-line="297" selection-end-column="13" />
+                  <folding>
+                    <element signature="e#3294#3457#0" expanded="true" />
+                    <element signature="e#4713#4876#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="my_pr_balanced.h" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_balanced.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="232">
-                  <caret line="163" column="13" lean-forward="false" selection-start-line="163" selection-start-column="13" selection-end-line="163" selection-end-column="13" />
+                <state relative-caret-position="231">
+                  <caret line="175" column="17" lean-forward="false" selection-start-line="175" selection-start-column="17" selection-end-line="175" selection-end-column="17" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="persist_pr_async.cu" pinned="false" current-in-tab="false">
+          <file leaf-file-name="persist_pr_async.cu" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/samples/pr/persist_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1632">
-                  <caret line="104" column="51" lean-forward="false" selection-start-line="104" selection-start-column="20" selection-end-line="104" selection-end-column="51" />
+                <state relative-caret-position="191">
+                  <caret line="109" column="29" lean-forward="false" selection-start-line="109" selection-start-column="29" selection-end-line="109" selection-end-column="29" />
                   <folding>
                     <element signature="e#1659#1676#0" expanded="true" />
-                    <element signature="e#3835#3965#0" expanded="true" />
+                    <element signature="e#3857#3987#0" expanded="true" />
+                    <element signature="e#7576#7706#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -142,8 +168,8 @@
           <file leaf-file-name="pr_async.cu" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/pr/pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="85">
-                  <caret line="186" column="34" lean-forward="false" selection-start-line="186" selection-start-column="34" selection-end-line="186" selection-end-column="34" />
+                <state relative-caret-position="180">
+                  <caret line="189" column="17" lean-forward="false" selection-start-line="189" selection-start-column="17" selection-end-line="189" selection-end-column="17" />
                   <folding />
                 </state>
               </provider>
@@ -155,21 +181,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>FLAGS_ggr</find>
-      <find>gal</find>
-      <find>2gr</find>
-      <find>sizeEdgeTy</find>
-      <find>out_degrees</find>
-      <find>iteration_fusion</find>
-      <find>define</find>
-      <find>define_b</find>
-      <find>teration_fusion</find>
       <find>async_multi</find>
       <find>Overall: Test</find>
       <find>DEFINE_bool</find>
       <find>StoppingCondition</find>
       <find>ReadRanks</find>
-      <find>NO_CTA_WARP_INTRINSICS</find>
       <find>prepend</find>
       <find>commit_pending</find>
       <find>m_pending</find>
@@ -184,7 +200,17 @@
       <find>balanced_alloctor</find>
       <find>check_interval</find>
       <find>block_size</find>
+      <find>non-balancing</find>
       <find>FLAGS</find>
+      <find>cta_np</find>
+      <find>WarpId</find>
+      <find>warp_id</find>
+      <find>assert</find>
+      <find>NO_CTA_WARP_INTRINSICS</find>
+      <find>DEFINE_bool(cta</find>
+      <find>Problem</find>
+      <find>PageRankPersistKernel__Single__</find>
+      <find>DoPageRank</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -205,23 +231,23 @@
         <option value="$PROJECT_DIR$/samples/pr/pr_host.cpp" />
         <option value="$PROJECT_DIR$/samples/pr/readranks.h" />
         <option value="$PROJECT_DIR$/samples/pr/my_pr_balanced.h" />
-        <option value="$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh" />
         <option value="$PROJECT_DIR$/include/groute/device/queue.cuh" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/samples/pr/my_pr_async.cu" />
         <option value="$PROJECT_DIR$/samples/pr/pr_common.h" />
-        <option value="$PROJECT_DIR$/samples/pr/deltapr.cu" />
-        <option value="$PROJECT_DIR$/samples/pr/persist_pr_async.cu" />
         <option value="$PROJECT_DIR$/samples/pr/main.cpp" />
+        <option value="$PROJECT_DIR$/samples/pr/deltapr.cu" />
+        <option value="$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh" />
+        <option value="$PROJECT_DIR$/samples/pr/persist_pr_async.cu" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="851" />
-    <option name="y" value="257" />
-    <option name="width" value="1886" />
-    <option name="height" value="920" />
+    <option name="x" value="64" />
+    <option name="y" value="230" />
+    <option name="width" value="1882" />
+    <option name="height" value="1105" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -268,7 +294,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/Galois-2.2.1" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -401,7 +427,7 @@
     <configuration name="logging_unittest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="logging_unittest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="logging_unittest">
       <envs />
     </configuration>
-    <configuration name="pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -graphfile $PROJECT_DIR$/../wikitalk.gr -output $PROJECT_DIR$/../groute_dev.log -nosync" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
+    <configuration name="pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -graphfile $PROJECT_DIR$/../wikitalk.gr -output $PROJECT_DIR$/../groute_dev.log -semi -sync -cta_np" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
       <envs />
     </configuration>
     <configuration name="signalhandler_unittest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="signalhandler_unittest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="signalhandler_unittest">
@@ -469,16 +495,15 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="851" y="257" width="1926" height="1003" extended-state="6" />
-    <editor active="true" />
+    <frame x="-3" y="31" width="1926" height="1003" extended-state="6" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11275026" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11275026" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29446408" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29446408" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32665095" sideWeight="0.49785176" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32744405" sideWeight="0.5021075" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35217902" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35217902" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286219" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -519,27 +544,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/samples/framework/kernel.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="46" column="4" lean-forward="false" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/cusha/processing.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/x86_64-linux-gnu/sys/types.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="151" column="21" lean-forward="false" selection-start-line="151" selection-start-column="21" selection-end-line="151" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/include/stdint.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -815,32 +819,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/cub/util_ptx.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="316" column="40" lean-forward="false" selection-start-line="316" selection-start-column="40" selection-end-line="316" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="84" column="41" lean-forward="false" selection-start-line="84" selection-start-column="41" selection-end-line="84" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/groute/common.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
           <caret line="42" column="45" lean-forward="false" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/pr_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="186" column="34" lean-forward="false" selection-start-line="186" selection-start-column="34" selection-end-line="186" selection-end-column="34" />
           <folding />
         </state>
       </provider>
@@ -861,37 +843,96 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_balanced.h">
+    <entry file="file://$PROJECT_DIR$/samples/pr/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="163" column="13" lean-forward="false" selection-start-line="163" selection-start-column="13" selection-end-line="163" selection-end-column="13" />
+        <state relative-caret-position="266">
+          <caret line="71" column="31" lean-forward="true" selection-start-line="71" selection-start-column="31" selection-end-line="71" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/main.cpp">
+    <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_balanced.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="80" column="38" lean-forward="false" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="38" />
+        <state relative-caret-position="231">
+          <caret line="175" column="17" lean-forward="false" selection-start-line="175" selection-start-column="17" selection-end-line="175" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-673">
-          <caret line="306" column="5" lean-forward="false" selection-start-line="306" selection-start-column="5" selection-end-line="306" selection-end-column="5" />
+        <state relative-caret-position="247">
+          <caret line="297" column="13" lean-forward="false" selection-start-line="297" selection-start-column="13" selection-end-line="297" selection-end-column="13" />
+          <folding>
+            <element signature="e#3294#3457#0" expanded="true" />
+            <element signature="e#4713#4876#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="41" column="26" lean-forward="false" selection-start-line="41" selection-start-column="26" selection-end-line="41" selection-end-column="26" />
+          <folding>
+            <element signature="e#3570#3699#0" expanded="false" />
+            <element signature="e#5102#5288#0" expanded="false" />
+            <element signature="e#6760#6864#0" expanded="false" />
+            <element signature="e#8007#8933#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/pr_async.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="189" column="17" lean-forward="false" selection-start-line="189" selection-start-column="17" selection-end-line="189" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cub/block/block_reduce.cuh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="213" column="0" lean-forward="false" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
+          <folding>
+            <element signature="e#10564#10871#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cub/util_arch.cuh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="60" column="16" lean-forward="false" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cub/device/device_reduce.cuh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="232" column="0" lean-forward="false" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cub/util_ptx.cuh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="670" column="29" lean-forward="false" selection-start-line="670" selection-start-column="29" selection-end-line="670" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/samples/pr/persist_pr_async.cu">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
-          <caret line="382" column="1" lean-forward="true" selection-start-line="382" selection-start-column="1" selection-end-line="382" selection-end-column="1" />
+        <state relative-caret-position="2739">
+          <caret line="461" column="25" lean-forward="false" selection-start-line="461" selection-start-column="25" selection-end-line="461" selection-end-column="25" />
           <folding>
             <element signature="e#1659#1676#0" expanded="true" />
-            <element signature="e#3835#3965#0" expanded="true" />
+            <element signature="e#3857#3987#0" expanded="true" />
+            <element signature="e#7576#7706#0" expanded="true" />
           </folding>
         </state>
       </provider>
