@@ -36,7 +36,7 @@
 #include <utils/interactor.h>
 #include <utils/app_skeleton.h>
 
-
+bool MyTestSSSPSingle();
 bool TestSSSPSingle();
 bool TestSSSPAsyncMulti(int ngpus);
 bool TestSSSPAsyncMultiOptimized(int ngpus);
@@ -54,7 +54,8 @@ namespace sssp
 
         static bool Single()
         {
-            return TestSSSPSingle();
+            return MyTestSSSPSingle();
+//            return TestSSSPSingle();
         }
 
         static bool AsyncMulti(int G)

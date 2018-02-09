@@ -41,6 +41,7 @@
 #include <utils/utils.h>
 #include <utils/stopwatch.h>
 #include <utils/cuda_utils.h>
+#include <utils/balancer.h>
 #include <device_launch_parameters.h>
 #include <utils/graphs/traversal.h>
 #include <moderngpu/context.hxx>
@@ -49,7 +50,8 @@
 
 DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
-DEFINE_int32(grid_size, 20, "Blocks Per Grid");
+DECLARE_int32(grid_size);
+
 
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
 #define CHECK_INTERVAL 10000000
@@ -142,9 +144,9 @@ namespace persistpr {
                         local_work.size = graph.end_edge(node) - local_work.start;
 
                         if (local_work.size == 0) {
-                            rank_t update = ALPHA * res;
-
-                            atomicAdd(residual.get_item_ptr(node), update);
+//                            rank_t update = ALPHA * res;
+//
+//                            atomicAdd(residual.get_item_ptr(node), update);
                         } else {
                             rank_t update = ALPHA * res / local_work.size;
 
@@ -195,7 +197,7 @@ namespace persistpr {
                         sum += block_sum[bid];
                     }
                     printf("%f\n", sum);
-                    *running = sum < THRESHOLD;
+                    *running = sum < FLAGS_THRESHOLD;
                 }
                 current_round = 0;
             }
@@ -246,9 +248,9 @@ namespace persistpr {
                         local_work.size = graph.end_edge(node) - local_work.start;
 
                         if (local_work.size == 0) {
-                            rank_t update = ALPHA * res;
+                            //rank_t update = ALPHA * res;
 
-                            atomicAdd(residual.get_item_ptr(node), update);
+                           // atomicAdd(residual.get_item_ptr(node), update);
                         } else {
                             rank_t update = ALPHA * res / local_work.size;
 
@@ -322,44 +324,11 @@ namespace persistpr {
                         sum += block_sum[bid];
                     }
                     printf("%f\n", sum);
-                    *running = sum < THRESHOLD;
+                    *running = sum < FLAGS_THRESHOLD;
                 }
                 current_round = 0;
             }
         }
-    }
-
-    void balanced_alloctor(index_t elems_num, index_t *p_degree, index_t blocksPerGrid, index_t *p_o_lbounds,
-                           index_t *p_o_ubounds) {
-        int total_degree = 0;
-
-        for (int v_idx = 0; v_idx < elems_num; v_idx++) {
-            total_degree += p_degree[v_idx];
-        }
-
-        int avg_degree = total_degree / blocksPerGrid;
-        assert(avg_degree > 0);
-
-        int start_idx = 0;
-        int end_idx = 0;
-        int degree_in_block = 0;
-        int bid = 0;
-        for (int v_idx = 0; v_idx < elems_num; v_idx++) {
-            degree_in_block += p_degree[v_idx];
-
-            if (degree_in_block >= avg_degree) {
-                end_idx = v_idx + 1;    // include this vertex
-
-                end_idx = std::min<index_t>(end_idx, elems_num);
-                p_o_lbounds[bid] = start_idx;
-                p_o_ubounds[bid] = end_idx;
-                bid++;
-                start_idx = end_idx;
-                degree_in_block = 0;
-            }
-        }
-        p_o_lbounds[bid] = start_idx;
-        p_o_ubounds[bid] = elems_num;
     }
 
 /*
@@ -409,7 +378,7 @@ namespace persistpr {
                                          scanned_offsets, mgpu::plus_t<rank_t>(), checkSum.data(), context);
             rank_t pr_sum = mgpu::from_mem(checkSum)[0];
             std::cout << "checking...sum " << pr_sum << std::endl;
-            return pr_sum < THRESHOLD;
+            return pr_sum < FLAGS_THRESHOLD;
         }
 
         void DoPageRank(index_t blocksPerGrid, groute::Stream &stream) {
@@ -450,8 +419,8 @@ bool MyTestPageRankSinglePersist() {
     context.SetDevice(0);
     groute::Stream stream = context.CreateStream(0);
 
-    utils::SharedArray<index_t> node_lbounds(context.host_graph.nnodes);
-    utils::SharedArray<index_t> node_ubounds(context.host_graph.nnodes);
+    utils::SharedArray<index_t> node_lbounds(FLAGS_grid_size);
+    utils::SharedArray<index_t> node_ubounds(FLAGS_grid_size);
     utils::SharedArray<index_t> node_outdegrees(context.host_graph.nnodes);
 
     for (index_t node = 0; node < context.host_graph.nnodes; node++) {
@@ -461,7 +430,7 @@ bool MyTestPageRankSinglePersist() {
 
     index_t blocksPerGrid = FLAGS_grid_size;
 
-    persistpr::balanced_alloctor(context.host_graph.nnodes, node_outdegrees.host_ptr(), blocksPerGrid,
+    groute::balanced_alloctor(context.host_graph.nnodes, node_outdegrees.host_ptr(), blocksPerGrid,
                                  node_lbounds.host_ptr(), node_ubounds.host_ptr());
 
     node_lbounds.H2D();

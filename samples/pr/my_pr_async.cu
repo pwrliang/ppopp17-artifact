@@ -51,7 +51,6 @@ DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
 
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
-#define THRESHOLD 0.9999
 #define FILTER_THRESHOLD 0.0000000001
 
 typedef float rank_t;
@@ -374,12 +373,12 @@ bool MyTestPageRankSingleOutlining() {
 bool MyTestPageRankSingle() {
     utils::traversal::Context<persistpr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
-
+    context.SetDevice(0);
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
     groute::graphs::single::NodeOutputDatum<rank_t> current_ranks;
 
     dev_graph_allocator.AllocateDatumObjects(residual, current_ranks);
-    context.SetDevice(0);
+    context.SyncDevice(0);
     groute::Stream stream = context.CreateStream(0);
 
     mgpu::standard_context_t mgpu_context;
@@ -401,6 +400,7 @@ bool MyTestPageRankSingle() {
     wl1.ResetAsync(stream);
     wl2.ResetAsync(stream);
     stream.Sync();
+
 
     groute::Queue<index_t> *in_wl = &wl1, *out_wl = &wl2;
 

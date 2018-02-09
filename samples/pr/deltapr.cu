@@ -74,7 +74,7 @@ namespace deltapr {
         index_t end_node = start_node + graph.owned_nnodes();
         for (index_t node = start_node + tid; node < end_node; node += nthreads) {
             current_ranks[node] = 0.0f;
-            residual[node] = (1 - ALPHA) / graph.owned_nnodes();
+            residual[node] = (1 - ALPHA);// / graph.owned_nnodes();
             last_residual[node] = 0.0f;
         }
     }
@@ -109,8 +109,8 @@ namespace deltapr {
                     out_degree = end_edge - begin_edge;
 
             if (out_degree == 0) {
-                rank_t update = ALPHA * res;
-                atomicAdd(residual.get_item_ptr(node), update);
+//                rank_t update = ALPHA * res;
+//                atomicAdd(residual.get_item_ptr(node), update);
             } else {
 
                 rank_t update = ALPHA * res / out_degree;
@@ -156,9 +156,9 @@ namespace deltapr {
                     np_local.size = graph.end_edge(node) - np_local.start;
 
                     if (np_local.size == 0) {
-                        rank_t update = ALPHA * res;
-
-                        atomicAdd(residual.get_item_ptr(node), update);
+//                        rank_t update = ALPHA * res;
+//
+//                        atomicAdd(residual.get_item_ptr(node), update);
                     } else {
                         rank_t update = ALPHA * res / np_local.size;
 
@@ -215,13 +215,13 @@ namespace deltapr {
                     out_degree = end_edge - begin_edge;
 
             if (out_degree == 0) {
-                rank_t update = ALPHA * res;
-
-                if (iteration % 2 == 0) {
-                    atomicAdd(last_residual.get_item_ptr(node), update);
-                } else {
-                    atomicAdd(residual.get_item_ptr(node), update);
-                }
+//                rank_t update = ALPHA * res;
+//
+//                if (iteration % 2 == 0) {
+//                    atomicAdd(last_residual.get_item_ptr(node), update);
+//                } else {
+//                    atomicAdd(residual.get_item_ptr(node), update);
+//                }
 
             } else {
 
@@ -281,13 +281,13 @@ namespace deltapr {
                     np_local.size = graph.end_edge(node) - np_local.start;
 
                     if (np_local.size == 0) {
-                        rank_t update = ALPHA * res;
-
-                        if (iteration % 2 == 0) {
-                            atomicAdd(last_residual.get_item_ptr(node), update);
-                        } else {
-                            atomicAdd(residual.get_item_ptr(node), update);
-                        }
+//                        rank_t update = ALPHA * res;
+//
+//                        if (iteration % 2 == 0) {
+//                            atomicAdd(last_residual.get_item_ptr(node), update);
+//                        } else {
+//                            atomicAdd(residual.get_item_ptr(node), update);
+//                        }
 
                     } else {
                         rank_t update = ALPHA * res / np_local.size;
@@ -403,7 +403,7 @@ namespace deltapr {
         }
 
         template<typename WorkSource>
-        rank_t RankCheck__Single__(WorkSource work_source, mgpu::context_t &context) {
+        double RankCheck__Single__(WorkSource work_source, mgpu::context_t &context) {
             rank_t *tmp = m_current_ranks.data_ptr;
 
             printf("work size:%d\n", work_source.get_size());
@@ -477,13 +477,15 @@ bool PageRankDeltaBased() {
 
 
 //    std::vector<float> host_accu_ranks(context.host_graph.nnodes);
-//    ReadRanks("/home/liang/groute_dev.log", &host_accu_ranks);
-
+//    ReadRanks("/home/liang/kron_g500-simple-logn21-weighted-random_0.85_accurate", &host_accu_ranks);
+//
 //    GROUTE_CUDA_CHECK(cudaMemcpy(accu_ranks.DeviceObject().data_ptr, host_accu_ranks.data(),
 //                                 host_accu_ranks.size() * sizeof(rank_t), cudaMemcpyHostToDevice));
 
     if (FLAGS_cta_np)
         printf("CTA enabled\n");
+
+    double last_sum = 0;
 
     if (FLAGS_sync) {
         printf("Running in Sync mode\n");
@@ -491,16 +493,22 @@ bool PageRankDeltaBased() {
 //        for (index_t iteration = 0; iteration < 1000; iteration++)
         bool running = true;
         int iteration = 0;
+
         while (running) {
             solver.RelaxSync__Single__(iteration, groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), stream);
             stream.Sync();
-            rank_t pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
+            double pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
-            running = pr_sum < THRESHOLD;
+//            running = pr_sum < THRESHOLD;
             printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
+            running = (last_sum != pr_sum);
+            if(FLAGS_THRESHOLD!=999999999) {
+                running = pr_sum <
+            }
+            last_sum = pr_sum;
         }
     } else {
         printf("Running in Async mode\n");
@@ -511,7 +519,7 @@ bool PageRankDeltaBased() {
             solver.Relax__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), *in_wl, stream);
-            rank_t pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
+            double pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
 
@@ -519,10 +527,10 @@ bool PageRankDeltaBased() {
 //            rank_t diff_sum = solver.RankCmp__Single__(groute::dev::WorkSourceRange<index_t>(
 //                    dev_graph_allocator.DeviceObject().owned_start_node(),
 //                    dev_graph_allocator.DeviceObject().owned_nnodes()), accu_ranks.DeviceObject(), mgpu_context);
-            running = pr_sum < THRESHOLD;
-//            running = diff_sum > 0.001;
-//            printf("iteration:%d pr sum:%f diff sum:%f\n", iteration++, pr_sum, diff_sum);
+            running = pr_sum < FLAGS_THRESHOLD;
+//            running = diff_sum > 0.004296;
             printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
+//            printf("iteration:%d pr sum:%f diff:%f\n", iteration++, pr_sum, diff_sum);
         }
     }
 
@@ -532,7 +540,11 @@ bool PageRankDeltaBased() {
     dev_graph_allocator.GatherDatum(current_ranks);
 
     std::vector<rank_t> host_current_ranks = current_ranks.GetHostData();
-
+    double sum = 0.0;
+    for (int node = 0; node < host_current_ranks.size(); node++)
+        sum += host_current_ranks[node];
+//        host_current_ranks[node] /= last_sum;
+    printf("xxxxxx:%f\n", sum);
     if (FLAGS_output.length() != 0)
         PageRankOutput(FLAGS_output.c_str(), host_current_ranks);
     return true;

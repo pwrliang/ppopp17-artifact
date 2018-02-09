@@ -87,13 +87,14 @@ DEFINE_int32(pipe_size, -1, "Each socket pipeline will allocate 'pipe_size' buff
 // System 
 DEFINE_int32(fragment_size, -1, "Fragment size for all memcpy operations");
 DEFINE_int32(cached_events, 8, "Number of events to cache in each event pool (per device)");
+DEFINE_int32(grid_size, 20, "Blocks Per Grid");
 DEFINE_int32(block_size, 256, "Block size for traversal kernels");
-
 // Fused kernel
 DEFINE_bool(iteration_fusion, true, "Fuse multiple iterations (FusedWork kernel performs one iteration each launch if this is false)");
 DEFINE_int32(fused_chunk_size, INT32_MAX, "Size of chunk to work on within fused kernel");
 DEFINE_int32(prio_delta, 10, "The soft priority delta");
 DEFINE_bool(count_work, false, "Count the work-items performed by each individual GPU");
+DEFINE_bool(persist, true,"Use persist kernel");
 
 // DWL
 DEFINE_double(wl_alloc_factor_local, 0.2, "Worklist allocation factor: local worklist/s");
