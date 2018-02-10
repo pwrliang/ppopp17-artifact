@@ -59,8 +59,9 @@
   <component name="ChangeListManager">
     <list default="true" id="0245142e-90ac-4fba-b7a1-69c23b76114c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/samples/pr/main.cpp" afterPath="$PROJECT_DIR$/samples/pr/main.cpp" />
+      <change beforePath="$PROJECT_DIR$/samples/pr/deltapr.cu" afterPath="$PROJECT_DIR$/samples/pr/deltapr.cu" />
       <change beforePath="$PROJECT_DIR$/samples/pr/outlined_pr_async.cu" afterPath="$PROJECT_DIR$/samples/pr/outlined_pr_async.cu" />
+      <change beforePath="$PROJECT_DIR$/samples/pr/pr_host.cpp" afterPath="$PROJECT_DIR$/samples/pr/pr_host.cpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/cmake-build-release/" />
@@ -79,29 +80,39 @@
           <file leaf-file-name="outlined_pr_async.cu" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/samples/pr/outlined_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1175">
-                  <caret line="223" column="9" lean-forward="true" selection-start-line="223" selection-start-column="9" selection-end-line="223" selection-end-column="9" />
+                <state relative-caret-position="-498">
+                  <caret line="361" column="39" lean-forward="false" selection-start-line="361" selection-start-column="39" selection-end-line="361" selection-end-column="39" />
                   <folding>
                     <element signature="e#1659#1676#0" expanded="true" />
                     <element signature="e#3723#3886#0" expanded="true" />
-                    <element signature="e#5571#5628#0" expanded="true" />
-                    <element signature="e#5601#5611#0" expanded="true" />
-                    <element signature="e#6942#7105#0" expanded="true" />
-                    <element signature="e#9226#10150#0" expanded="false" />
-                    <element signature="e#10168#10189#0" expanded="true" />
+                    <element signature="e#5581#5744#0" expanded="true" />
+                    <element signature="e#6828#6885#0" expanded="true" />
+                    <element signature="e#6858#6868#0" expanded="true" />
+                    <element signature="e#8199#8362#0" expanded="true" />
+                    <element signature="e#9544#9707#0" expanded="true" />
+                    <element signature="e#11865#12789#0" expanded="false" />
+                    <element signature="e#12807#12828#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/samples/pr/main.cpp">
+          <file leaf-file-name="deltapr.cu" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="306">
-                  <caret line="77" column="42" lean-forward="false" selection-start-line="77" selection-start-column="42" selection-end-line="77" selection-end-column="42" />
-                  <folding>
-                    <element signature="e#1659#1676#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="2905">
+                  <caret line="248" column="20" lean-forward="false" selection-start-line="248" selection-start-column="20" selection-end-line="248" selection-end-column="20" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pr_host.cpp" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/pr/pr_host.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="151">
+                  <caret line="210" column="14" lean-forward="false" selection-start-line="210" selection-start-column="14" selection-end-line="210" selection-end-column="14" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -113,7 +124,7 @@
           <file leaf-file-name="persist_pr_async.cu" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/pr/persist_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1765">
+                <state relative-caret-position="2692">
                   <caret line="187" column="25" lean-forward="false" selection-start-line="187" selection-start-column="25" selection-end-line="187" selection-end-column="25" />
                   <folding>
                     <element signature="e#1659#1676#0" expanded="true" />
@@ -126,15 +137,18 @@
           <file leaf-file-name="outlined_pr_async.cu" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/pr/outlined_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="265">
+                <state relative-caret-position="-1010">
                   <caret line="102" column="45" lean-forward="false" selection-start-line="102" selection-start-column="45" selection-end-line="102" selection-end-column="45" />
                   <folding>
                     <element signature="e#1659#1676#0" expanded="true" />
                     <element signature="e#3723#3886#0" expanded="true" />
-                    <element signature="e#5571#5628#0" expanded="true" />
-                    <element signature="e#5601#5611#0" expanded="true" />
-                    <element signature="e#6942#7105#0" expanded="true" />
-                    <element signature="e#10168#10189#0" expanded="true" />
+                    <element signature="e#5581#5744#0" expanded="true" />
+                    <element signature="e#5665#5675#0" expanded="true" />
+                    <element signature="e#5713#5723#0" expanded="true" />
+                    <element signature="e#6828#6885#0" expanded="true" />
+                    <element signature="e#6858#6868#0" expanded="true" />
+                    <element signature="e#8199#8362#0" expanded="true" />
+                    <element signature="e#12807#12828#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -143,8 +157,8 @@
           <file leaf-file-name="my_pr_async.cu" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="320">
-                  <caret line="111" column="32" lean-forward="false" selection-start-line="111" selection-start-column="32" selection-end-line="111" selection-end-column="32" />
+                <state relative-caret-position="269">
+                  <caret line="166" column="0" lean-forward="false" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
                   <folding>
                     <element signature="e#3670#3881#0" expanded="true" />
                     <element signature="e#10177#10250#0" expanded="true" />
@@ -160,11 +174,8 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>gen_weight_range</find>
       <find>gen_weights</find>
       <find>PageRankPersistKernel__Single__</find>
-      <find>block_size</find>
-      <find>grid_size</find>
       <find>balanced_alloctor</find>
       <find>SSSPToplog</find>
       <find>node_lbounds</find>
@@ -176,7 +187,6 @@
       <find>cta</find>
       <find>THRESHOLD</find>
       <find>FLAGS_threshold</find>
-      <find>threshold</find>
       <find>FLAGS_cta_np</find>
       <find>prepend_warp</find>
       <find>xxxx</find>
@@ -187,9 +197,13 @@
       <find>GridBarrierLifetime</find>
       <find>GridBarrier</find>
       <find>.Setup</find>
+      <find>d_sync</find>
+      <find>block_size</find>
+      <find>grid_size</find>
       <find>WorkSource</find>
       <find>PageRankKernelCTA__Single__</find>
-      <find>d_sync</find>
+      <find>PageRankControl__Single__</find>
+      <find>threshold</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -206,7 +220,6 @@
         <option value="$PROJECT_DIR$/samples/cusha/main.cpp" />
         <option value="$PROJECT_DIR$/samples/cusha/cusha.cu" />
         <option value="$PROJECT_DIR$/samples/pr/deltapr.cpp" />
-        <option value="$PROJECT_DIR$/samples/pr/pr_host.cpp" />
         <option value="$PROJECT_DIR$/samples/pr/readranks.h" />
         <option value="$PROJECT_DIR$/samples/pr/my_pr_balanced.h" />
         <option value="$PROJECT_DIR$/include/groute/device/queue.cuh" />
@@ -219,17 +232,18 @@
         <option value="$PROJECT_DIR$/samples/pr/my_pr_async.cu" />
         <option value="$PROJECT_DIR$/include/utils/app_skeleton.h" />
         <option value="$PROJECT_DIR$/samples/pr/persist_pr_async.cu" />
-        <option value="$PROJECT_DIR$/samples/pr/deltapr.cu" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/samples/pr/main.cpp" />
         <option value="$PROJECT_DIR$/samples/pr/outlined_pr_async.cu" />
+        <option value="$PROJECT_DIR$/samples/pr/deltapr.cu" />
+        <option value="$PROJECT_DIR$/samples/pr/pr_host.cpp" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="false" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="689" />
-    <option name="y" value="77" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="25" />
+    <option name="y" value="87" />
     <option name="width" value="1882" />
     <option name="height" value="1105" />
   </component>
@@ -429,7 +443,7 @@
     <configuration name="logging_unittest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="logging_unittest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="logging_unittest">
       <envs />
     </configuration>
-    <configuration name="pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -graphfile $PROJECT_DIR$/../wikitalk.gr -output $PROJECT_DIR$/../groute_dev.log -outline" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
+    <configuration name="pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -graphfile /mnt/sda2/liang/livej.gr -output $PROJECT_DIR$/../groute_dev.log -outline -grid_size 20 -block_size 1024 -threshold 0.9999" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
       <envs />
     </configuration>
     <configuration name="signalhandler_unittest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="signalhandler_unittest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="signalhandler_unittest">
@@ -501,16 +515,15 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-3" y="31" width="1926" height="1003" extended-state="6" />
-    <editor active="true" />
+    <frame x="25" y="87" width="1882" height="1105" extended-state="0" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.115384616" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11812298" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2508834" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22292323" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3262662" sideWeight="0.49785176" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32744405" sideWeight="0.5021075" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35217902" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3451119" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286219" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -553,16 +566,16 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/samples/pr/outlined_pr_async.cu</url>
-          <line>294</line>
-          <option name="timeStamp" value="32" />
+          <line>246</line>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/samples/pr/outlined_pr_async.cu</url>
-          <line>208</line>
-          <option name="timeStamp" value="33" />
+          <line>379</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="34" />
+      <option name="time" value="36" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -622,13 +635,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
           <caret line="276" column="6" lean-forward="false" selection-start-line="276" selection-start-column="6" selection-end-line="276" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/cuda/include/vector_types.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="399" column="42" lean-forward="false" selection-start-line="399" selection-start-column="42" selection-end-line="399" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -741,14 +747,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="626">
-          <caret line="139" column="21" lean-forward="false" selection-start-line="139" selection-start-column="21" selection-end-line="139" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/samples/sssp/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
@@ -817,14 +815,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/utils/graphs/traversal.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="72" column="24" lean-forward="false" selection-start-line="72" selection-start-column="14" selection-end-line="72" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/samples/sssp/deltasssp.cu">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2638">
@@ -860,14 +850,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/pr_host.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-261">
-          <caret line="189" column="4" lean-forward="false" selection-start-line="189" selection-start-column="4" selection-end-line="189" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cmake-build-debug/deps/gflags/include/gflags/gflags.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -889,16 +871,6 @@
         <state relative-caret-position="198">
           <caret line="56" column="62" lean-forward="false" selection-start-line="56" selection-start-column="62" selection-end-line="56" selection-end-column="62" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="531" column="53" lean-forward="false" selection-start-line="531" selection-start-column="53" selection-end-line="531" selection-end-column="53" />
-          <folding>
-            <element signature="e#1658#1675#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -936,53 +908,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/graphs/csr_graph.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="1164" column="0" lean-forward="false" selection-start-line="1164" selection-start-column="0" selection-end-line="1164" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/persist_pr_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1765">
-          <caret line="187" column="25" lean-forward="false" selection-start-line="187" selection-start-column="25" selection-end-line="187" selection-end-column="25" />
-          <folding>
-            <element signature="e#1659#1676#0" expanded="true" />
-            <element signature="e#7610#7740#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="111" column="32" lean-forward="false" selection-start-line="111" selection-start-column="32" selection-end-line="111" selection-end-column="32" />
-          <folding>
-            <element signature="e#3670#3881#0" expanded="true" />
-            <element signature="e#10177#10250#0" expanded="true" />
-            <element signature="e#10945#10966#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/groute/dwl/work_kernels.cuh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="307">
           <caret line="130" column="46" lean-forward="false" selection-start-line="130" selection-start-column="46" selection-end-line="130" selection-end-column="46" />
           <folding>
             <element signature="e#4417#4572#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="77" column="42" lean-forward="false" selection-start-line="77" selection-start-column="42" selection-end-line="77" selection-end-column="42" />
-          <folding>
-            <element signature="e#1659#1676#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -995,18 +926,101 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="80" column="47" lean-forward="false" selection-start-line="80" selection-start-column="47" selection-end-line="80" selection-end-column="47" />
+          <folding>
+            <element signature="e#1659#1676#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/cuda/include/vector_types.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="414" column="24" lean-forward="false" selection-start-line="414" selection-start-column="24" selection-end-line="414" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/utils/graphs/traversal.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="93" column="28" lean-forward="false" selection-start-line="93" selection-start-column="18" selection-end-line="93" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/groute/graphs/csr_graph.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="1173" column="0" lean-forward="false" selection-start-line="1173" selection-start-column="0" selection-end-line="1173" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/groute/common.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="319" column="24" lean-forward="false" selection-start-line="319" selection-start-column="24" selection-end-line="319" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/persist_pr_async.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2692">
+          <caret line="187" column="25" lean-forward="false" selection-start-line="187" selection-start-column="25" selection-end-line="187" selection-end-column="25" />
+          <folding>
+            <element signature="e#1659#1676#0" expanded="true" />
+            <element signature="e#7610#7740#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_async.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="166" column="0" lean-forward="false" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding>
+            <element signature="e#3670#3881#0" expanded="true" />
+            <element signature="e#10177#10250#0" expanded="true" />
+            <element signature="e#10945#10966#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/pr_host.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="210" column="14" lean-forward="false" selection-start-line="210" selection-start-column="14" selection-end-line="210" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2905">
+          <caret line="248" column="20" lean-forward="false" selection-start-line="248" selection-start-column="20" selection-end-line="248" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/samples/pr/outlined_pr_async.cu">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1175">
-          <caret line="223" column="9" lean-forward="true" selection-start-line="223" selection-start-column="9" selection-end-line="223" selection-end-column="9" />
+        <state relative-caret-position="-498">
+          <caret line="361" column="39" lean-forward="false" selection-start-line="361" selection-start-column="39" selection-end-line="361" selection-end-column="39" />
           <folding>
             <element signature="e#1659#1676#0" expanded="true" />
             <element signature="e#3723#3886#0" expanded="true" />
-            <element signature="e#5571#5628#0" expanded="true" />
-            <element signature="e#5601#5611#0" expanded="true" />
-            <element signature="e#6942#7105#0" expanded="true" />
-            <element signature="e#9226#10150#0" expanded="false" />
-            <element signature="e#10168#10189#0" expanded="true" />
+            <element signature="e#5581#5744#0" expanded="true" />
+            <element signature="e#6828#6885#0" expanded="true" />
+            <element signature="e#6858#6868#0" expanded="true" />
+            <element signature="e#8199#8362#0" expanded="true" />
+            <element signature="e#9544#9707#0" expanded="true" />
+            <element signature="e#11865#12789#0" expanded="false" />
+            <element signature="e#12807#12828#0" expanded="true" />
           </folding>
         </state>
       </provider>

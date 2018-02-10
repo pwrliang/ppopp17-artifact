@@ -87,8 +87,8 @@ namespace outlinedpr {
         index_t end_node = start_node + graph.owned_nnodes();
         for (index_t node = start_node + tid; node < end_node; node += nthreads) {
             current_ranks[node] = 0.0;
-            residual[node] = (1.0 - ALPHA) / graph.owned_nnodes();
-//            residual[node] = 1.0 - ALPHA;
+//            residual[node] = (1.0 - ALPHA) / graph.owned_nnodes();
+            residual[node] = 1.0 - ALPHA;
         }
     }
 
@@ -115,16 +115,16 @@ namespace outlinedpr {
                 index_t node = work_source.get_work(i);
                 rank_t res = atomicExch(residual.get_item_ptr(node), 0);
 
-                current_ranks[node] += res;
-
                 if (res > 0) {
+                    current_ranks[node] += res;
+
                     local_work.start = graph.begin_edge(node);
                     local_work.size = graph.end_edge(node) - local_work.start;
 
                     if (local_work.size == 0) {
-                        rank_t update = ALPHA * res;
-
-                        atomicAdd(residual.get_item_ptr(node), update);
+//                        rank_t update = ALPHA * res;
+//
+//                        atomicAdd(residual.get_item_ptr(node), update);
                     } else {
                         rank_t update = ALPHA * res / local_work.size;
 
@@ -142,6 +142,43 @@ namespace outlinedpr {
                     }
             );
 
+        }
+    }
+
+    template<
+            typename TGraph,
+            typename WorkSource,
+            template<typename> class RankDatum,
+            template<typename> class ResidualDatum>
+    __device__ void PageRankKernel__Single__(
+            TGraph graph, WorkSource work_source,
+            RankDatum<rank_t> current_ranks,
+            ResidualDatum<rank_t> residual) {
+        unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.get_size();
+
+        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+            index_t node = work_source.get_work(i);
+            rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+
+            if (res == 0)continue;
+
+            current_ranks[node] += res;
+
+            index_t begin_edge = graph.begin_edge(node),
+                    end_edge = graph.end_edge(node),
+                    out_degree = end_edge - begin_edge;
+
+            if (out_degree == 0) continue;
+            rank_t update = ALPHA * res / out_degree;
+
+            for (index_t edge = begin_edge; edge < end_edge; ++edge) {
+                index_t dest = graph.edge_dest(edge);
+
+                atomicAdd(residual.get_item_ptr(dest), update);
+            }
         }
     }
 
@@ -192,24 +229,25 @@ namespace outlinedpr {
             typename WorkSource,
             template<typename> class RankDatum,
             template<typename> class ResidualDatum>
-    __global__ void PageRankControl__Single__(
+    __global__ void PageRankControlCTA__Single__(
             double threshold,
             TGraph graph,
             WorkSource work_source,
             RankDatum<rank_t> current_ranks,
             ResidualDatum<rank_t> residual,
             rank_t *block_sum_buffer,
+            int *running,
             cub::GridBarrier gridBarrier) {
         unsigned tid = TID_1D;
-        bool running = true;
+
         rank_t pr_sum;
         uint32_t counter = 0;
-        while (running) {
+        while (*running) {
             PageRankKernelCTA__Single__(graph, work_source, current_ranks, residual);
-            //gridBarrier.Sync();
+//            gridBarrier.Sync();
             PageRankCheck__Single__(work_source, current_ranks, block_sum_buffer, &pr_sum);
 //            gridBarrier.Sync();
-            if (counter++ % 100000 == 0) {
+            if (counter++ % 500000 == 0) {
                 if (tid == 0) {
 //                    pr_sum = 0;
 //                    for (int i = 0; i < graph.nnodes; i++) {
@@ -217,10 +255,50 @@ namespace outlinedpr {
 //                    }
 
                     printf("pr_sum:%f\n", pr_sum);
-                    running = pr_sum < threshold;
+                    *running = pr_sum < threshold ? 1 : 0;
                 }
                 counter = 0;
             }
+            gridBarrier.Sync();
+        }
+    };
+
+    template<
+            typename TGraph,
+            typename WorkSource,
+            template<typename> class RankDatum,
+            template<typename> class ResidualDatum>
+    __global__ void PageRankControl__Single__(
+            double threshold,
+            TGraph graph,
+            WorkSource work_source,
+            RankDatum<rank_t> current_ranks,
+            ResidualDatum<rank_t> residual,
+            rank_t *block_sum_buffer,
+            int *running,
+            cub::GridBarrier gridBarrier) {
+        unsigned tid = TID_1D;
+
+        rank_t pr_sum;
+        uint32_t counter = 0;
+        while (*running) {
+            PageRankKernel__Single__(graph, work_source, current_ranks, residual);
+//            gridBarrier.Sync();
+            PageRankCheck__Single__(work_source, current_ranks, block_sum_buffer, &pr_sum);
+//            gridBarrier.Sync();
+            if (counter++ % 500000 == 0) {
+                if (tid == 0) {
+//                    pr_sum = 0;
+//                    for (int i = 0; i < graph.nnodes; i++) {
+//                        pr_sum += current_ranks[i];
+//                    }
+
+                    printf("pr_sum:%f\n", pr_sum);
+                    *running = pr_sum < threshold ? 1 : 0;
+                }
+                counter = 0;
+            }
+            gridBarrier.Sync();
         }
     };
 
@@ -271,18 +349,27 @@ namespace outlinedpr {
 
         template<typename WorkSource>
         void DoPageRank(WorkSource work_source, index_t blocksPerGrid, groute::Stream &stream) {
+            const int SMEMDIM = FLAGS_block_size / 32;
+            cub::GridBarrierLifetime gridBarrier;
             utils::SharedArray<rank_t> sum_buffer(blocksPerGrid);
+            utils::SharedValue<int> running_flag;
 
             GROUTE_CUDA_CHECK(cudaMemset(sum_buffer.dev_ptr, 0, sum_buffer.buffer_size * sizeof(rank_t)));
+            running_flag.set_val_H2D(1);
 
-            const int SMEMDIM = FLAGS_block_size / 32;
-
-            cub::GridBarrierLifetime gridBarrier;
             gridBarrier.Setup(blocksPerGrid);
-            PageRankControl__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
-                    stream.cuda_stream >> >
-                    (FLAGS_threshold, m_graph, work_source, m_current_ranks, m_residual
-                            , sum_buffer.dev_ptr, gridBarrier);
+            if (FLAGS_cta_np) {
+                printf("run with cta");
+                PageRankControlCTA__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
+                        stream.cuda_stream >> >
+                        (FLAGS_threshold, m_graph, work_source, m_current_ranks, m_residual
+                                , sum_buffer.dev_ptr, running_flag.dev_ptr, gridBarrier);
+            } else {
+                PageRankControl__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
+                        stream.cuda_stream >> >
+                        (FLAGS_threshold, m_graph, work_source, m_current_ranks, m_residual
+                                , sum_buffer.dev_ptr, running_flag.dev_ptr, gridBarrier);
+            }
         }
     };
 

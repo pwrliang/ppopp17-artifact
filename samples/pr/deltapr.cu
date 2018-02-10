@@ -74,7 +74,8 @@ namespace deltapr {
         index_t end_node = start_node + graph.owned_nnodes();
         for (index_t node = start_node + tid; node < end_node; node += nthreads) {
             current_ranks[node] = 0.0f;
-            residual[node] = (1 - ALPHA);// / graph.owned_nnodes();
+//            residual[node] = (1 - ALPHA) / graph.owned_nnodes();
+            residual[node] = (1 - ALPHA);
             last_residual[node] = 0.0f;
         }
     }
@@ -157,7 +158,6 @@ namespace deltapr {
 
                     if (np_local.size == 0) {
 //                        rank_t update = ALPHA * res;
-//
 //                        atomicAdd(residual.get_item_ptr(node), update);
                     } else {
                         rank_t update = ALPHA * res / np_local.size;
@@ -490,7 +490,6 @@ bool PageRankDeltaBased() {
     if (FLAGS_sync) {
         printf("Running in Sync mode\n");
 
-//        for (index_t iteration = 0; iteration < 1000; iteration++)
         bool running = true;
         int iteration = 0;
 
@@ -504,7 +503,7 @@ bool PageRankDeltaBased() {
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
             printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
             running = (last_sum != pr_sum);
-            if (FLAGS_threshold != 999999999) {
+            if (FLAGS_threshold != ULONG_LONG_MAX) {
                 running = pr_sum < FLAGS_threshold;
             }
             last_sum = pr_sum;

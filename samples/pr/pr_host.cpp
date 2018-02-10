@@ -208,7 +208,7 @@ int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
             return 0;
         }
 
-        rank_t sum = 0;
+        double sum = 0;
         for (int i = 0; i < ranks.size(); i++) {
             pr[i].node = i;
             pr[i].rank = ranks[i];
@@ -218,9 +218,10 @@ int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
         fprintf(stderr, "Sorting by rank ...\n");
         std::stable_sort(pr, pr + ranks.size());
         fprintf(stderr, "Writing to file ...\n");
-
+        fprintf(stderr, "sum:%*e relative sum:%*e\n", FLT_DIG, sum, FLT_DIG, sum / ranks.size());
         fprintf(f, "ALPHA %*e EPSILON %*e\n", FLT_DIG, ALPHA, FLT_DIG, EPSILON);
         fprintf(f, "RANKS 1--%d of %d\n", FLAGS_top_ranks, (int) ranks.size());
+
         int output_num = FLAGS_top_ranks;
         if (output_num == -1) {
             fprintf(stderr, "WARN:output all ranks\n");
@@ -232,8 +233,8 @@ int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
             else
                 fprintf(f, "%d %d %*e\n", i, pr[ranks.size() - i].node, FLT_DIG, pr[ranks.size() - i].rank / sum);
         }
-
         free(pr);
+        fclose(f);
         return 1;
     } else {
         fprintf(stderr, "Could not open '%s' for writing\n", file);
