@@ -40,7 +40,7 @@ bool MyTestPageRankSinglePersist();
 
 bool PageRankDeltaBased();
 
-bool MyTestPageRankSingleOutlining();
+bool MyTestPageRankSingleOutlined();
 
 bool MyTestPageRankSingle();
 
@@ -53,7 +53,7 @@ bool TestPageRankAsyncMultiOptimized(int ngpus);
 void CleanupGraphs();
 
 DECLARE_bool(groute);
-DEFINE_bool(balance, false, "using cta-work");
+DEFINE_bool(outline, false, "using outlined method");
 DEFINE_bool(semi, false, "using semi async");
 
 /*
@@ -74,8 +74,8 @@ namespace pr {
                 return TestPageRankSingle();
             } else {
                 printf("using my code\n");
-                if (FLAGS_balance)
-                    return MyTestPageRankSingleOutlining();
+                if (FLAGS_outline)
+                    return MyTestPageRankSingleOutlined();
                 else {
                     if (FLAGS_semi)
                         return PageRankDeltaBased();

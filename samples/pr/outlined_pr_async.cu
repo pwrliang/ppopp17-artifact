@@ -58,7 +58,7 @@ DECLARE_double(threshold);
 
 typedef float rank_t;
 
-namespace persistpr {
+namespace outlinedpr {
     struct Algo {
 
         static const char *Name() { return "PR"; }
@@ -87,17 +87,10 @@ namespace persistpr {
         index_t end_node = start_node + graph.owned_nnodes();
         for (index_t node = start_node + tid; node < end_node; node += nthreads) {
             current_ranks[node] = 0.0;
-            residual[node] = (1.0 - ALPHA);/// graph.owned_nnodes();
+            residual[node] = (1.0 - ALPHA) / graph.owned_nnodes();
 //            residual[node] = 1.0 - ALPHA;
         }
     }
-
-    template<typename TMetaData>
-    struct work_chunk {
-        index_t start;
-        index_t size;
-        TMetaData meta_data;
-    };
 
     template<
             typename TGraph,
@@ -114,9 +107,7 @@ namespace persistpr {
         uint32_t work_size = work_source.get_size();
         uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
 
-        rank_t local_sum = 0;
-
-        for (uint32_t i = 0 + threadIdx.x; i < work_size_rup; i += blockDim.x) {
+        for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
 
             groute::dev::np_local<rank_t> local_work = {0, 0, 0.0};
 
@@ -125,16 +116,15 @@ namespace persistpr {
                 rank_t res = atomicExch(residual.get_item_ptr(node), 0);
 
                 current_ranks[node] += res;
-                local_sum += current_ranks[node];
 
                 if (res > 0) {
                     local_work.start = graph.begin_edge(node);
                     local_work.size = graph.end_edge(node) - local_work.start;
 
                     if (local_work.size == 0) {
-//                            rank_t update = ALPHA * res;
-//
-//                            atomicAdd(residual.get_item_ptr(node), update);
+                        rank_t update = ALPHA * res;
+
+                        atomicAdd(residual.get_item_ptr(node), update);
                     } else {
                         rank_t update = ALPHA * res / local_work.size;
 
@@ -155,23 +145,31 @@ namespace persistpr {
         }
     }
 
-    template<template<typename> class RankDatum>
-    __device__ void PageRankCheck__Single__(RankDatum<rank_t> current_ranks,
+    template<typename WorkSource, template<typename> class RankDatum>
+    __device__ void PageRankCheck__Single__(WorkSource work_source, RankDatum<rank_t> current_ranks,
                                             rank_t *block_sum_buffer, rank_t *rtn_sum) {
         unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
         int laneIdx = threadIdx.x % warpSize;
         int warpIdx = threadIdx.x / warpSize;
-        extern __shared__ rank_t smem[];
         const int SMEMDIM = blockDim.x / warpSize;
+        extern __shared__ rank_t smem[];
 
-        rank_t local_sum = warpReduce(local_sum);
+        uint32_t work_size = work_source.get_size();
+        rank_t local_sum = 0;
+
+        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+            index_t node = work_source.get_work(i);
+            local_sum += current_ranks[node];
+        }
+
+        local_sum = warpReduce(local_sum);
 
         if (laneIdx == 0)
             smem[warpIdx] = local_sum;
         __syncthreads();
 
-        if (threadIdx.x < warpSize)
-            local_sum = (threadIdx.x < SMEMDIM) ? smem[laneIdx] : 0;
+        local_sum = (threadIdx.x < SMEMDIM) ? smem[threadIdx.x] : 0;
 
         if (warpIdx == 0)
             local_sum = warpReduce(local_sum);
@@ -202,17 +200,27 @@ namespace persistpr {
             ResidualDatum<rank_t> residual,
             rank_t *block_sum_buffer,
             cub::GridBarrier gridBarrier) {
-
+        unsigned tid = TID_1D;
         bool running = true;
         rank_t pr_sum;
-
+        uint32_t counter = 0;
         while (running) {
             PageRankKernelCTA__Single__(graph, work_source, current_ranks, residual);
-            gridBarrier.Sync();
-            PageRankCheck__Single__(current_ranks, block_sum_buffer, &pr_sum);
-            gridBarrier.Sync();
-            printf("pr_sum:%f\n", pr_sum);
-            running = pr_sum < threshold;
+            //gridBarrier.Sync();
+            PageRankCheck__Single__(work_source, current_ranks, block_sum_buffer, &pr_sum);
+//            gridBarrier.Sync();
+            if (counter++ % 100000 == 0) {
+                if (tid == 0) {
+//                    pr_sum = 0;
+//                    for (int i = 0; i < graph.nnodes; i++) {
+//                        pr_sum += current_ranks[i];
+//                    }
+
+                    printf("pr_sum:%f\n", pr_sum);
+                    running = pr_sum < threshold;
+                }
+                counter = 0;
+            }
         }
     };
 
@@ -269,8 +277,8 @@ namespace persistpr {
 
             const int SMEMDIM = FLAGS_block_size / 32;
 
-            cub::GridBarrier gridBarrier;
-
+            cub::GridBarrierLifetime gridBarrier;
+            gridBarrier.Setup(blocksPerGrid);
             PageRankControl__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
                     stream.cuda_stream >> >
                     (FLAGS_threshold, m_graph, work_source, m_current_ranks, m_residual
@@ -282,8 +290,8 @@ namespace persistpr {
 
 
 bool MyTestPageRankSingleOutlined() {
-    printf("running MyTestPageRankSinglePersist\n");
-    utils::traversal::Context<persistpr::Algo> context(1);
+    printf("running MyTestPageRankSingleOutlined\n");
+    utils::traversal::Context<outlinedpr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
@@ -296,7 +304,7 @@ bool MyTestPageRankSingleOutlined() {
     index_t blocksPerGrid = FLAGS_grid_size;
 
 
-    persistpr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
+    outlinedpr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
             solver(dev_graph_allocator.DeviceObject(), current_ranks.DeviceObject(), residual.DeviceObject());
 
     Stopwatch stopwatch;
@@ -309,10 +317,11 @@ bool MyTestPageRankSingleOutlined() {
 
     solver.Init__Single__(stream);
     stream.Sync();
-    solver.DoPageRank(groute::dev::WorkSourceRange<index_t >(dev_graph_allocator.DeviceObject().owned_start_node(),
-                                                   dev_graph_allocator.DeviceObject().owned_nnodes()), blocksPerGrid,
+    solver.DoPageRank(groute::dev::WorkSourceRange<index_t>(dev_graph_allocator.DeviceObject().owned_start_node(),
+                                                            dev_graph_allocator.DeviceObject().owned_nnodes()),
+                      blocksPerGrid,
                       stream);
-
+    stream.Sync();
     stopwatch.stop();
 
     printf("persist kernel PR:%f\n", stopwatch.ms());
