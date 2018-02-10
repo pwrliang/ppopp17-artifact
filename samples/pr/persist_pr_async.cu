@@ -51,11 +51,10 @@
 DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
 DECLARE_int32(grid_size);
-
+DECLARE_double(threshold);
 
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
 #define CHECK_INTERVAL 10000000
-#define FILTER_THRESHOLD 0.0000000001
 
 typedef float rank_t;
 
@@ -88,7 +87,7 @@ namespace persistpr {
         index_t end_node = start_node + graph.owned_nnodes();
         for (index_t node = start_node + tid; node < end_node; node += nthreads) {
             current_ranks[node] = 0.0;
-            residual[node] = (1.0 - ALPHA) / graph.owned_nnodes();
+            residual[node] = (1.0 - ALPHA) ;/// graph.owned_nnodes();
 //            residual[node] = 1.0 - ALPHA;
         }
     }
@@ -105,6 +104,7 @@ namespace persistpr {
             template<typename> class RankDatum,
             template<typename> class ResidualDatum>
     __global__ void PageRankPersistKernelCTA__Single__(
+            double threshold,
             TGraph graph,
             index_t *lbounds, index_t *ubounds,
             RankDatum<rank_t> current_ranks,
@@ -197,7 +197,7 @@ namespace persistpr {
                         sum += block_sum[bid];
                     }
                     printf("%f\n", sum);
-                    *running = sum < FLAGS_THRESHOLD;
+                    *running = sum < threshold;
                 }
                 current_round = 0;
             }
@@ -209,6 +209,7 @@ namespace persistpr {
             template<typename> class RankDatum,
             template<typename> class ResidualDatum>
     __global__ void PageRankPersistKernel__Single__(
+            double threshold,
             TGraph graph,
             index_t *lbounds, index_t *ubounds,
             RankDatum<rank_t> current_ranks,
@@ -324,7 +325,7 @@ namespace persistpr {
                         sum += block_sum[bid];
                     }
                     printf("%f\n", sum);
-                    *running = sum < FLAGS_THRESHOLD;
+                    *running = sum < threshold;
                 }
                 current_round = 0;
             }
@@ -378,7 +379,7 @@ namespace persistpr {
                                          scanned_offsets, mgpu::plus_t<rank_t>(), checkSum.data(), context);
             rank_t pr_sum = mgpu::from_mem(checkSum)[0];
             std::cout << "checking...sum " << pr_sum << std::endl;
-            return pr_sum < FLAGS_THRESHOLD;
+            return pr_sum < FLAGS_threshold;
         }
 
         void DoPageRank(index_t blocksPerGrid, groute::Stream &stream) {
@@ -393,12 +394,12 @@ namespace persistpr {
             if (FLAGS_cta_np) {
                 PageRankPersistKernelCTA__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
                         stream.cuda_stream >> >
-                        (m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
+                        (FLAGS_threshold, m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
                                 , sum_buffer.dev_ptr, running.dev_ptr);
             } else {
                 PageRankPersistKernel__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
                         stream.cuda_stream >> >
-                        (m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
+                        (FLAGS_threshold, m_graph, m_lbounds, m_ubounds, m_current_ranks, m_residual
                                 , sum_buffer.dev_ptr, running.dev_ptr);
             }
         }

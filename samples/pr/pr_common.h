@@ -36,8 +36,6 @@
 #include <groute/graphs/csr_graph.h>
 
 typedef float rank_t;
-//#define THRESHOLD 1.561569e+06
-DEFINE_double(THRESHOLD, 999999999, 'PR sum as threshold');
 #define ALPHA 0.85
 #define EPSILON 0.01
 

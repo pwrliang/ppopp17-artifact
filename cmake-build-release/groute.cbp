@@ -1190,6 +1190,9 @@
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o">
 			<Option target="pr"/>
 		</Unit>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o">
+			<Option target="pr"/>
+		</Unit>
 		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o">
 			<Option target="pr"/>
 		</Unit>
@@ -1342,6 +1345,9 @@
 			<Option target="pr"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/samples/pr/my_pr_async.cu">
+			<Option target="pr"/>
+		</Unit>
+		<Unit filename="/home/liang/groute-dev/samples/pr/outlined_pr_async.cu">
 			<Option target="pr"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/samples/pr/persist_pr_async.cu">

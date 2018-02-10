@@ -52,8 +52,8 @@ DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
 DEFINE_bool(sync, false, "using sync mode to run pagerank algorithm");
 DECLARE_bool(cta_np);
+DECLARE_double(threshold);
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
-#define FILTER_THRESHOLD 0.0000000001
 
 namespace deltapr {
     struct Algo {
@@ -502,11 +502,10 @@ bool PageRankDeltaBased() {
             double pr_sum = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
                     dev_graph_allocator.DeviceObject().owned_start_node(),
                     dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
-//            running = pr_sum < THRESHOLD;
             printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
             running = (last_sum != pr_sum);
-            if(FLAGS_THRESHOLD!=999999999) {
-                running = pr_sum <
+            if (FLAGS_threshold != 999999999) {
+                running = pr_sum < FLAGS_threshold;
             }
             last_sum = pr_sum;
         }
@@ -527,7 +526,7 @@ bool PageRankDeltaBased() {
 //            rank_t diff_sum = solver.RankCmp__Single__(groute::dev::WorkSourceRange<index_t>(
 //                    dev_graph_allocator.DeviceObject().owned_start_node(),
 //                    dev_graph_allocator.DeviceObject().owned_nnodes()), accu_ranks.DeviceObject(), mgpu_context);
-            running = pr_sum < FLAGS_THRESHOLD;
+            running = pr_sum < FLAGS_threshold;
 //            running = diff_sum > 0.004296;
             printf("iteration:%d pr sum:%f\n", iteration++, pr_sum);
 //            printf("iteration:%d pr sum:%f diff:%f\n", iteration++, pr_sum, diff_sum);
@@ -540,11 +539,7 @@ bool PageRankDeltaBased() {
     dev_graph_allocator.GatherDatum(current_ranks);
 
     std::vector<rank_t> host_current_ranks = current_ranks.GetHostData();
-    double sum = 0.0;
-    for (int node = 0; node < host_current_ranks.size(); node++)
-        sum += host_current_ranks[node];
-//        host_current_ranks[node] /= last_sum;
-    printf("xxxxxx:%f\n", sum);
+
     if (FLAGS_output.length() != 0)
         PageRankOutput(FLAGS_output.c_str(), host_current_ranks);
     return true;

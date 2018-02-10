@@ -49,9 +49,8 @@
 
 DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
-
+DECLARE_double(threshold);
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
-#define FILTER_THRESHOLD 0.0000000001
 
 typedef float rank_t;
 
@@ -302,7 +301,7 @@ namespace persistpr {
                                          scanned_offsets, mgpu::plus_t<rank_t>(), checkSum.data(), context);
             rank_t pr_sum = mgpu::from_mem(checkSum)[0];
             std::cout << "checking...sum " << pr_sum << std::endl;
-            return pr_sum < THRESHOLD;
+            return pr_sum < FLAGS_threshold;
         }
 
         void DoPageRank(groute::Stream &stream) {

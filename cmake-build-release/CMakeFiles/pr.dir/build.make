@@ -465,10 +465,17 @@ CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o: ../samples/pr/deltapr.cu
 	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -E make_directory /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/.
 	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING=Release -D generated_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_deltapr.cu.o -D generated_cubin_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_deltapr.cu.o.cubin.txt -P /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o.Release.cmake
 
+CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o: CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o.depend
+CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o: CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o.Release.cmake
+CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o: ../samples/pr/outlined_pr_async.cu
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building NVCC (Device) object CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o"
+	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -E make_directory /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/.
+	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING=Release -D generated_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_outlined_pr_async.cu.o -D generated_cubin_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_outlined_pr_async.cu.o.cubin.txt -P /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o.Release.cmake
+
 CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o: CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o.depend
 CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o: CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o.Release.cmake
 CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o: ../samples/pr/persist_pr_async.cu
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building NVCC (Device) object CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building NVCC (Device) object CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o"
 	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -E make_directory /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/.
 	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING=Release -D generated_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_persist_pr_async.cu.o -D generated_cubin_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_persist_pr_async.cu.o.cubin.txt -P /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o.Release.cmake
 
@@ -857,20 +864,21 @@ CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o: /usr/local/cuda/include
 CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o: /usr/local/cuda/include/vector_types.h
 CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o: CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o.Release.cmake
 CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o: ../samples/pr/pr_async.cu
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building NVCC (Device) object CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building NVCC (Device) object CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o"
 	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -E make_directory /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/.
 	cd /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr && /opt/clion-2017.3.2/bin/cmake/bin/cmake -D verbose:BOOL=$(VERBOSE) -D build_configuration:STRING=Release -D generated_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_pr_async.cu.o -D generated_cubin_file:STRING=/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_pr_async.cu.o.cubin.txt -P /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o.Release.cmake
 
 CMakeFiles/pr.dir/pr_intermediate_link.o: CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o
 CMakeFiles/pr.dir/pr_intermediate_link.o: CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o
+CMakeFiles/pr.dir/pr_intermediate_link.o: CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o
 CMakeFiles/pr.dir/pr_intermediate_link.o: CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o
 CMakeFiles/pr.dir/pr_intermediate_link.o: CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building NVCC intermediate link file CMakeFiles/pr.dir/pr_intermediate_link.o"
-	/usr/local/cuda/bin/nvcc -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_52,code=compute_52 -O3 -DNDEBUG -Xcompiler -DNDEBUG -std=c++11 -rdc=true --expt-extended-lambda -m64 -ccbin /usr/bin/cc -dlink /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_my_pr_async.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_deltapr.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_persist_pr_async.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_pr_async.cu.o -o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/./pr_intermediate_link.o
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building NVCC intermediate link file CMakeFiles/pr.dir/pr_intermediate_link.o"
+	/usr/local/cuda/bin/nvcc -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_52,code=compute_52 -O3 -DNDEBUG -Xcompiler -DNDEBUG -std=c++11 -rdc=true --expt-extended-lambda -m64 -ccbin /usr/bin/cc -dlink /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_my_pr_async.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_deltapr.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_outlined_pr_async.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_persist_pr_async.cu.o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/./pr_generated_pr_async.cu.o -o /home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/./pr_intermediate_link.o
 
 CMakeFiles/pr.dir/src/utils/parser.cpp.o: CMakeFiles/pr.dir/flags.make
 CMakeFiles/pr.dir/src/utils/parser.cpp.o: ../src/utils/parser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/pr.dir/src/utils/parser.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/pr.dir/src/utils/parser.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pr.dir/src/utils/parser.cpp.o -c /home/liang/groute-dev/src/utils/parser.cpp
 
 CMakeFiles/pr.dir/src/utils/parser.cpp.i: cmake_force
@@ -894,7 +902,7 @@ CMakeFiles/pr.dir/src/utils/parser.cpp.o.provides.build: CMakeFiles/pr.dir/src/u
 
 CMakeFiles/pr.dir/src/utils/utils.cpp.o: CMakeFiles/pr.dir/flags.make
 CMakeFiles/pr.dir/src/utils/utils.cpp.o: ../src/utils/utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/pr.dir/src/utils/utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/pr.dir/src/utils/utils.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pr.dir/src/utils/utils.cpp.o -c /home/liang/groute-dev/src/utils/utils.cpp
 
 CMakeFiles/pr.dir/src/utils/utils.cpp.i: cmake_force
@@ -918,7 +926,7 @@ CMakeFiles/pr.dir/src/utils/utils.cpp.o.provides.build: CMakeFiles/pr.dir/src/ut
 
 CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.o: CMakeFiles/pr.dir/flags.make
 CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.o: ../src/groute/graphs/csr_graph.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.o -c /home/liang/groute-dev/src/groute/graphs/csr_graph.cpp
 
 CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.i: cmake_force
@@ -942,7 +950,7 @@ CMakeFiles/pr.dir/src/groute/graphs/csr_graph.cpp.o.provides.build: CMakeFiles/p
 
 CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o: CMakeFiles/pr.dir/flags.make
 CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o: ../samples/pr/pr_host.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o -c /home/liang/groute-dev/samples/pr/pr_host.cpp
 
 CMakeFiles/pr.dir/samples/pr/pr_host.cpp.i: cmake_force
@@ -966,7 +974,7 @@ CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o.provides.build: CMakeFiles/pr.dir/sam
 
 CMakeFiles/pr.dir/samples/pr/main.cpp.o: CMakeFiles/pr.dir/flags.make
 CMakeFiles/pr.dir/samples/pr/main.cpp.o: ../samples/pr/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pr.dir/samples/pr/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/pr.dir/samples/pr/main.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pr.dir/samples/pr/main.cpp.o -c /home/liang/groute-dev/samples/pr/main.cpp
 
 CMakeFiles/pr.dir/samples/pr/main.cpp.i: cmake_force
@@ -1000,6 +1008,7 @@ pr_OBJECTS = \
 pr_EXTERNAL_OBJECTS = \
 "/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o" \
 "/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o" \
+"/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o" \
 "/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o" \
 "/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o" \
 "/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr.dir/pr_intermediate_link.o"
@@ -1011,6 +1020,7 @@ pr: CMakeFiles/pr.dir/samples/pr/pr_host.cpp.o
 pr: CMakeFiles/pr.dir/samples/pr/main.cpp.o
 pr: CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o
 pr: CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o
+pr: CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o
 pr: CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o
 pr: CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o
 pr: CMakeFiles/pr.dir/pr_intermediate_link.o
@@ -1024,7 +1034,7 @@ pr: /usr/local/cuda/lib64/stubs/libcuda.so
 pr: /usr/local/cuda/lib64/libnvToolsExt.so
 pr: deps/gflags/libgflags_nothreads.a
 pr: CMakeFiles/pr.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable pr"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/liang/groute-dev/cmake-build-release/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable pr"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pr.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -1046,6 +1056,7 @@ CMakeFiles/pr.dir/clean:
 
 CMakeFiles/pr.dir/depend: CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o
 CMakeFiles/pr.dir/depend: CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o
+CMakeFiles/pr.dir/depend: CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o
 CMakeFiles/pr.dir/depend: CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o
 CMakeFiles/pr.dir/depend: CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o
 CMakeFiles/pr.dir/depend: CMakeFiles/pr.dir/pr_intermediate_link.o

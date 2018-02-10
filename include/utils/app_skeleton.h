@@ -48,12 +48,13 @@
 #define RUN_ALL false
 #endif
 
+#include <limits.h>
 // App
 DEFINE_bool(interactive, false, "Run an interactive session");
 DEFINE_string(cmdfile, "", "A file with commands to execute");
 DEFINE_int32(num_gpus, 2, "Override number of GPUs (or negative to use the amount of available GPUs)");
 DEFINE_int32(startwith, 1, "Start with a specific number of GPUs");
-
+DEFINE_double(threshold, ULONG_LONG_MAX, "PR sum as threshold");
 // Variants
 DEFINE_bool(all, false, "Run all variants");
 DEFINE_bool(single, false, "Run the single GPU variant");
