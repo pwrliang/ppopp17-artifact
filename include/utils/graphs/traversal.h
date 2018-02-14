@@ -89,8 +89,7 @@ DECLARE_bool(pn);
 using std::min;
 using std::max;
 
-inline void KernelSizing(dim3& grid_dims, dim3& block_dims, uint32_t work_size)
-{
+inline void KernelSizing(dim3 &grid_dims, dim3 &block_dims, uint32_t work_size) {
     dim3 bd(FLAGS_block_size, 1, 1);
     dim3 gd(round_up(work_size, bd.x), 1, 1);
 
@@ -99,14 +98,12 @@ inline void KernelSizing(dim3& grid_dims, dim3& block_dims, uint32_t work_size)
 }
 
 namespace utils {
-    namespace traversal
-    {
+    namespace traversal {
         /*
         * @brief A global context for graph traversal workers
         */
         template<typename Algo>
-        class Context : public groute::Context
-        {
+        class Context : public groute::Context {
         public:
             groute::graphs::host::CSRGraph host_graph;
 
@@ -114,44 +111,40 @@ namespace utils {
             int nvtxs, nedges;
 
             Context(int ngpus) :
-                groute::Context(ngpus), ngpus(ngpus)
-            {
-                if (FLAGS_gen_graph)
-                {
+                    groute::Context(ngpus), ngpus(ngpus) {
+                if (FLAGS_gen_graph) {
                     printf("\nGenerating graph, nnodes: %d, gen_factor: %d", FLAGS_gen_nnodes, FLAGS_gen_factor);
 
-                    switch (FLAGS_gen_method)
-                    {
-                    case 1: // No intersection chain 
+                    switch (FLAGS_gen_method) {
+                        case 1: // No intersection chain
                         {
-                            groute::graphs::host::NoIntersectionGraphGenerator generator(ngpus, FLAGS_gen_nnodes, FLAGS_gen_factor);
+                            groute::graphs::host::NoIntersectionGraphGenerator generator(ngpus, FLAGS_gen_nnodes,
+                                                                                         FLAGS_gen_factor);
                             generator.Gen(host_graph);
                         }
-                        break;
-                    case 2: // Chain 
+                            break;
+                        case 2: // Chain
                         {
-                            groute::graphs::host::ChainGraphGenerator generator(ngpus, FLAGS_gen_nnodes, FLAGS_gen_factor);
+                            groute::graphs::host::ChainGraphGenerator generator(ngpus, FLAGS_gen_nnodes,
+                                                                                FLAGS_gen_factor);
                             generator.Gen(host_graph);
                         }
-                        break;
-                    case 3: // Full cliques no intersection 
+                            break;
+                        case 3: // Full cliques no intersection
                         {
-                            groute::graphs::host::CliquesNoIntersectionGraphGenerator generator(ngpus, FLAGS_gen_nnodes, FLAGS_gen_factor);
+                            groute::graphs::host::CliquesNoIntersectionGraphGenerator generator(ngpus, FLAGS_gen_nnodes,
+                                                                                                FLAGS_gen_factor);
                             generator.Gen(host_graph);
                         }
-                        break;
-                    default:
-                        {
+                            break;
+                        default: {
                             // Generates a simple random graph with 'nnodes' nodes and maximum 'gen_factor' neighbors
                             groute::graphs::host::CSRGraphGenerator generator(FLAGS_gen_nnodes, FLAGS_gen_factor);
                             generator.Gen(host_graph);
                         }
-                        break;
+                            break;
                     }
-                }
-
-                else
-                {
+                } else {
                     graph_t *graph;
 
                     if (FLAGS_graphfile == "") {
@@ -159,7 +152,8 @@ namespace utils {
                         exit(0);
                     }
 
-                    printf("\nLoading graph %s (%d)\n", FLAGS_graphfile.substr(FLAGS_graphfile.find_last_of('\\') + 1).c_str(), FLAGS_ggr);
+                    printf("\nLoading graph %s (%d)\n",
+                           FLAGS_graphfile.substr(FLAGS_graphfile.find_last_of('\\') + 1).c_str(), FLAGS_ggr);
                     graph = GetCachedGraph(FLAGS_graphfile, FLAGS_ggr);
 
                     if (graph->nvtxs == 0) {
@@ -168,16 +162,17 @@ namespace utils {
                     }
 
                     host_graph.Bind(
-                        graph->nvtxs, graph->nedges, 
-                        graph->xadj, graph->adjncy,
-                        graph->readew ? graph->adjwgt : nullptr, graph->readvw ? graph->vwgt : nullptr // avoid binding to the default 1's weight arrays
-                        );
+                            graph->nvtxs, graph->nedges,
+                            graph->xadj, graph->adjncy,
+                            graph->readew ? graph->adjwgt : nullptr,
+                            graph->readvw ? graph->vwgt : nullptr // avoid binding to the default 1's weight arrays
+                    );
 
-                    if (FLAGS_stats)
-                    {
+                    if (FLAGS_stats) {
                         printf(
-                            "The graph has %d vertices, and %d edges (avg. degree: %f, max. degree: %d)\n", 
-                            host_graph.nnodes, host_graph.nedges, (float)host_graph.nedges / host_graph.nnodes, host_graph.max_degree());
+                                "The graph has %d vertices, and %d edges (avg. degree: %f, max. degree: %d)\n",
+                                host_graph.nnodes, host_graph.nedges, (float) host_graph.nedges / host_graph.nnodes,
+                                host_graph.max_degree());
 
                         CleanupGraphs();
                         exit(0);
@@ -187,7 +182,8 @@ namespace utils {
                 if (host_graph.edge_weights == nullptr && FLAGS_gen_weights) {
 
                     if (FLAGS_verbose)
-                        printf("\nNo edge data in the input graph, generating edge weights from the range [%d, %d]\n", 1, FLAGS_gen_weight_range);
+                        printf("\nNo edge data in the input graph, generating edge weights from the range [%d, %d]\n",
+                               1, FLAGS_gen_weight_range);
 
                     // Generate edge data
                     std::default_random_engine generator;
@@ -195,8 +191,7 @@ namespace utils {
 
                     host_graph.AllocWeights();
 
-                    for (int i = 0; i < host_graph.nedges; i++)
-                    {
+                    for (int i = 0; i < host_graph.nedges; i++) {
                         host_graph.edge_weights[i] = distribution(generator);
                     }
                 }
@@ -207,7 +202,8 @@ namespace utils {
                 printf("\n----- Running %s -----\n\n", Algo::Name());
 
                 if (FLAGS_verbose) {
-                    printf("The graph has %d vertices, and %d edges (average degree: %f)\n", nvtxs, nedges, (float)nedges / nvtxs);
+                    printf("The graph has %d vertices, and %d edges (average degree: %f)\n", nvtxs, nedges,
+                           (float) nedges / nvtxs);
                 }
             }
         };
@@ -216,10 +212,8 @@ namespace utils {
         * @brief A generic runner for multi-GPU traversal workers
         */
         template<typename Algo, typename TWorker, typename DWCallbacks, typename TLocal, typename TRemote, typename ...TGraphData>
-        struct Runner
-        {
-            bool operator() (int ngpus, int prio_delta, TGraphData&... args)
-            {
+        struct Runner {
+            bool operator()(int ngpus, int prio_delta, TGraphData &... args) {
                 Context<Algo> context(ngpus);
 
                 context.configuration.verbose = FLAGS_verbose;
@@ -231,63 +225,65 @@ namespace utils {
                 }
 
                 groute::graphs::multi::CSRGraphAllocator
-                    dev_graph_allocator(context, context.host_graph, ngpus, FLAGS_pn);
+                        dev_graph_allocator(context, context.host_graph, ngpus, FLAGS_pn);
 
                 dev_graph_allocator.AllocateDatumObjects(args...);
 
                 // Setup pipeline paramenters for the DWL router
                 size_t num_exch_buffs = (FLAGS_pipe_size <= 0)
-                    ? ngpus*FLAGS_pipe_size_factor : FLAGS_pipe_size;
+                                        ? ngpus * FLAGS_pipe_size_factor : FLAGS_pipe_size;
                 size_t max_exch_size = (FLAGS_pipe_alloc_size <= 0)
-                    ? max((size_t)(context.host_graph.nnodes * FLAGS_pipe_alloc_factor), (size_t)1) : FLAGS_pipe_alloc_size;
+                                       ? max((size_t) (context.host_graph.nnodes * FLAGS_pipe_alloc_factor), (size_t) 1)
+                                       : FLAGS_pipe_alloc_size;
 
                 // Prepare DistributedWorklist parameters
                 groute::Endpoint host = groute::Endpoint::HostEndpoint(0);
                 groute::EndpointList worker_endpoints = groute::Endpoint::Range(ngpus);
                 std::map<groute::Endpoint, DWCallbacks> callbacks;
-                for (int i = 0; i < ngpus; ++i)
-                {
-                    callbacks[worker_endpoints[i]] = DWCallbacks(dev_graph_allocator.GetDeviceObjects()[i], args.GetDeviceObjects()[i]...);
+                for (int i = 0; i < ngpus; ++i) {
+                    callbacks[worker_endpoints[i]] = DWCallbacks(dev_graph_allocator.GetDeviceObjects()[i],
+                                                                 args.GetDeviceObjects()[i]...);
                 }
 
                 groute::DistributedWorklistConfiguration configuration;
-                configuration.fused_chunk_size      = FLAGS_fused_chunk_size;
-                configuration.count_work            = FLAGS_count_work;
-                configuration.alloc_factor_in       = FLAGS_wl_alloc_factor_in;
-                configuration.alloc_factor_out      = FLAGS_wl_alloc_factor_out;
-                configuration.alloc_factor_pass     = FLAGS_wl_alloc_factor_pass;
-                configuration.alloc_factor_local    = FLAGS_wl_alloc_factor_local;
+                configuration.fused_chunk_size = FLAGS_fused_chunk_size;
+                configuration.count_work = FLAGS_count_work;
+                configuration.alloc_factor_in = FLAGS_wl_alloc_factor_in;
+                configuration.alloc_factor_out = FLAGS_wl_alloc_factor_out;
+                configuration.alloc_factor_pass = FLAGS_wl_alloc_factor_pass;
+                configuration.alloc_factor_local = FLAGS_wl_alloc_factor_local;
 
-                groute::DistributedWorklist<TLocal, TRemote, DWCallbacks, TWorker> 
-                    distributed_worklist(context, { host }, worker_endpoints, callbacks, max_exch_size, num_exch_buffs, prio_delta, configuration);
-                
+                groute::DistributedWorklist<TLocal, TRemote, DWCallbacks, TWorker>
+                        distributed_worklist(context, {host}, worker_endpoints, callbacks, max_exch_size,
+                                             num_exch_buffs, prio_delta, configuration);
+
                 context.SyncAllDevices(); // Allocations are on default streams, syncing all devices 
 
                 std::vector<std::thread> workers;
                 groute::internal::Barrier barrier(ngpus + 1);
 
-                for (int ii = 0; ii < ngpus; ++ii)
-                {
-                    auto dev_func = [&](size_t i)
-                    {
+                for (int ii = 0; ii < ngpus; ++ii) {
+                    auto dev_func = [&](size_t i) {
                         context.SetDevice(i);
                         groute::Stream stream = context.CreateStream(i);
-                        
+
                         // Perform algorithm specific device memsets nedded before Algo::HostInit (excluded from timing) 
-                        Algo::DeviceMemset(stream, dev_graph_allocator.GetDeviceObjects()[i], args.GetDeviceObjects()[i]...);
+                        Algo::DeviceMemset(stream, dev_graph_allocator.GetDeviceObjects()[i],
+                                           args.GetDeviceObjects()[i]...);
 
                         stream.Sync();
 
                         barrier.Sync(); // Signal to host
                         barrier.Sync(); // Receive signal from host
-                        
+
                         // Perform algorithm specific initialization (included in timing) 
                         Algo::DeviceInit(
-                            i, stream, distributed_worklist, distributed_worklist.GetPeer(i), 
-                            dev_graph_allocator.GetDeviceObjects()[i], args.GetDeviceObjects()[i]...);
+                                i, stream, distributed_worklist, distributed_worklist.GetPeer(i),
+                                dev_graph_allocator.GetDeviceObjects()[i], args.GetDeviceObjects()[i]...);
 
                         // Loop over the work until convergence  
-                        distributed_worklist.Work(i, stream, dev_graph_allocator.GetDeviceObjects()[i], args.GetDeviceObjects()[i]...);
+                        distributed_worklist.Work(i, stream, dev_graph_allocator.GetDeviceObjects()[i],
+                                                  args.GetDeviceObjects()[i]...);
 
                         barrier.Sync(); // Signal completion to host
                     };
@@ -300,7 +296,7 @@ namespace utils {
                 Algo::HostInit(context, dev_graph_allocator, distributed_worklist); // Init from host
 
                 Stopwatch sw(true); // All threads are running, start timing
-                
+
                 IntervalRangeMarker range_marker(context.nedges, "work");
 
                 barrier.Sync(); // Signal to devices  
@@ -312,15 +308,14 @@ namespace utils {
 
                 printf("\n\n%s: %f ms. <filter>\n\n", Algo::Name(), sw.ms());
 
-                for (int i = 0; i < ngpus; ++i)
-                {
+                for (int i = 0; i < ngpus; ++i) {
                     // Join workers  
                     workers[i].join();
                 }
 
                 // Gather
                 auto gathered_output = Algo::Gather(dev_graph_allocator, args...);
-                
+
                 // Output
                 if (FLAGS_output.length() != 0)
                     Algo::Output(FLAGS_output.c_str(), gathered_output);
@@ -329,8 +324,7 @@ namespace utils {
                 if (FLAGS_check) {
                     auto regression = Algo::Host(context.host_graph, args...);
                     return Algo::CheckErrors(gathered_output, regression) == 0;
-                }
-                else {
+                } else {
                     printf("Warning: Result not checked\n");
                     return true;
                 }

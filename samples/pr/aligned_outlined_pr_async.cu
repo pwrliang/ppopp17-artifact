@@ -35,7 +35,7 @@
 #include <cub/cub.cuh>
 #include <groute/event_pool.h>
 #include <groute/device/cta_scheduler.cuh>
-#include <groute/graphs/csr_graph.h>
+#include <groute/graphs/csr_graph_align.h>
 #include <groute/dwl/work_source.cuh>
 #include <utils/parser.h>
 #include <utils/utils.h>
@@ -52,14 +52,13 @@ DECLARE_int32(max_pr_iterations);
 DECLARE_bool(verbose);
 DECLARE_int32(grid_size);
 DECLARE_double(threshold);
-DEFINE_bool(vector, false, "enable vectorize access");
 
 #define GTID (blockIdx.x * blockDim.x + threadIdx.x)
 #define CHECK_INTERVAL 10000000
 
 typedef float rank_t;
 
-namespace outlinedpr {
+namespace aligned_outlinedpr {
     struct Algo {
 
         static const char *Name() { return "PR"; }
@@ -170,15 +169,44 @@ namespace outlinedpr {
 
             index_t begin_edge = graph.begin_edge(node),
                     end_edge = graph.end_edge(node),
-                    out_degree = end_edge - begin_edge;
+                    out_degree = end_edge - begin_edge,
+                    aligned_begin_edge = graph.aligned_begin_edge(node);
+
+            const index_t VEC_SIZE = 4;
 
             if (out_degree == 0) continue;
+
             rank_t update = ALPHA * res / out_degree;
 
-            for (index_t edge = begin_edge; edge < end_edge; ++edge) {
-                index_t dest = graph.edge_dest(edge);
+            index_t offset = begin_edge;
+            index_t aligned_offset = aligned_begin_edge;
 
-                atomicAdd(residual.get_item_ptr(dest), update);
+            while (end_edge - offset >= VEC_SIZE) {
+                uint4 dest4 = graph.edge_dest4(aligned_offset);
+
+                atomicAdd(residual.get_item_ptr(dest4.x), update);
+                atomicAdd(residual.get_item_ptr(dest4.y), update);
+                atomicAdd(residual.get_item_ptr(dest4.z), update);
+                atomicAdd(residual.get_item_ptr(dest4.w), update);
+
+                aligned_offset++;
+                offset += VEC_SIZE;
+            }
+
+            if (offset < end_edge) {
+                uint4 last_trunk = graph.edge_dest4(aligned_offset);
+                index_t rest_len = end_edge - offset;
+
+                if (rest_len == 3) {
+                    atomicAdd(residual.get_item_ptr(last_trunk.x), update);
+                    atomicAdd(residual.get_item_ptr(last_trunk.y), update);
+                    atomicAdd(residual.get_item_ptr(last_trunk.z), update);
+                } else if (rest_len == 2) {
+                    atomicAdd(residual.get_item_ptr(last_trunk.x), update);
+                    atomicAdd(residual.get_item_ptr(last_trunk.y), update);
+                } else if (rest_len == 1) {
+                    atomicAdd(residual.get_item_ptr(last_trunk.x), update);
+                }
             }
         }
     }
@@ -366,6 +394,7 @@ namespace outlinedpr {
                         (FLAGS_threshold, m_graph, work_source, m_current_ranks, m_residual
                                 , sum_buffer.dev_ptr, running_flag.dev_ptr, gridBarrier);
             } else {
+                printf("run with vectorize\n");
                 PageRankControl__Single__ << < blocksPerGrid, FLAGS_block_size, sizeof(rank_t) * SMEMDIM,
                         stream.cuda_stream >> >
                         (FLAGS_threshold, m_graph, work_source, m_current_ranks, m_residual
@@ -376,9 +405,10 @@ namespace outlinedpr {
 
 }
 
-bool MyTestPageRankSingleOutlined() {
-    utils::traversal::Context<outlinedpr::Algo> context(1);
-    groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
+
+bool AlignedMyTestPageRankSingleOutlined() {
+    utils::traversal::Context<aligned_outlinedpr::Algo> context(1);
+    groute::graphs::single::CSRGraphAllocatorAlign dev_graph_allocator(context.host_graph);
 
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
     groute::graphs::single::NodeOutputDatum<rank_t> current_ranks;
@@ -390,7 +420,7 @@ bool MyTestPageRankSingleOutlined() {
     index_t blocksPerGrid = FLAGS_grid_size;
 
 
-    outlinedpr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
+    aligned_outlinedpr::Problem<groute::graphs::dev::CSRGraphAlign, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
             solver(dev_graph_allocator.DeviceObject(), current_ranks.DeviceObject(), residual.DeviceObject());
 
     Stopwatch stopwatch;

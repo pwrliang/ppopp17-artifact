@@ -29,33 +29,26 @@
 #include <utils/utils.h>
 
 
+std::map<std::string, graph_t *> g_cachedGraphs;
 
-std::map < std::string, graph_t* > g_cachedGraphs;
-
-graph_t* GetCachedGraph(const std::string& graphfile, bool isGR)
-{
+graph_t *GetCachedGraph(const std::string &graphfile, bool isGR) {
     auto it = g_cachedGraphs.find(graphfile);
-    if (it == g_cachedGraphs.end())
-    {
+    if (it == g_cachedGraphs.end()) {
         graph_t *graph;
-        if(isGR) 
-      graph = ReadGraphGR((char*)graphfile.c_str());
+        if (isGR)
+            graph = ReadGraphGR((char *) graphfile.c_str());
         else
-      graph = ReadGraph((char*)graphfile.c_str());
+            graph = ReadGraph((char *) graphfile.c_str());
 
         g_cachedGraphs[graphfile] = graph;
         return graph;
-    }
-    else
-    {
+    } else {
         return it->second;
     }
 }
 
-void CleanupGraphs()
-{
-    for (auto& g : g_cachedGraphs)
-    {
+void CleanupGraphs() {
+    for (auto &g : g_cachedGraphs) {
         FreeGraph(&g.second);
     }
     g_cachedGraphs.clear();
@@ -95,10 +88,14 @@ Bernhard Eder blog_at_bbgen.net
 #include <cstring>
 
 bool _isQuote(char c);
+
 bool _isEscape(char c);
+
 bool _isEscape(char c);
+
 bool _isWhitespace(char c);
-std::vector<std::string> parse(const std::string& args);
+
+std::vector<std::string> parse(const std::string &args);
 
 /*
 * Usage:
@@ -106,29 +103,25 @@ std::vector<std::string> parse(const std::string& args);
 * char** argv;
 * stringToArgcArgv("foo bar", &argc, &argv);
 */
-void stringToArgcArgv(const std::string& str, int* argc, char*** argv)
-{
+void stringToArgcArgv(const std::string &str, int *argc, char ***argv) {
     std::vector<std::string> args = parse(str);
 
-    *argv = (char**)std::malloc(args.size() * sizeof(char*));
+    *argv = (char **) std::malloc(args.size() * sizeof(char *));
 
     int i = 0;
     for (std::vector<std::string>::iterator it = args.begin();
-        it != args.end();
-        ++it, ++i)
-    {
+         it != args.end();
+         ++it, ++i) {
         std::string arg = *it;
-        (*argv)[i] = (char*)std::malloc((arg.length() + 1) * sizeof(char));
+        (*argv)[i] = (char *) std::malloc((arg.length() + 1) * sizeof(char));
         std::strcpy((*argv)[i], arg.c_str());
     }
 
     *argc = args.size();
 }
 
-void freeArgcArgv(int* argc, char*** argv)
-{
-    for (int i = 0; i < *argc; i++)
-    {
+void freeArgcArgv(int *argc, char ***argv) {
+    for (int i = 0; i < *argc; i++) {
         free((*argv)[i]);
     }
 
@@ -137,8 +130,7 @@ void freeArgcArgv(int* argc, char*** argv)
     *argc = 0;
 }
 
-std::vector<std::string> parse(const std::string& args)
-{
+std::vector<std::string> parse(const std::string &args) {
     std::stringstream ain(args);    // used to iterate over input string
     ain >> std::noskipws;           // do not skip white spaces
     std::vector<std::string> oargs; // output list of arguments
@@ -162,83 +154,77 @@ std::vector<std::string> parse(const std::string& args)
 
         if (_isQuote(c)) {
             switch (currentState) {
-            case OutOfArg:
-                currentArg.str(std::string());
-            case InArg:
-                currentState = InArgQuote;
-                currentQuoteChar = c;
-                break;
+                case OutOfArg:
+                    currentArg.str(std::string());
+                case InArg:
+                    currentState = InArgQuote;
+                    currentQuoteChar = c;
+                    break;
 
-            case InArgQuote:
-                if (c == currentQuoteChar)
+                case InArgQuote:
+                    if (c == currentQuoteChar)
+                        currentState = InArg;
+                    else
+                        currentArg << c;
+                    break;
+            }
+
+        } else if (_isWhitespace(c)) {
+            switch (currentState) {
+                case InArg:
+                    oargs.push_back(currentArg.str());
+                    currentState = OutOfArg;
+                    break;
+                case InArgQuote:
+                    currentArg << c;
+                    break;
+                case OutOfArg:
+                    // nothing
+                    break;
+            }
+        } else if (_isEscape(c)) {
+            switch (currentState) {
+                case OutOfArg:
+                    currentArg.str(std::string());
                     currentState = InArg;
-                else
-                    currentArg << c;
-                break;
-            }
-
-        }
-        else if (_isWhitespace(c)) {
-            switch (currentState) {
-            case InArg:
-                oargs.push_back(currentArg.str());
-                currentState = OutOfArg;
-                break;
-            case InArgQuote:
-                currentArg << c;
-                break;
-            case OutOfArg:
-                // nothing
-                break;
-            }
-        }
-        else if (_isEscape(c)) {
-            switch (currentState) {
-            case OutOfArg:
-                currentArg.str(std::string());
-                currentState = InArg;
-            case InArg:
-            case InArgQuote:
-                if (ain.eof())
-                {
+                case InArg:
+                case InArgQuote:
+                    if (ain.eof()) {
 #ifdef WIN32
-                    // Windows doesn't care about an escape character at the end.
-                    // It just adds \ to the arg.
-                    currentArg << c;
+                        // Windows doesn't care about an escape character at the end.
+                        // It just adds \ to the arg.
+                        currentArg << c;
 #else
-                    throw(std::runtime_error("Found Escape Character at end of file."));
+                        throw (std::runtime_error("Found Escape Character at end of file."));
 #endif
-                }
-                else
-                {
+                    } else {
 #ifdef WIN32
-                    // Windows only escapes the " character.
-                    // Every other character is just printed and the \ is added itself.
-                    char c1 = c;
-                    ain >> c;
-                    if (c != '\"')
-                        currentArg << c1; // only ignore \ when next char is "
-                    ain.unget();
+                        // Windows only escapes the " character.
+                        // Every other character is just printed and the \ is added itself.
+                        char c1 = c;
+                        ain >> c;
+                        if (c != '\"')
+                            currentArg << c1; // only ignore \ when next char is "
+                        ain.unget();
 #else
-                    ain >> c;
-                    currentArg << c;
+                        ain >> c;
+                        currentArg << c;
 #endif
-                }
-                break;
+                    }
+                    break;
             }
-        }
-        else {
+        } else {
             switch (currentState) {
-            case InArg:
-            case InArgQuote:
-                currentArg << c;
-                break;
+                case InArg:
+                case InArgQuote:
+                    currentArg << c;
+                    break;
 
-            case OutOfArg:
-                currentArg.str(std::string());
-                currentArg << c;
-                currentState = InArg;
-                break;
+                case OutOfArg:
+                    currentArg.str(std::string());
+                    currentArg << c;
+                    currentState = InArg;
+                    break;
             }
         }
     }
@@ -246,13 +232,12 @@ std::vector<std::string> parse(const std::string& args)
     if (currentState == InArg)
         oargs.push_back(currentArg.str());
     else if (currentState == InArgQuote)
-        throw(std::runtime_error("Starting quote has no ending quote."));
+        throw (std::runtime_error("Starting quote has no ending quote."));
 
     return oargs;
 }
 
-bool _isQuote(char c)
-{
+bool _isQuote(char c) {
     if (c == '\"')
         return true;
     else if (c == '\'')
@@ -261,16 +246,14 @@ bool _isQuote(char c)
     return false;
 }
 
-bool _isEscape(char c)
-{
+bool _isEscape(char c) {
     if (c == '\\')
         return true;
 
     return false;
 }
 
-bool _isWhitespace(char c)
-{
+bool _isWhitespace(char c) {
     if (c == ' ')
         return true;
     else if (c == '\t')

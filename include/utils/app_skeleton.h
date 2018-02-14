@@ -32,7 +32,6 @@
 #include <cstdio>
 #include <cuda_runtime.h>
 #include <gflags/gflags.h>
-#include <glog/logging.h>
 #include <iostream>
 
 #include <utils/utils.h>

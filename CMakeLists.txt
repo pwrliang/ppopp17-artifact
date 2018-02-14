@@ -20,11 +20,6 @@ if (NOT GTEST_FOUND)
     add_subdirectory(deps/googletest/googletest)
 endif ()
 
-#GLog
-add_subdirectory(deps/glog)
-include_directories(${PROJECT_BINARY_DIR}/deps/glog/include)
-link_directories(${PROJECT_BINARY_DIR}/deps/glog/lib)
-
 # Try to find METIS
 find_package(METIS QUIET)
 if (NOT METIS_FOUND)
@@ -57,7 +52,7 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/cub)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(EXTRA_LIBS gflags_static glog pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
+set(EXTRA_LIBS gflags_static pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Debug mode")
@@ -91,7 +86,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #target_link_libraries(sssp ${EXTRA_LIBS})
 
 cuda_add_executable(pr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-        samples/pr/my_pr_async.cu samples/pr/deltapr.cu samples/pr/outlined_pr_async.cu samples/pr/persist_pr_async.cu samples/pr/pr_async.cu samples/pr/pr_host.cpp
+        samples/pr/test.cu
+        samples/pr/my_pr_async.cu
+        samples/pr/deltapr.cu
+        samples/pr/outlined_pr_async.cu
+        samples/pr/persist_pr_async.cu
+        samples/pr/pr_async.cu
+        samples/pr/pr_host.cpp
+        samples/pr/aligned_outlined_pr_async.cu
         samples/pr/main.cpp)
 target_link_libraries(pr ${EXTRA_LIBS})
 

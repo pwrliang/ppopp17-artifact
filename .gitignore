@@ -5,3 +5,5 @@
 *.patched
 setup.complete
 cmake-build-debug/
+cmake-build-release/
+.idea/workspace.xml

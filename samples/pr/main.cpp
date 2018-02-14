@@ -42,19 +42,22 @@ bool PageRankDeltaBased();
 
 bool MyTestPageRankSingleOutlined();
 
+bool AlignedMyTestPageRankSingleOutlined();
+
 bool MyTestPageRankSingle();
 
 bool TestPageRankSingle();
 
 bool TestPageRankAsyncMulti(int ngpus);
-
 bool TestPageRankAsyncMultiOptimized(int ngpus);
-
 void CleanupGraphs();
+
+void test();
 
 DECLARE_bool(groute);
 DEFINE_bool(outline, false, "using outlined method");
 DEFINE_bool(semi, false, "using semi async");
+DEFINE_bool(align, false, "enable align access");
 
 /*
  /home/liang/groute-dev/cmake-build-debug/pr \
@@ -74,9 +77,13 @@ namespace pr {
                 return TestPageRankSingle();
             } else {
                 printf("using my code\n");
-                if (FLAGS_outline)
-                    return MyTestPageRankSingleOutlined();
-                else {
+                if (FLAGS_outline) {
+                    if (FLAGS_align) {
+                        return AlignedMyTestPageRankSingleOutlined();
+                    } else {
+                        return MyTestPageRankSingleOutlined();
+                    }
+                } else {
                     if (FLAGS_semi)
                         return PageRankDeltaBased();
                     else
@@ -95,6 +102,7 @@ namespace pr {
         static void Cleanup() { CleanupGraphs(); }
     };
 }
+
 
 int main(int argc, char **argv) {
     Skeleton<pr::App> app;
