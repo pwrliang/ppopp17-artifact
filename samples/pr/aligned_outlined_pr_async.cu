@@ -57,7 +57,7 @@ DECLARE_double(threshold);
 #define CHECK_INTERVAL 10000000
 
 typedef float rank_t;
-const unsigned int VEC_SIZE = 8;
+const unsigned int VEC_SIZE = 4;
 
 namespace aligned_outlinedpr {
     struct Algo {
@@ -129,28 +129,14 @@ namespace aligned_outlinedpr {
             index_t offset = begin_edge;
             index_t aligned_offset = aligned_begin_edge;
 
-//            while (end_edge - offset >= VEC_SIZE) {
             for (aligned_offset = aligned_begin_edge; aligned_offset < aligned_end_edge - 1; aligned_offset++) {
                 uint4 dest4 = graph.edge_dest4(aligned_offset);
-//                uint8 dest8 = graph.edge_dest8(ii);
                 atomicAdd(residual.get_item_ptr(dest4.x), update);
                 atomicAdd(residual.get_item_ptr(dest4.y), update);
                 atomicAdd(residual.get_item_ptr(dest4.z), update);
                 atomicAdd(residual.get_item_ptr(dest4.w), update);
-
-//                atomicAdd(residual.get_item_ptr(dest8.a0), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a1), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a2), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a3), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a4), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a5), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a6), update);
-//                atomicAdd(residual.get_item_ptr(dest8.a7), update);
-
-                //aligned_offset++;
                 offset += VEC_SIZE;
             }
-
 
             if (offset < end_edge) {
                 uint4 dest4 = graph.edge_dest4(aligned_offset);
@@ -166,28 +152,6 @@ namespace aligned_outlinedpr {
                     case 1:
                         atomicAdd(residual.get_item_ptr(dest4.x), update);
                 }
-                //index_t rest_len1 = out_degree - (aligned_end_edge - aligned_begin_edge - 1) * VEC_SIZE;
-
-                //assert(rest_len == rest_len1);
-
-//                switch (rest_len) {
-//                    case 8:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a7), update);
-//                    case 7:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a6), update);
-//                    case 6:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a5), update);
-//                    case 5:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a4), update);
-//                    case 4:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a3), update);
-//                    case 3:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a2), update);
-//                    case 2:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a1), update);
-//                    case 1:
-//                        atomicAdd(residual.get_item_ptr(last_trunk.a0), update);
-//                }
             }
         }
     }
@@ -219,7 +183,7 @@ namespace aligned_outlinedpr {
                     current_ranks[node] += res;
 
                     index_t begin_edge = graph.begin_edge(node),
-                            end_edge = graph.end_edge8(node),
+                            end_edge = graph.end_edge4(node),
                             aligned_begin_edge = graph.aligned_begin_edge(node),
                             aligned_end_edge = graph.aligned_end_edge(node);
 
@@ -241,78 +205,20 @@ namespace aligned_outlinedpr {
                     (index_t edge_aligned,
                      index_t real_size,
                      rank_t update) {
-                uint8 dest8 = graph.edge_dest8(
+                uint4 dest4 = graph.edge_dest4(
                         edge_aligned);
 //                    printf("%d %d \n",rest_len, size);
                 assert(real_size > 0 && real_size <= VEC_SIZE);
                 switch (real_size) {
-//                    case 4:
-//                        atomicAdd(residual.get_item_ptr(dest4.w), update);
-//                    case 3:
-//                        atomicAdd(residual.get_item_ptr(dest4.z), update);
-//                    case 2:
-//                        atomicAdd(residual.get_item_ptr(dest4.y), update);
-//                    case 1:
-//                        atomicAdd(residual.get_item_ptr(dest4.x), update);
-                        case 8:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a7),
-                                    update);
-                        case 7:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a6),
-                                    update);
-                        case 6:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a5),
-                                    update);
-                        case 5:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a4),
-                                    update);
-                        case 4:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a3),
-                                    update);
-                        case 3:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a2),
-                                    update);
-                        case 2:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a1),
-                                    update);
-                        case 1:
-                            atomicAdd(
-                                    residual.get_item_ptr(
-                                            dest8.a0),
-                                    update);
+                    case 4:
+                        atomicAdd(residual.get_item_ptr(dest4.w), update);
+                    case 3:
+                        atomicAdd(residual.get_item_ptr(dest4.z), update);
+                    case 2:
+                        atomicAdd(residual.get_item_ptr(dest4.y), update);
+                    case 1:
+                        atomicAdd(residual.get_item_ptr(dest4.x), update);
                 }
-//                } else {
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a0), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a1), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a2), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a3), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a4), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a5), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a6), update);
-//                    atomicAdd(residual.get_item_ptr(
-//                            dest8.a7), update);
-//                }
             });
         }
     }

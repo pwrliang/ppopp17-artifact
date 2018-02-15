@@ -9,16 +9,39 @@ find_package(CUDA 7 REQUIRED)
 #Dynamic Parallelism
 link_directories(/usr/local/cuda/lib64)
 
-# GFlags
-add_subdirectory(deps/gflags)
-include_directories(${PROJECT_BINARY_DIR}/deps/gflags/include)
-link_directories(${PROJECT_BINARY_DIR}/deps/gflags/lib)
+set(LINKER_LIBS "")
+
+# glog
+include("cmake/FindGlog.cmake")
+include_directories(SYSTEM ${GLOG_INCLUDE_DIRS})
+list(APPEND LINKER_LIBS ${GLOG_LIBRARIES})
+
+# gflags
+include("cmake/FindGFlags.cmake")
+include_directories(SYSTEM ${GFLAGS_INCLUDE_DIRS})
+list(APPEND LINKER_LIBS ${GFLAGS_LIBRARIES})
+
+# gtest
+#include("cmake/FindGTest.cmake")
+#include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
+#list(APPEND LINKER_LIBS ${GTEST_INCLUDE_DIRS})
+#find_package(GTest REQUIRED)
+#include_directories(${GTEST_INCLUDE_DIRS})
+### GFlags
+#add_subdirectory(deps/gflags)
+#include_directories(${PROJECT_BINARY_DIR}/deps/gflags/include)
+#link_directories(${PROJECT_BINARY_DIR}/deps/gflags/lib)
+#
+#### Glog
+#add_subdirectory(deps/glog)
+#include_directories(${PROJECT_BINARY_DIR}/deps/glog/include)
+#link_directories(${PROJECT_BINARY_DIR}/deps/glog/lib)
 
 # GTest
-find_package(GTest QUIET)
-if (NOT GTEST_FOUND)
-    add_subdirectory(deps/googletest/googletest)
-endif ()
+#find_package(GTest QUIET)
+#if (NOT GTEST_FOUND)
+#    add_subdirectory(deps/googletest/googletest)
+#endif ()
 
 # Try to find METIS
 find_package(METIS QUIET)
@@ -52,7 +75,7 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/cub)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(EXTRA_LIBS gflags_static pthread ${METIS_LIBRARIES} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
+set(EXTRA_LIBS pthread ${METIS_LIBRARIES} ${LINKER_LIBS} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Debug mode")
@@ -108,6 +131,9 @@ target_link_libraries(pr ${EXTRA_LIBS})
 # Unit tests
 #enable_testing()
 
+#if(GTEST_FOUND)
+#    message("gtest found")
+#endif()
 # GTest directory settings
 #if(NOT GTEST_FOUND)
 #  include_directories(
