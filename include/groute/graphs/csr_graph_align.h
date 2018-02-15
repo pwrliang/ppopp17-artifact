@@ -42,8 +42,12 @@
 #include <groute/graphs/common.h>
 #include <groute/graphs/csr_graph.h>
 
+typedef struct __device_builtin__ __builtin_align__(32) {
+    unsigned int a0, a1, a2, a3, a4, a5, a6, a7;
+} uint8;
 namespace groute {
     namespace graphs {
+        const unsigned int VEC_SIZE = 8;
 
         namespace dev // device objects
         {
@@ -54,20 +58,20 @@ namespace groute {
                 CSRGraphAlign() {}
 
                 __device__ __forceinline__ index_t aligned_begin_edge(index_t node) const {
-                    return row_start[node] / 4;
+                    return row_start[node] / VEC_SIZE;
                 }
 
 
                 __device__ __forceinline__ index_t aligned_end_edge(index_t node) const {
-                    return row_start[node + 1] / 4;
+                    return row_start[node + 1] / VEC_SIZE;
                 }
 
-                __device__ __forceinline__ index_t end_edge(index_t node) const {
+                __device__ __forceinline__ index_t end_edge4(index_t node) const {
                     if (CSRGraph::begin_edge(node) == CSRGraph::end_edge(node))
                         return CSRGraph::end_edge(node);
 
                     index_t end_edge = CSRGraph::end_edge(node);
-                    uint4 last_trunk = edge_dest4(end_edge / 4 - 1);
+                    uint4 last_trunk = edge_dest4(end_edge / VEC_SIZE - 1);
 
                     if (last_trunk.y == -1) end_edge--;
                     if (last_trunk.z == -1) end_edge--;
@@ -76,6 +80,30 @@ namespace groute {
                     return end_edge;
                 }
 
+                __device__ __forceinline__ index_t end_edge8(index_t node) const {
+                    if (CSRGraph::begin_edge(node) == CSRGraph::end_edge(node))
+                        return CSRGraph::end_edge(node);
+
+                    index_t end_edge = CSRGraph::end_edge(node);
+                    uint8 last_trunk = edge_dest8(end_edge / VEC_SIZE - 1);
+
+                    if (last_trunk.a1 == -1)
+                        end_edge -= 7;
+                    else if (last_trunk.a2 == -1)
+                        end_edge -= 6;
+                    else if (last_trunk.a3 == -1)
+                        end_edge -= 5;
+                    else if (last_trunk.a4 == -1)
+                        end_edge -= 4;
+                    else if (last_trunk.a5 == -1)
+                        end_edge -= 3;
+                    else if (last_trunk.a6 == -1)
+                        end_edge -= 2;
+                    else if (last_trunk.a7 == -1)
+                        end_edge -= 1;
+
+                    return end_edge;
+                }
 
                 __device__ __forceinline__ uint1 edge_dest1(index_t edge) const {
                     return reinterpret_cast<uint1 *>(edge_dst)[edge];
@@ -93,6 +121,9 @@ namespace groute {
                     return reinterpret_cast<uint4 *>(edge_dst)[edge];
                 }
 
+                __device__ __forceinline__ uint8 edge_dest8(index_t edge) const {
+                    return reinterpret_cast<uint8 *>(edge_dst)[edge];
+                }
 //                __device__ __forceinline__ index_t out_degree(index_t node) const {
 //                    index_t aligned_begin_edge = begin_edge(node),
 //                            aligned_end_edge = end_edge(node),
@@ -158,7 +189,6 @@ namespace groute {
 
             private:
                 void AllocateDevMirror() {
-                    const uint32_t TRUNK_LEN = sizeof(uint4) / sizeof(uint1);
                     index_t nnodes, nedges;
 
                     m_dev_mirror.nnodes = nnodes = m_origin_graph.nnodes;
@@ -181,7 +211,7 @@ namespace groute {
                                 end_edge = m_origin_graph.row_start[node + 1],
                                 out_degree = end_edge - begin_edge;
                         index_t out_degree_round_up =
-                                (out_degree + TRUNK_LEN - 1) / TRUNK_LEN * TRUNK_LEN;
+                                (out_degree + VEC_SIZE - 1) / VEC_SIZE * VEC_SIZE;
                         row_start[node + 1] = row_start[node] + out_degree_round_up;
                     }
 

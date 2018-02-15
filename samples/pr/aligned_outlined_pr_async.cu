@@ -150,7 +150,7 @@ namespace aligned_outlinedpr {
             typename WorkSource,
             template<typename> class RankDatum,
             template<typename> class ResidualDatum>
-    __device__ void PageRankKernel__Single__(
+    __device__ void PageRankKernel8__Single__(
             TGraph graph, WorkSource work_source,
             RankDatum<rank_t> current_ranks,
             ResidualDatum<rank_t> residual) {
@@ -168,11 +168,86 @@ namespace aligned_outlinedpr {
             current_ranks[node] += res;
 
             index_t begin_edge = graph.begin_edge(node),
-                    end_edge = graph.end_edge(node),
+                    end_edge = graph.end_edge8(node),
                     out_degree = end_edge - begin_edge,
                     aligned_begin_edge = graph.aligned_begin_edge(node);
 
-            const index_t VEC_SIZE = 4;
+            const index_t VEC_SIZE = groute::graphs::VEC_SIZE;
+
+            if (out_degree == 0) continue;
+
+            rank_t update = ALPHA * res / out_degree;
+
+            index_t offset = begin_edge;
+            index_t aligned_offset = aligned_begin_edge;
+
+            while (end_edge - offset >= VEC_SIZE) {
+                uint8 dest8 = graph.edge_dest8(aligned_offset);
+
+                atomicAdd(residual.get_item_ptr(dest8.a0), update);
+                atomicAdd(residual.get_item_ptr(dest8.a1), update);
+                atomicAdd(residual.get_item_ptr(dest8.a2), update);
+                atomicAdd(residual.get_item_ptr(dest8.a3), update);
+                atomicAdd(residual.get_item_ptr(dest8.a4), update);
+                atomicAdd(residual.get_item_ptr(dest8.a5), update);
+                atomicAdd(residual.get_item_ptr(dest8.a6), update);
+                atomicAdd(residual.get_item_ptr(dest8.a7), update);
+
+                aligned_offset++;
+                offset += VEC_SIZE;
+            }
+
+            if (offset < end_edge) {
+                uint8 last_trunk = graph.edge_dest8(aligned_offset);
+                index_t rest_len = end_edge - offset;
+
+                switch (rest_len){
+                    case 7:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a6), update);
+                    case 6:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a5), update);
+                    case 5:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a4), update);
+                    case 4:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a3), update);
+                    case 3:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a2), update);
+                    case 2:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a1), update);
+                    case 1:
+                        atomicAdd(residual.get_item_ptr(last_trunk.a0), update);
+                }
+            }
+        }
+    }
+    template<
+            typename TGraph,
+            typename WorkSource,
+            template<typename> class RankDatum,
+            template<typename> class ResidualDatum>
+    __device__ void PageRankKernel4__Single__(
+            TGraph graph, WorkSource work_source,
+            RankDatum<rank_t> current_ranks,
+            ResidualDatum<rank_t> residual) {
+        unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.get_size();
+
+        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+            index_t node = work_source.get_work(i);
+            rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+
+            if (res == 0)continue;
+
+            current_ranks[node] += res;
+
+            index_t begin_edge = graph.begin_edge(node),
+                    end_edge = graph.end_edge4(node),
+                    out_degree = end_edge - begin_edge,
+                    aligned_begin_edge = graph.aligned_begin_edge(node);
+
+            const index_t VEC_SIZE = groute::graphs::VEC_SIZE;
 
             if (out_degree == 0) continue;
 
@@ -197,15 +272,13 @@ namespace aligned_outlinedpr {
                 uint4 last_trunk = graph.edge_dest4(aligned_offset);
                 index_t rest_len = end_edge - offset;
 
-                if (rest_len == 3) {
-                    atomicAdd(residual.get_item_ptr(last_trunk.x), update);
-                    atomicAdd(residual.get_item_ptr(last_trunk.y), update);
-                    atomicAdd(residual.get_item_ptr(last_trunk.z), update);
-                } else if (rest_len == 2) {
-                    atomicAdd(residual.get_item_ptr(last_trunk.x), update);
-                    atomicAdd(residual.get_item_ptr(last_trunk.y), update);
-                } else if (rest_len == 1) {
-                    atomicAdd(residual.get_item_ptr(last_trunk.x), update);
+                switch (rest_len){
+                    case 3:
+                        atomicAdd(residual.get_item_ptr(last_trunk.z), update);
+                    case 2:
+                        atomicAdd(residual.get_item_ptr(last_trunk.y), update);
+                    case 1:
+                        atomicAdd(residual.get_item_ptr(last_trunk.x), update);
                 }
             }
         }
@@ -311,7 +384,7 @@ namespace aligned_outlinedpr {
         rank_t pr_sum;
         uint32_t counter = 0;
         while (*running) {
-            PageRankKernel__Single__(graph, work_source, current_ranks, residual);
+            PageRankKernel8__Single__(graph, work_source, current_ranks, residual);
 //            gridBarrier.Sync();
             PageRankCheck__Single__(work_source, current_ranks, block_sum_buffer, &pr_sum);
 //            gridBarrier.Sync();
