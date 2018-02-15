@@ -63,10 +63,10 @@ namespace mytest {
 
 void test() {
 
-    utils::traversal::Context<mytest::Algo> context(1);
-    groute::graphs::single::CSRGraphAllocatorAlign dev_graph_allocator(context.host_graph);
-
-    mytest::testTraverse << < 1, 1 >> > (dev_graph_allocator.DeviceObject());
+//    utils::traversal::Context<mytest::Algo> context(1);
+//    groute::graphs::single::CSRGraphAllocatorAlign dev_graph_allocator(context.host_graph);
+//
+//    mytest::testTraverse << < 1, 1 >> > (dev_graph_allocator.DeviceObject());
     return;
     uint32_t N = 1024 * 1024 * 10;
     index_t *host_data = static_cast<index_t *>(malloc(sizeof(index_t) * N));

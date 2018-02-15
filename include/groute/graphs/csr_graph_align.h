@@ -47,13 +47,14 @@ typedef struct __device_builtin__ __builtin_align__(32) {
 } uint8;
 namespace groute {
     namespace graphs {
-        const unsigned int VEC_SIZE = 8;
+//        const unsigned int VEC_SIZE = 8;
 
         namespace dev // device objects
         {
             /*
             * @brief A single GPU graph object (a complete graph allocated at one GPU)
             */
+            template <const unsigned int VEC_SIZE>
             struct CSRGraphAlign : public groute::graphs::dev::CSRGraph {
                 CSRGraphAlign() {}
 
@@ -141,19 +142,16 @@ namespace groute {
         }
 
         namespace single {
-//            struct CSRGraph : public groute::graphs::host::CSRGraph {
-//
-//            };
-
             /*
             * @brief A single GPU graph allocator (allocates a complete mirror graph at one GPU)
             */
+            template <const unsigned int VEC_SIZE>
             struct CSRGraphAllocatorAlign {
-                typedef dev::CSRGraphAlign DeviceObjectType;
+                typedef dev::CSRGraphAlign<VEC_SIZE> DeviceObjectType;
 
             private:
                 host::CSRGraph &m_origin_graph;
-                dev::CSRGraphAlign m_dev_mirror;
+                dev::CSRGraphAlign<VEC_SIZE> m_dev_mirror;
 
             public:
                 CSRGraphAllocatorAlign(host::CSRGraph &host_graph) :
@@ -165,7 +163,7 @@ namespace groute {
                     DeallocateDevMirror();
                 }
 
-                const dev::CSRGraphAlign &DeviceObject() const {
+                const dev::CSRGraphAlign<VEC_SIZE> &DeviceObject() const {
                     return m_dev_mirror;
                 }
 
@@ -193,15 +191,6 @@ namespace groute {
 
                     m_dev_mirror.nnodes = nnodes = m_origin_graph.nnodes;
                     m_dev_mirror.nedges = nedges = m_origin_graph.nedges;
-//
-//                    for (int edge = 0; edge < nedges; ++edge) {
-//                        printf("%d ", m_origin_graph.edge_dest(edge));
-//                    }
-//                    printf("\n");
-//                    for (int node = 0; node <= nnodes; node++) {
-//                        printf("%d ", m_origin_graph.row_start[node]);
-//                    }
-//                    printf("\n");
 
                     index_t *row_start = new index_t[nnodes + 1];
                     row_start[0] = 0;
@@ -238,17 +227,6 @@ namespace groute {
                             offset++;
                         }
                     }
-
-//                    for (index_t node = 0; node < nnodes; node++) {
-//                        index_t aligned_begin_edge = row_start[node],
-//                                aligned_end_edge = row_start[node + 1],
-//                                aligned_out_degree = aligned_end_edge - aligned_begin_edge;
-//                        for (index_t edge = aligned_begin_edge; edge < aligned_end_edge; edge++) {
-//                            printf("%d ", host_edge_dst[edge]);
-//                        }
-//                        printf("\n");
-//                    }
-
 
                     GROUTE_CUDA_CHECK(cudaMalloc(&m_dev_mirror.row_start, (nnodes + 1) *
                                                                           sizeof(index_t))); // malloc and copy +1 for the row_start's extra cell

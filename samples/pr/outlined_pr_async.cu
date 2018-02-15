@@ -377,6 +377,7 @@ namespace outlinedpr {
 }
 
 bool MyTestPageRankSingleOutlined() {
+    printf("MyTestPageRankSingleOutlined\n");
     utils::traversal::Context<outlinedpr::Algo> context(1);
     groute::graphs::single::CSRGraphAllocator dev_graph_allocator(context.host_graph);
 
