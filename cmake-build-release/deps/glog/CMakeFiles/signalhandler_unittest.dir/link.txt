@@ -1,1 +1,0 @@
-/usr/bin/c++  -O3 -DNDEBUG  -rdynamic CMakeFiles/signalhandler_unittest.dir/src/signalhandler_unittest.cc.o  -o signalhandler_unittest  -L/usr/local/cuda/lib64  -L/home/liang/groute-dev/cmake-build-release/deps/gflags/lib -Wl,-rpath,/usr/local/cuda/lib64:/home/liang/groute-dev/cmake-build-release/deps/gflags/lib libglog.a -lpthread ../gflags/libgflags_nothreads.a 

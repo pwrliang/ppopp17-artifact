@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS =  -std=c++11 -DNDEBUG -O3 -DNDEBUG  
 
-CXX_DEFINES = -DGFLAGS_DLL_DECLARE_FLAG="" -DGFLAGS_DLL_DEFINE_FLAG="" -DGFLAGS_IS_A_DLL=0 -DGOOGLE_GLOG_DLL_DECL="" -DHAVE_METIS
+CXX_DEFINES = -DHAVE_METIS
 
-CXX_INCLUDES = -I/home/liang/groute-dev/cmake-build-release/deps/gflags/include -I/home/liang/groute-dev/cmake-build-release/deps/glog/include -I/home/liang/groute-dev/deps/cub -I/home/liang/groute-dev/include -I/usr/local/cuda/include -I/home/liang/groute-dev/cmake-build-release/deps/glog -I/home/liang/groute-dev/deps/glog/src 
+CXX_INCLUDES = -I/home/liang/groute-dev/deps/cub -I/home/liang/groute-dev/include -I/usr/local/cuda/include 
 

@@ -1,4 +1,6 @@
 /opt/clion-2017.3.2/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" /home/liang/groute-dev
+-- Found glog    (include: /usr/include, library: /usr/lib/x86_64-linux-gnu/libglog.so)
+-- Found gflags  (include: /usr/include, library: /usr/lib/x86_64-linux-gnu/libgflags.so)
 -- Found METIS: /usr/local/lib/libmetis.a
 Release mode
 -- Configuring done

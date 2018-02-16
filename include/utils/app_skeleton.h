@@ -33,9 +33,9 @@
 #include <cuda_runtime.h>
 #include <gflags/gflags.h>
 #include <iostream>
-
 #include <utils/utils.h>
 #include <utils/interactor.h>
+#include <glog/logging.h>
 
 #ifndef _WIN32
 #define gflags google
@@ -74,9 +74,11 @@ DEFINE_bool(ggr, true, "Graph file is a Galois binary GR file");
 DEFINE_bool(gen_graph, false, "Generate a random graph");
 DEFINE_int32(gen_nnodes, 100000, "Number of nodes for random graph generation");
 DEFINE_int32(gen_factor, 10, "A factor number for graph generation");
-DEFINE_int32(gen_method, 0, "Select the requested graph generation method: \n\t0: Random graph \n\t1: Two-way chain graph without segment intersection \n\t2: Two-way chain graph with intersection \n\t3: Full cliques per device without segment intersection");
+DEFINE_int32(gen_method, 0,
+             "Select the requested graph generation method: \n\t0: Random graph \n\t1: Two-way chain graph without segment intersection \n\t2: Two-way chain graph with intersection \n\t3: Full cliques per device without segment intersection");
 DEFINE_bool(gen_weights, false, "Generate edge weights if missing in graph input");
-DEFINE_int32(gen_weight_range, 100, "The range to generate edge weights from (coordinate this parameter with nf-delta if running sssp-nf)");
+DEFINE_int32(gen_weight_range, 100,
+             "The range to generate edge weights from (coordinate this parameter with nf-delta if running sssp-nf)");
 
 // Pipeline parameters
 DEFINE_double(pipe_alloc_factor, 0.05, "Each socket pipeline buffer will allocate 'nnodes' times this factor");
@@ -90,11 +92,12 @@ DEFINE_int32(cached_events, 8, "Number of events to cache in each event pool (pe
 DEFINE_int32(grid_size, 20, "Blocks Per Grid");
 DEFINE_int32(block_size, 256, "Block size for traversal kernels");
 // Fused kernel
-DEFINE_bool(iteration_fusion, true, "Fuse multiple iterations (FusedWork kernel performs one iteration each launch if this is false)");
+DEFINE_bool(iteration_fusion, true,
+            "Fuse multiple iterations (FusedWork kernel performs one iteration each launch if this is false)");
 DEFINE_int32(fused_chunk_size, INT32_MAX, "Size of chunk to work on within fused kernel");
 DEFINE_int32(prio_delta, 10, "The soft priority delta");
 DEFINE_bool(count_work, false, "Count the work-items performed by each individual GPU");
-DEFINE_bool(persist, true,"Use persist kernel");
+DEFINE_bool(persist, true, "Use persist kernel");
 
 // DWL
 DEFINE_double(wl_alloc_factor_local, 0.2, "Worklist allocation factor: local worklist/s");
@@ -113,36 +116,27 @@ DEFINE_bool(pn, false, "[BINARY NOT BUILT WITH METIS] Partition the input graph 
 
 
 template<typename App>
-struct Skeleton
-{
-    int operator() (int argc, char **argv)
-    {
+struct Skeleton {
+    int operator()(int argc, char **argv) {
         gflags::ParseCommandLineFlags(&argc, &argv, true);
-//        google::InitGoogleLogging(argv[0]);
+        google::InitGoogleLogging(argv[0]);
         int exit = 0;
 
-        if (FLAGS_stats)
-        {
+        if (FLAGS_stats) {
             // Just run anything and return
             App::Single();
             return 0;
         }
 
-        if (!(FLAGS_cmdfile == ""))
-        {
+        if (!(FLAGS_cmdfile == "")) {
             FileInteractor file_interactor(FLAGS_cmdfile);
-            std::cout << std::endl << "Starting a command file "<< App::Name() << " session" << std::endl;
+            std::cout << std::endl << "Starting a command file " << App::Name() << " session" << std::endl;
             RunInteractor(file_interactor);
-        }
-
-        else if (FLAGS_interactive)
-        {
+        } else if (FLAGS_interactive) {
             ConsoleInteractor console_interactor;
-            std::cout << std::endl << "Starting an interactive "<< App::Name() << " session" << std::endl;
+            std::cout << std::endl << "Starting an interactive " << App::Name() << " session" << std::endl;
             RunInteractor(console_interactor);
-        }
-
-        else {
+        } else {
             NoInteractor no_interactor;
             RunInteractor(no_interactor);
         }
@@ -152,22 +146,21 @@ struct Skeleton
         return exit;
     }
 
-    int RunInteractor(IInteractor& interactor)
-    {
+    int RunInteractor(IInteractor &interactor) {
         int exit = 0;
 
         if (interactor.RunFirst()) exit = Run(); // run the first round
 
-        while (true)
-        {
+        while (true) {
             gflags::FlagSaver fs; // This saves the flags state and restores all values on destruction
             std::string cmd;
 
             if (!interactor.GetNextCommand(cmd)) break;
-            cmd.insert(0, " "); 
+            cmd.insert(0, " ");
             cmd.insert(0, App::Name()); // insert any string to emulate the process name usually passed on argv
 
-            int argc; char **argv;
+            int argc;
+            char **argv;
             stringToArgcArgv(cmd, &argc, &argv);
             gflags::ParseCommandLineFlags(&argc, &argv, false);
             freeArgcArgv(&argc, &argv);
@@ -178,41 +171,34 @@ struct Skeleton
         return exit;
     }
 
-    int Run()
-    {
-        if (FLAGS_all)
-        {
+    int Run() {
+        if (FLAGS_all) {
             FLAGS_single = true;
             FLAGS_async_multi = true;
         }
 
         int num_actual_gpus = FLAGS_num_gpus;
-        if (num_actual_gpus <= 0)
-        {
-            if (cudaGetDeviceCount(&num_actual_gpus) != cudaSuccess)
-            {
+        if (num_actual_gpus <= 0) {
+            if (cudaGetDeviceCount(&num_actual_gpus) != cudaSuccess) {
                 printf("Error %d when getting devices (is CUDA enabled?)\n", num_actual_gpus);
                 return 1;
             }
         }
 
-        if (FLAGS_startwith > num_actual_gpus || FLAGS_startwith <= 0)
-        {
+        if (FLAGS_startwith > num_actual_gpus || FLAGS_startwith <= 0) {
             printf("Starting with invalid amount of GPUs (Requested: %d, available: %d)\n",
-                FLAGS_startwith, num_actual_gpus);
+                   FLAGS_startwith, num_actual_gpus);
             return 2;
         }
 
         bool overall = true;
 
-        if (num_actual_gpus > 1)
-        {
+        if (num_actual_gpus > 1) {
             printf("Running %s with %d GPUs, starting with %d GPUs\n", App::NameUpper(), num_actual_gpus,
-                FLAGS_startwith);
+                   FLAGS_startwith);
         }
 
-        if (!(FLAGS_single || FLAGS_async_multi))
-        {
+        if (!(FLAGS_single || FLAGS_async_multi)) {
             printf("ERROR: You must specify a %s variant (-single, -async_multi)\n", App::NameUpper());
             return 1;
         }
@@ -222,18 +208,15 @@ struct Skeleton
             return 1;
         }
 
-        if (FLAGS_startwith == 1)
-        {
+        if (FLAGS_startwith == 1) {
             printf("\nTesting single GPU %s\n", App::NameUpper());
             printf("--------------------\n\n");
 
             if (FLAGS_single) overall &= App::Single();
         }
 
-        if (FLAGS_async_multi)
-        {
-            for (int G = FLAGS_startwith; G <= num_actual_gpus; ++G)
-            {
+        if (FLAGS_async_multi) {
+            for (int G = FLAGS_startwith; G <= num_actual_gpus; ++G) {
                 printf("Testing with %d GPUs\n", G);
                 printf("--------------------\n\n");
 
@@ -245,7 +228,6 @@ struct Skeleton
         return 0;
     }
 };
-
 
 
 #endif // APP_SKELETON_H
