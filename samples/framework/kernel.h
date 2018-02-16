@@ -107,7 +107,6 @@ namespace maiter {
 
         maiter::IterateKernel<TValue, TDelta> **DeviceKernelObject() { return m_dev_kernel; };
 
-//        template<typename V, typename D>
         void InitValue() const {
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, m_dev_graph.nnodes);
@@ -119,8 +118,6 @@ namespace maiter {
             sw.stop();
             LOG(INFO) << "Graph Init " << sw.ms() << " ms";
         }
-
-
     };
 }
 #endif //GROUTE_KERNEL_H

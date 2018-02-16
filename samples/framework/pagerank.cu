@@ -32,39 +32,13 @@ struct MyIterateKernel : public maiter::IterateKernel<rank_t, rank_t> {
     }
 };
 
-struct BaseStruct {
-    __device__ virtual void func()=0;
-};
-
-typedef struct Struct : public BaseStruct {
-    __device__ void func() {
-        printf("call func\n");
-    }
-
-    __device__ void TestLambda() {
-        auto lambda = []() {
-
-        };
-    }
-} MyFuncs;
-
 __global__ void createFunc(maiter::IterateKernel<rank_t, rank_t> **baseFunc) {
     if (threadIdx.x == 0 && blockIdx.x == 0) {
         *baseFunc = new MyIterateKernel();
     }
 }
 
-__global__ void test(BaseStruct **myFuncs) {
-    (*myFuncs)->func();
-}
-
 bool PageRank() {
-//    BaseStruct **d_myFuncs;
-//    GROUTE_CUDA_CHECK(cudaMalloc(&d_myFuncs, sizeof(BaseStruct *)));
-//    createFunc << < 1, 1 >> > (d_myFuncs);
-//    GROUTE_CUDA_CHECK(cudaDeviceSynchronize());
-//    test << < 1, 1 >> > (d_myFuncs);
-//    GROUTE_CUDA_CHECK(cudaDeviceSynchronize());
     maiter::MaiterKernel<rank_t, rank_t> *kernel = new maiter::MaiterKernel<rank_t, rank_t>();
 
     createFunc << < 1, 1 >> > (kernel->DeviceKernelObject());
