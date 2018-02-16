@@ -8,17 +8,22 @@
 #include <groute/graphs/common.h>
 
 namespace maiter {
-    template<typename V, typename D>
+    template<typename TValue, typename TDelta>
     struct IterateKernel {
 //        virtual void read_data(string& line, K& k, D& data) = 0;
-        __device__ virtual V InitValue(const index_t node, index_t out_degree) = 0;
-        __device__ virtual D InitDelta(const index_t node, index_t out_degree) = 0;
+        __forceinline__ __device__ virtual TValue InitValue(const index_t node, index_t out_degree) const = 0;
 
-        __device__ virtual void accumulate(V &a, const V &b) = 0;
+        __forceinline__ __device__ virtual TDelta InitDelta(const index_t node, index_t out_degree) const = 0;
+
+        __forceinline__ __device__ virtual TValue accumulate(const TValue value, const TDelta delta) const = 0;
 
         //__device__ virtual void priority(V &pri, const V &value, const V &delta) = 0;
 
-      //  __device__ virtual D g_func(const index_t node,const V value ,const D delta, const index_t weight, const index_t out_degree) = 0;
+        __forceinline__ __device__ virtual TDelta
+        g_func(const TDelta delta, const index_t weight,
+               const index_t out_degree) const = 0;
+
+        __forceinline__ __device__ virtual TDelta IdentityElement() const = 0;
     };
 
     struct Algo {

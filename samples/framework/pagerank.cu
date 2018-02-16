@@ -8,23 +8,28 @@
 typedef float rank_t;
 
 struct MyIterateKernel : public maiter::IterateKernel<rank_t, rank_t> {
-    __device__ rank_t InitValue(const index_t node, index_t out_degree) {
-        printf("call %d\n", node);
+    __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
+//        printf("call %d\n", node);
         return 0;
     }
 
-    __device__ rank_t InitDelta(const index_t node, index_t out_degree) {
+    __forceinline__ __device__ rank_t InitDelta(const index_t node, index_t out_degree) const {
         return 0.2;
     }
 
-    __device__ void accumulate(rank_t &a, const rank_t &b) {
-        a = a + b;
+    __forceinline__ __device__ float accumulate(const rank_t a, const rank_t b) const {
+        return a + b;
     }
 
-//    __device__ float
-//    g_func(const index_t node, const float value, const float delta, const index_t weight, const index_t out_degree) {
-//        return 0.8 * delta / out_degree;
-//    }
+    __forceinline__ __device__ float
+    g_func(const float delta, const index_t weight,
+           const index_t out_degree) const {
+        return 0.8 * delta / out_degree;
+    }
+
+    __forceinline__ __device__ virtual float IdentityElement() const {
+        return 0;
+    }
 };
 
 struct BaseStruct {
