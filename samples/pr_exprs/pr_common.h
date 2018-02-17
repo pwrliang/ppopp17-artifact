@@ -37,7 +37,6 @@
 
 typedef float rank_t;
 #define ALPHA 0.85
-#define EPSILON 0.01
 
 std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph);
 

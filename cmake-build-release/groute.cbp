@@ -17,16 +17,6 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="rebuild_cache">
 				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
 				<Option type="4"/>
@@ -37,41 +27,25 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="maiter">
-				<Option output="/home/liang/groute-dev/cmake-build-release/maiter" prefix_auto="0" extension_auto="0"/>
+			<Target title="edit_cache">
 				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DHAVE_METIS"/>
-					<Add directory="/home/liang/groute-dev/deps/cub"/>
-					<Add directory="/home/liang/groute-dev/include"/>
-					<Add directory="/usr/local/cuda/include"/>
-					<Add directory="/usr/include/c++/5"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
-					<Add directory="/usr/include/c++/5/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
-				</Compiler>
+				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 maiter"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="maiter/fast">
-				<Option output="/home/liang/groute-dev/cmake-build-release/maiter" prefix_auto="0" extension_auto="0"/>
+			<Target title="pr_exprs">
+				<Option output="/home/liang/groute-dev/cmake-build-release/pr_exprs" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DHAVE_METIS"/>
+					<Add directory="/usr/local/include"/>
 					<Add directory="/home/liang/groute-dev/deps/cub"/>
 					<Add directory="/home/liang/groute-dev/include"/>
 					<Add directory="/usr/local/cuda/include"/>
@@ -79,45 +53,71 @@
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
 					<Add directory="/usr/include/c++/5/backward"/>
 					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
-					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 maiter/fast"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 pr_exprs"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pr_exprs/fast">
+				<Option output="/home/liang/groute-dev/cmake-build-release/pr_exprs" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/liang/groute-dev/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_METIS"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/home/liang/groute-dev/deps/cub"/>
+					<Add directory="/home/liang/groute-dev/include"/>
+					<Add directory="/usr/local/cuda/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 pr_exprs/fast"/>
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/liang/groute-dev/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/maiter.dir/maiter_intermediate_link.o">
-			<Option target="maiter"/>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr_exprs.dir/pr_exprs_intermediate_link.o">
+			<Option target="pr_exprs"/>
 		</Unit>
-		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/maiter.dir/maiter_intermediate_link.o.rule">
-			<Option target="maiter"/>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr_exprs.dir/pr_exprs_intermediate_link.o.rule">
+			<Option target="pr_exprs"/>
 		</Unit>
-		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o">
-			<Option target="maiter"/>
+		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_exprs_generated_data_driven_unopt_pr.cu.o">
+			<Option target="pr_exprs"/>
 		</Unit>
-		<Unit filename="/home/liang/groute-dev/cmake-build-release/CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o">
-			<Option target="maiter"/>
+		<Unit filename="/home/liang/groute-dev/samples/pr_exprs/data_driven_unopt_pr.cu">
+			<Option target="pr_exprs"/>
 		</Unit>
-		<Unit filename="/home/liang/groute-dev/samples/framework/entry.cu">
-			<Option target="maiter"/>
+		<Unit filename="/home/liang/groute-dev/samples/pr_exprs/main.cpp">
+			<Option target="pr_exprs"/>
 		</Unit>
-		<Unit filename="/home/liang/groute-dev/samples/framework/pagerank.cu">
-			<Option target="maiter"/>
+		<Unit filename="/home/liang/groute-dev/samples/pr_exprs/pr_host.cpp">
+			<Option target="pr_exprs"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/src/groute/graphs/csr_graph.cpp">
-			<Option target="maiter"/>
+			<Option target="pr_exprs"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/src/utils/parser.cpp">
-			<Option target="maiter"/>
+			<Option target="pr_exprs"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/src/utils/utils.cpp">
-			<Option target="maiter"/>
+			<Option target="pr_exprs"/>
 		</Unit>
 		<Unit filename="/home/liang/groute-dev/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

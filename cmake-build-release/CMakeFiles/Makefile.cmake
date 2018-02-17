@@ -11,10 +11,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.9.6/CMakeCCompiler.cmake"
   "CMakeFiles/3.9.6/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.9.6/CMakeSystem.cmake"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.depend"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.depend"
+  "CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_exprs_generated_data_driven_unopt_pr.cu.o.cmake.pre-gen"
+  "CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_exprs_generated_data_driven_unopt_pr.cu.o.depend"
   "../cmake/FindGFlags.cmake"
   "../cmake/FindGlog.cmake"
   "../cmake/FindMETIS.cmake"
@@ -34,6 +32,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/Compiler/GNU-C.cmake"
   "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/Compiler/GNU-CXX.cmake"
   "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/Compiler/GNU.cmake"
+  "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/FindBoost.cmake"
   "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/FindCUDA.cmake"
   "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/FindCUDA/run_nvcc.cmake"
   "/opt/clion-2017.3.2/bin/cmake/share/cmake-3.9/Modules/FindCUDA/select_compute_arch.cmake"
@@ -56,14 +55,12 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.Release.cmake"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.Release.cmake"
+  "CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_exprs_generated_data_driven_unopt_pr.cu.o.cmake.pre-gen"
+  "CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_exprs_generated_data_driven_unopt_pr.cu.o.Release.cmake"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/maiter.dir/DependInfo.cmake"
+  "CMakeFiles/pr_exprs.dir/DependInfo.cmake"
   )

@@ -37,7 +37,13 @@
 #include <utils/app_skeleton.h>
 
 DEFINE_bool(data_driven, true, "Data-Driven mode (default)");
+DEFINE_double(wl_alloc_factor, 0.2, "Local worklists will allocate '(nedges / ngpus)' times this factor");
+DEFINE_uint64(wl_alloc_abs, 0, "Absolute size for local worklists (if not zero, overrides --wl_alloc_factor");
+DEFINE_int32(max_pr_iterations, 200,
+             "The maximum number of PR iterations"); // used just for host and some single versions
+DEFINE_double(epsilon, 0.01, "EPSILON (default 0.01)");
 
+bool DataDrivenUnoptPR();
 //void CleanupGraphs();
 
 namespace pr {
@@ -47,6 +53,9 @@ namespace pr {
         static const char *NameUpper() { return "Page Rank"; }
 
         static bool Single() {
+            if(FLAGS_data_driven){
+                DataDrivenUnoptPR();
+            }
         }
 
         static bool AsyncMulti(int G) {

@@ -27,14 +27,17 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "pr_common.h"
 #include <utils/stopwatch.h>
 #include <float.h>
 #include <unordered_set>
+#include <glog/logging.h>
+#include <boost/format.hpp>
+#include "pr_common.h"
 
 DEFINE_int32(top_ranks, 10, "The number of top ranks to compare for PR regression");
 DEFINE_bool(print_ranks, false, "Write out ranks to output");
 DEFINE_bool(norm, false, "Normalize PR output ranks (L1)");
+DECLARE_double(epsilon);
 DECLARE_bool(verbose);
 
 
@@ -92,7 +95,7 @@ std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph) {
                 rank_t prev = residual[dest];
                 residual[dest] += update;
 
-                if (prev + update > EPSILON && prev < EPSILON) {
+                if (prev + update > FLAGS_epsilon && prev < FLAGS_epsilon) {
                     out_wl->push(dest);
                 }
             }
@@ -105,8 +108,8 @@ std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph) {
     sw.stop();
 
     if (FLAGS_verbose) {
-        printf("\nPR Host: %f ms. \n", sw.ms());
-        printf("PR Host converged after %d iterations \n\n", iteration);
+        VLOG(0) << "PR Host: " << sw.ms() << " ms.";
+        VLOG(1) << "PR Host converged after " << iteration << " iterations";
     }
 
     return ranks;
@@ -166,7 +169,8 @@ int PageRankCheckErrors(std::vector<rank_t> &ranks, std::vector<rank_t> &regress
             missing_nodes++; // <-- nodes may switch locations in the rank because of small diffs as well
         } else if (fabs(1.0f - (ranks_pairs[i].rank / regression_pairs[i].rank)) > 1e-2) {
             if (FLAGS_verbose)
-                printf("Difference in index %d: %f != %f\n", i, ranks_pairs[i].rank, regression_pairs[i].rank);
+                LOG(WARNING) << boost::format("Difference in index %d: %f != %f")
+                                % i % ranks_pairs[i].rank % regression_pairs[i].rank;
             num_diffs++;
         }
         mean_diff += fabs(diff);
@@ -175,13 +179,13 @@ int PageRankCheckErrors(std::vector<rank_t> &ranks, std::vector<rank_t> &regress
 
     bool res = num_diffs + missing_nodes == 0 && mean_diff <= 1e-2;
     if (!res || FLAGS_verbose) {
-        printf("[regression]\t\t\t[result]\n");
+        VLOG(1) << "[regression]\t\t\t[result]";
         for (int i = 0; i < 10; ++i) {
-            printf("(%d, %f)\t\t(%d, %f)\n",
-                   regression_pairs[i].node, regression_pairs[i].rank, ranks_pairs[i].node, ranks_pairs[i].rank);
+            VLOG(1) << boost::format("(%d, %f)\t\t\t(%d, %f)") %
+                       regression_pairs[i].node % regression_pairs[i].rank % ranks_pairs[i].node % ranks_pairs[i].rank;
         }
-        printf("\nSummary: %d/%d large differences, %d/%d missing nodes, total mean diff: %f\n\n", num_diffs, (int) top,
-               missing_nodes, (int) top, mean_diff);
+        VLOG(0) << boost::format("Summary: %d/%d large differences, %d/%d missing nodes, total mean diff: %f")
+                   % num_diffs % top % missing_nodes % top % mean_diff;
     }
 
     return res ? 0 : num_diffs + missing_nodes;
@@ -204,7 +208,7 @@ int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
         pr = (struct pr_value *) calloc(ranks.size(), sizeof(struct pr_value));
 
         if (!pr) {
-            fprintf(stderr, "PageRankOutput: Failed to allocate memory!");
+            LOG(ERROR) << "PageRankOutput: Failed to allocate memory!";
             return 0;
         }
 
@@ -215,18 +219,21 @@ int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
             sum += ranks[i];
         }
 
-        fprintf(stderr, "Sorting by rank ...\n");
+        VLOG(1) << "Sorting by rank ...";
         std::stable_sort(pr, pr + ranks.size());
-        fprintf(stderr, "Writing to file ...\n");
-        fprintf(stderr, "sum:%*e relative sum:%*e\n", FLT_DIG, sum, FLT_DIG, sum / ranks.size());
-        fprintf(f, "ALPHA %*e EPSILON %*e\n", FLT_DIG, ALPHA, FLT_DIG, EPSILON);
+        VLOG(1) << "Writing to file ...";
+        VLOG(0) << "SUM: " << sum << " RELATIVE SUM: " << sum / ranks.size();
+//        fprintf(stderr, "sum:%*e relative sum:%*e\n", FLT_DIG, sum, FLT_DIG, sum / ranks.size());
+        fprintf(f, "ALPHA %*e EPSILON %*e\n", FLT_DIG, ALPHA, FLT_DIG, FLAGS_epsilon);
         fprintf(f, "RANKS 1--%d of %d\n", FLAGS_top_ranks, (int) ranks.size());
 
         int output_num = FLAGS_top_ranks;
+
         if (output_num == -1) {
-            fprintf(stderr, "WARN:output all ranks\n");
+            LOG(WARNING) << "OUTPUT ALL RANKS";
             output_num = ranks.size();
         }
+
         for (int i = 1; i <= output_num; i++) {
             if (!FLAGS_print_ranks)
                 fprintf(f, "%d %d\n", i, pr[ranks.size() - i].node);
@@ -237,7 +244,7 @@ int PageRankOutput(const char *file, const std::vector<rank_t> &ranks) {
         fclose(f);
         return 1;
     } else {
-        fprintf(stderr, "Could not open '%s' for writing\n", file);
+        LOG(WARNING) << "Could not open '" << file << "' for writing";
         return 0;
     }
 }

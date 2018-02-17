@@ -21,6 +21,10 @@ include("cmake/FindGFlags.cmake")
 include_directories(SYSTEM ${GFLAGS_INCLUDE_DIRS})
 list(APPEND LINKER_LIBS ${GFLAGS_LIBRARIES})
 
+#boost
+FIND_PACKAGE( Boost COMPONENTS program_options REQUIRED )
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+
 # gtest
 #include("cmake/FindGTest.cmake")
 #include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
@@ -75,7 +79,7 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/cub)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(EXTRA_LIBS pthread ${METIS_LIBRARIES} ${LINKER_LIBS} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
+set(EXTRA_LIBS pthread ${Boost_LIBRARIES} ${METIS_LIBRARIES} ${LINKER_LIBS} ${CUDA_TOOLKIT_TARGET_DIR}/lib64/stubs/libcuda.so ${CUDA_TOOLKIT_TARGET_DIR}/lib64/libnvToolsExt.so -lcudadevrt)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("Debug mode")
@@ -128,7 +132,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 
 cuda_add_executable(pr_exprs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
         samples/pr_exprs/pr_host.cpp
-        samples/pr_exprs/data_driven_unopt_pr.cpp
+        samples/pr_exprs/data_driven_unopt_pr.cu
         samples/pr_exprs/main.cpp)
 target_link_libraries(pr_exprs ${EXTRA_LIBS})
 

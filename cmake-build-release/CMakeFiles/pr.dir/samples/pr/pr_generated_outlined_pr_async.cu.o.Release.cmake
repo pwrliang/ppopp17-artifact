@@ -79,7 +79,7 @@ set(CUDA_NVCC_FLAGS_RELWITHDEBINFO  ; )
 set(nvcc_flags -m64) # list
 set(CUDA_NVCC_INCLUDE_DIRS "/usr/local/cuda/include;/usr/include;/usr/include;/home/liang/groute-dev/deps/cub;/home/liang/groute-dev/include;/usr/local/cuda/include") # list (needs to be in quotes to handle spaces properly).
 set(CUDA_NVCC_COMPILE_DEFINITIONS "HAVE_METIS") # list (needs to be in quotes to handle spaces properly).
-set(format_flag "-c") # string
+set(format_flag "-dc") # string
 set(cuda_language_flag ) # list
 
 # Clean up list of include directories and add -I flags
