@@ -27,13 +27,10 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 #include <cstdio>
+#include <limits>
 #include <cuda_runtime.h>
 #include <gflags/gflags.h>
-
-#include <iostream>
-
 #include <utils/utils.h>
-#include <utils/interactor.h>
 #include <utils/app_skeleton.h>
 
 DEFINE_bool(data_driven, true, "Data-Driven mode (default)");
@@ -42,8 +39,14 @@ DEFINE_uint64(wl_alloc_abs, 0, "Absolute size for local worklists (if not zero, 
 DEFINE_int32(max_pr_iterations, 200,
              "The maximum number of PR iterations"); // used just for host and some single versions
 DEFINE_double(epsilon, 0.01, "EPSILON (default 0.01)");
+DEFINE_bool(outlining, false, "Enable outlining");
+DEFINE_double(threshold, std::numeric_limits<double>::max(), "PR sum as threshold");
 
 bool DataDrivenUnoptPR();
+
+bool DataDrivenOutliningPR();
+
+bool TopologyDrivenUnoptPR();
 //void CleanupGraphs();
 
 namespace pr {
@@ -53,8 +56,15 @@ namespace pr {
         static const char *NameUpper() { return "Page Rank"; }
 
         static bool Single() {
-            if(FLAGS_data_driven){
-                DataDrivenUnoptPR();
+            if (FLAGS_data_driven) {
+                if (!FLAGS_outlining)
+                    DataDrivenUnoptPR();
+                else
+                    DataDrivenOutliningPR();
+            } else {//TopologyDriven
+                if (!FLAGS_outlining)
+                    TopologyDrivenUnoptPR();
+
             }
         }
 

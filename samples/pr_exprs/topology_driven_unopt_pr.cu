@@ -7,33 +7,38 @@
 #include <memory>
 #include <random>
 #include <cuda.h>
-#include <gflags/gflags.h>
+#include <device_launch_parameters.h>
 #include <groute/event_pool.h>
 #include <groute/graphs/csr_graph.h>
 #include <groute/dwl/work_source.cuh>
 #include <groute/device/cta_scheduler.cuh>
 #include <utils/parser.h>
 #include <utils/utils.h>
-#include <utils/stopwatch.h>
-#include <device_launch_parameters.h>
 #include <utils/graphs/traversal.h>
+#include <utils/stopwatch.h>
+#include <moderngpu/context.hxx>
+#include <moderngpu/kernel_scan.hxx>
+#include <gflags/gflags.h>
 #include <glog/logging.h>
+#include <boost/format.hpp>
+#include <utils/cuda_utils.h>
 #include "pr_common.h"
 
 DECLARE_double(wl_alloc_factor);
 DECLARE_uint64(wl_alloc_abs);
 DECLARE_int32(max_pr_iterations);
-DECLARE_double(epsilon);
+DECLARE_double(threshold);
+DECLARE_int32(grid_size);
+DECLARE_int32(block_size);
 
 namespace data_driven_unopt_pr {
     template<typename WorkSource,
-            typename WorkTarget,
             typename TGraph,
             template<typename> class RankDatum,
             template<typename> class ResidualDatum>
     __global__ void PageRankInit__Single__(
-            WorkSource work_source, WorkTarget work_target,
-            float EPSILON, TGraph graph,
+            WorkSource work_source,
+            TGraph graph,
             RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual) {
         unsigned tid = TID_1D;
         unsigned nthreads = TOTAL_THREADS_1D;
@@ -54,20 +59,17 @@ namespace data_driven_unopt_pr {
 
             for (index_t edge = begin_edge; edge < end_edge; ++edge) {
                 index_t dest = graph.edge_dest(edge);
-                rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
-                if (prev <= EPSILON && prev + update > EPSILON)
-                    work_target.append_warp(dest);
+                atomicAdd(residual.get_item_ptr(dest), update);
             }
         }
     }
 
     template<
-            typename WorkSource, typename WorkTarget,
+            typename WorkSource,
             typename TGraph, template<typename> class RankDatum,
             template<typename> class ResidualDatum>
     __global__ void PageRankKernel__Single__(
-            WorkSource work_source, WorkTarget work_target,
-            float EPSILON, TGraph graph,
+            WorkSource work_source, TGraph graph,
             RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual) {
         uint32_t tid = TID_1D;
         uint32_t nthreads = TOTAL_THREADS_1D;
@@ -93,15 +95,10 @@ namespace data_driven_unopt_pr {
 
             for (index_t edge = begin_edge; edge < end_edge; ++edge) {
                 index_t dest = graph.edge_dest(edge);
-                rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
-
-                if (prev <= EPSILON && prev + update > EPSILON) {
-                    work_target.append_warp(dest);
-                }
+                atomicAdd(residual.get_item_ptr(dest), update);
             }
         }
     }
-
 
     /*
     * The per-device Page Rank problem
@@ -118,28 +115,49 @@ namespace data_driven_unopt_pr {
                 m_graph(graph), m_residual(residual), m_current_ranks(current_ranks) {
         }
 
-        template<typename WorkSource, typename WorkTarget>
-        void Init__Single__(const WorkSource &workSource, WorkTarget workTarget, groute::Stream &stream) const {
+        template<typename WorkSource>
+        void Init__Single__(const WorkSource &workSource, groute::Stream &stream) const {
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, m_graph.owned_nnodes());
 
             Marker::MarkWorkitems(m_graph.owned_nnodes(), "PageRankInit__Single__");
 
             PageRankInit__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                                  (workSource, workTarget, FLAGS_epsilon, m_graph, m_current_ranks, m_residual);
+                                                                  (workSource, m_graph, m_current_ranks, m_residual);
         }
 
-        template<typename WorkSource,
-                typename WorkTarget>
+        template<typename WorkSource>
+        bool RankCheck__Single__(WorkSource work_source, mgpu::context_t &context) {
+            rank_t *tmp = m_current_ranks.data_ptr;
+
+            auto check_segment_sizes = [=]__device__(int idx) {
+                return tmp[idx];
+            };
+
+            mgpu::mem_t<double> checkSum(1, context);
+            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
+
+            int *scanned_offsets = deviceOffsets.data();
+
+            mgpu::transform_scan<double>(check_segment_sizes, work_source.get_size(),
+                                         scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), context);
+
+            double pr_sum = mgpu::from_mem(checkSum)[0];
+
+            VLOG(1) << "Checking... SUM: " << pr_sum << " Relative SUM: " << pr_sum / work_source.get_size();
+
+            return pr_sum / work_source.get_size() < FLAGS_threshold;
+        }
+
+        template<typename WorkSource>
         void
-        Relax__Single__(const WorkSource &work_source, WorkTarget &output_worklist, groute::Stream &stream) {
+        Relax__Single__(const WorkSource &work_source, groute::Stream &stream) {
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
-            float EPSILON = FLAGS_epsilon;
             Marker::MarkWorkitems(work_source.get_size(), "PageRankKernel__Single__");
             PageRankKernel__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                                    (work_source, output_worklist.DeviceObject(), EPSILON, m_graph, m_current_ranks, m_residual);
+                                                                    (work_source, m_graph, m_current_ranks, m_residual);
         }
     };
 
@@ -176,8 +194,8 @@ namespace data_driven_unopt_pr {
     };
 }
 
-bool DataDrivenUnoptPR() {
-    VLOG(0) << "DataDrivenUnoptPR";
+bool TopologyDrivenUnoptPR() {
+    VLOG(0) << "TopologyDrivenUnoptPR";
 
     typedef groute::Queue<index_t> Worklist;
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
@@ -194,6 +212,10 @@ bool DataDrivenUnoptPR() {
 
     context.SyncDevice(0); // graph allocations are on default streams, must sync device
 
+    groute::Stream stream = context.CreateStream(0);
+
+    mgpu::standard_context_t mgpu_context(true, stream.cuda_stream);
+
     data_driven_unopt_pr::Problem<
             groute::graphs::dev::CSRGraph,
             groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>
@@ -202,56 +224,40 @@ bool DataDrivenUnoptPR() {
             current_ranks.DeviceObject(),
             residual.DeviceObject());
 
-    size_t max_work_size = context.host_graph.nedges * FLAGS_wl_alloc_factor;
-    if (FLAGS_wl_alloc_abs > 0)
-        max_work_size = FLAGS_wl_alloc_abs;
-
-    groute::Stream stream = context.CreateStream(0);
-
-    Worklist wl1(max_work_size, 0, "input queue"), wl2(max_work_size, 0, "output queue");
-
-    wl1.ResetAsync(stream.cuda_stream);
-    wl2.ResetAsync(stream.cuda_stream);
-    stream.Sync();
-
     Stopwatch sw(true);
-
-    Worklist *in_wl = &wl1, *out_wl = &wl2;
 
     solver.Init__Single__(groute::dev::WorkSourceRange<index_t>(
             dev_graph_allocator.DeviceObject().owned_start_node(),
             dev_graph_allocator.DeviceObject().owned_nnodes()),
-                          in_wl->DeviceObject(), stream);
-
-    groute::Segment<index_t> work_seg;
-    work_seg = in_wl->GetSeg(stream);
+                          stream);
 
     int iteration = 0;
+    bool running = true;
 
-    while (work_seg.GetSegmentSize() > 0) {
-        solver.Relax__Single__(
-                groute::dev::WorkSourceArray<index_t>(
-                        work_seg.GetSegmentPtr(),
-                        work_seg.GetSegmentSize()),
-                *out_wl, stream);
-        VLOG(1) << "INPUT " << work_seg.GetSegmentSize() << " OUTPUT " << out_wl->GetCount(stream);
+    while (running) {
+        solver.Relax__Single__(groute::dev::WorkSourceRange<index_t>(
+                dev_graph_allocator.DeviceObject().owned_start_node(),
+                dev_graph_allocator.DeviceObject().owned_nnodes()), stream);
+
+        stream.Sync();
+
+        running = solver.RankCheck__Single__(groute::dev::WorkSourceRange<index_t>(
+                dev_graph_allocator.DeviceObject().owned_start_node(),
+                dev_graph_allocator.DeviceObject().owned_nnodes()), mgpu_context);
 
         if (++iteration > FLAGS_max_pr_iterations) {
             LOG(WARNING) << "maximum iterations reached";
             break;
         }
 
-        in_wl->ResetAsync(stream.cuda_stream);
-        std::swap(in_wl, out_wl);
-        work_seg = in_wl->GetSeg(stream);
+        VLOG(1) << "Iteration: " << iteration;
     }
 
     sw.stop();
 
-
-    VLOG(1) << data_driven_unopt_pr::Algo::Name() << " terminated after " << iteration << " iterations (max: "
-            << FLAGS_max_pr_iterations << ")";
-    VLOG(0) << "EPSILON: " << FLAGS_epsilon;
+    VLOG(1)
+    << boost::format("%s terminated after %d iterations (max: %d)") % data_driven_unopt_pr::Algo::Name() % iteration %
+       FLAGS_max_pr_iterations;
     VLOG(0) << data_driven_unopt_pr::Algo::Name() << ": " << sw.ms() << " ms. <filter>";
     // Gather
     auto gathered_output = data_driven_unopt_pr::Algo::Gather(dev_graph_allocator, residual, current_ranks);

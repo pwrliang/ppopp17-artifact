@@ -31,7 +31,6 @@
 
 #include <climits>
 #include <queue>
-
 #include <gflags/gflags.h>
 #include <groute/graphs/csr_graph.h>
 
