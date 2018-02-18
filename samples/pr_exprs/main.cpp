@@ -41,12 +41,17 @@ DEFINE_int32(max_pr_iterations, 200,
 DEFINE_double(epsilon, 0.01, "EPSILON (default 0.01)");
 DEFINE_bool(outlining, false, "Enable outlining");
 DEFINE_double(threshold, std::numeric_limits<double>::max(), "PR sum as threshold");
+DEFINE_bool(append_warp, true, "Parallel append warp");
 
 bool DataDrivenUnoptPR();
+
+bool DataDrivenAppendWarpPR();
 
 bool DataDrivenOutliningPR();
 
 bool TopologyDrivenUnoptPR();
+
+bool DataDrivenCtaNpPR();
 //void CleanupGraphs();
 
 namespace pr {
@@ -57,10 +62,20 @@ namespace pr {
 
         static bool Single() {
             if (FLAGS_data_driven) {
-                if (!FLAGS_outlining)
+                if (FLAGS_cta_np) {
+                    DataDrivenCtaNpPR();
+                    return true;
+                }
+
+                if (FLAGS_append_warp) {
+                    if (FLAGS_outlining) {
+                        DataDrivenOutliningPR();
+                    } else {
+                        DataDrivenAppendWarpPR();
+                    }
+                } else {
                     DataDrivenUnoptPR();
-                else
-                    DataDrivenOutliningPR();
+                }
             } else {//TopologyDriven
                 if (!FLAGS_outlining)
                     TopologyDrivenUnoptPR();

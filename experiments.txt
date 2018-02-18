@@ -1,9 +1,34 @@
 -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /home/liang/livej_output.txt -epsilon 0.01
 
-EPSION   DIFF      TIME
-0.1      0.056336  514.675
-0.01     0.004343  1061.04
-0.001    0.000410  1597.02
-0.0001   0.000040  2154.39
-0.00001  0.000004  2747.84
-0.000001 0.000000  3353.05
+EPSION   PR_SUM    DIFF      TIME      ITERATION
+0.1      0.569674  0.057382  558.778   38
+0.01     0.783754  0.004362  1126.43   55
+0.001    0.805595  0.000411  1712.37   69
+0.0001   0.807757  0.000041  2365.13   84
+0.00001  0.807973  0.000004  2985.68   98
+0.000001 0.807994  0.000000  3623.47   112
+
+         PR_SUM   DIFF      TIME      ITERATION
+         0.729564 0.046060  416.066   7
+         0.800907 0.004906  840.723   15
+         0.807397 0.000646  1315.93   24
+         0.807974 0.000047  2112.9    39
+         0.807994 0.000006  2745.72   51
+         0.807996 0.000000  3644.89   68
+
+-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /home/liang/livej_output.txt -epsilon 0.01
+
+--data driven, noout_lining, append_warp
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.1 -data_driven -nooutlining -noappend_warp
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.01 -data_driven -nooutlining -noappend_warp
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.001 -data_driven -nooutlining -noappend_warp
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.0001 -data_driven -nooutlining -noappend_warp
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.00001 -data_driven -nooutlining -noappend_warp
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.000001 -data_driven -nooutlining -noappend_warp
+
+
+
+
+PROFILE:
+  sudo nvprof --metrics achieved_occupancy,branch_efficiency,gld_efficiency,gst_efficiency ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -data_driven -wl_alloc_factor 0.5 -max_pr_iterations 10
+

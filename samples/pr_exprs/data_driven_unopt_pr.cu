@@ -56,7 +56,7 @@ namespace data_driven_unopt_pr {
                 index_t dest = graph.edge_dest(edge);
                 rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
                 if (prev <= EPSILON && prev + update > EPSILON)
-                    work_target.append_warp(dest);
+                    work_target.append(dest);
             }
         }
     }
@@ -96,7 +96,7 @@ namespace data_driven_unopt_pr {
                 rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
 
                 if (prev <= EPSILON && prev + update > EPSILON) {
-                    work_target.append_warp(dest);
+                    work_target.append(dest);
                 }
             }
         }
