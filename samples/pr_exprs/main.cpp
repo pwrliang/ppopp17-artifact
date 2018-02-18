@@ -42,6 +42,7 @@ DEFINE_double(epsilon, 0.01, "EPSILON (default 0.01)");
 DEFINE_bool(outlining, false, "Enable outlining");
 DEFINE_double(threshold, std::numeric_limits<double>::max(), "PR sum as threshold");
 DEFINE_bool(append_warp, true, "Parallel append warp");
+DEFINE_bool(hybrid, false, "Use both of topo & data driven");
 
 bool DataDrivenUnoptPR();
 
@@ -52,6 +53,8 @@ bool DataDrivenOutliningPR();
 bool TopologyDrivenUnoptPR();
 
 bool DataDrivenCtaNpPR();
+
+bool HybridDrivenPR();
 //void CleanupGraphs();
 
 namespace pr {
@@ -61,6 +64,11 @@ namespace pr {
         static const char *NameUpper() { return "Page Rank"; }
 
         static bool Single() {
+            if (FLAGS_hybrid) {
+                return HybridDrivenPR();
+            }
+
+
             if (FLAGS_data_driven) {
                 if (FLAGS_cta_np) {
                     DataDrivenCtaNpPR();
