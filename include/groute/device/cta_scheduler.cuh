@@ -203,9 +203,9 @@ namespace dev {
                 int leader = __ffs(mask) - 1;   // Find the position of the least significant bit set to 1 in a 32 bit integer.
 
                 // Broadcast data from the leader  
-                index_type start = cub::ShuffleIndex(np_local.start, leader);
-                index_type size = cub::ShuffleIndex(np_local.size, leader);
-                TMetaData meta_data = cub::ShuffleIndex(np_local.meta_data, leader);
+                index_type start = cub::ShuffleIndex<32>(np_local.start, leader, 0xffffffff);
+                index_type size = cub::ShuffleIndex<32>(np_local.size, leader, 0xffffffff);
+                TMetaData meta_data = cub::ShuffleIndex<32>(np_local.meta_data, leader, 0xffffffff);
 
                 if (leader == lane_id)
                 {

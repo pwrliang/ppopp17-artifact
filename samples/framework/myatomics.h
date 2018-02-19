@@ -6,8 +6,24 @@
 #define GROUTE_MYATOMICS_H
 
 template<typename T>
-__device__ void MyAtomicAdd(T *address, T val) {
-    atomicAdd(address, val);
-}
+struct MyAtomicAdd {
+    __device__ T operator()(T *address, T val) {
+        return atomicAdd(address, val);
+    }
+};
+
+template<typename T>
+struct MyAtomicMin {
+    __device__ T operator()(T *address, T val) {
+        return atomicMin(address, val);
+    }
+};
+
+template<typename T>
+struct MyAtomicMax {
+    __device__ T operator()(T *address, T val) {
+        return atomicMax(address, val);
+    }
+};
 
 #endif //GROUTE_MYATOMICS_H

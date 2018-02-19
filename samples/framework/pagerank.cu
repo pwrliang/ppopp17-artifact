@@ -1,15 +1,17 @@
 //
 // Created by liang on 2/15/18.
 //
-
+#include <utils/cuda_utils.h>
 #include "registry.h"
 #include "kernel.h"
+#include "myatomics.h"
 
 typedef float rank_t;
 
 struct MyIterateKernel : public maiter::IterateKernel<rank_t, rank_t> {
     __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
 //        printf("call %d\n", node);
+        //printf("Identity Elem: %f\n", IdentityElement());
         return 0;
     }
 
@@ -24,11 +26,11 @@ struct MyIterateKernel : public maiter::IterateKernel<rank_t, rank_t> {
     __forceinline__ __device__ float
     g_func(const float delta, const index_t weight,
            const index_t out_degree) const {
-        return 0.8 * delta / out_degree;
+        return 0.8f * delta / out_degree;
     }
 
     __forceinline__ __device__ virtual float IdentityElement() const {
-        return 0;
+        return 0.1f;
     }
 };
 
@@ -41,14 +43,12 @@ __global__ void createFunc(maiter::IterateKernel<rank_t, rank_t> **baseFunc) {
 bool PageRank() {
     maiter::MaiterKernel<rank_t, rank_t> *kernel = new maiter::MaiterKernel<rank_t, rank_t>();
 
-    createFunc << < 1, 1 >> > (kernel->DeviceKernelObject());
-    GROUTE_CUDA_CHECK(cudaDeviceSynchronize());
+    createFunc << < 1, 1, 0, kernel->getStream().cuda_stream >> > (kernel->DeviceKernelObject());
 
     kernel->InitValue();
 
     kernel->DataDriven();
 
     delete kernel;
-//    kernel->
     return true;
 }

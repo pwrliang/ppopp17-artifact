@@ -35,7 +35,7 @@
 #include <vector>
 #include <climits>
 #include <type_traits>
-
+#include <assert.h>
 #include <groute/internal/cuda_utils.h>
 
 
