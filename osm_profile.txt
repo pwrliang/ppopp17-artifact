@@ -2568,18 +2568,6 @@ Overall: Test passed
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 Topology-Driven
 
 liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ sudo nvprof ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -output /mnt/sda2/liang/osm_output.txt -epsilon 0.000001 -noappend_warp -nodata_driven -wl_alloc_factor 0.5 -max_pr_iterations 75
@@ -2812,4 +2800,513 @@ Overall: Test passed
                     0.00%     691ns         1     691ns     691ns     691ns  cuInit
 
 ==32678== NVTX result:
+
+
+
+
+
+
+
+
+
+
+
+Hybrid:
+
+
+liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ sudo nvprof ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -hybrid -wl_alloc_factor 0.5 -first_iteration 65 -max_pr_iterations 888 -nocta_np
+[sudo] password for liang: 
+
+Testing single GPU Page Rank
+--------------------
+
+I0218 14:01:20.844744 19864 hybrid_driven.cu:338] HybridDrivenPR
+==19864== NVPROF is profiling process 19864, command: ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -hybrid -wl_alloc_factor 0.5 -first_iteration 65 -max_pr_itera
+
+Loading graph /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr (1)
+/mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr has 173789185 nodes and 347997111 edges
+read 347997111 edges
+read data for 347997111 edges
+
+----- Running PR -----
+
+The graph has 173789185 vertices, and 347997111 edges (average degree: 2.002409)
+GeForce GTX 1080 : 1733.500 Mhz   (Ordinal 0)
+20 SMs enabled. Compute Capability sm_61
+FreeMem:   4657MB   TotalMem:   8112MB   64-bit pointers.
+Mem Clock: 5005.000 Mhz x 256 bits   (320.3 GB/s)
+ECC Disabled
+
+
+I0218 14:01:26.286711 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 0
+I0218 14:01:26.378718 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 1
+I0218 14:01:26.470760 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 2
+I0218 14:01:26.562716 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 3
+I0218 14:01:26.654717 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 4
+I0218 14:01:26.746737 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 5
+I0218 14:01:26.838743 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 6
+I0218 14:01:26.930795 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 7
+I0218 14:01:27.022801 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 8
+I0218 14:01:27.114819 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 9
+I0218 14:01:27.206791 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 10
+I0218 14:01:27.298818 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 11
+I0218 14:01:27.390822 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 12
+I0218 14:01:27.482873 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 13
+I0218 14:01:27.574842 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 14
+I0218 14:01:27.666870 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 15
+I0218 14:01:27.758927 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 16
+I0218 14:01:27.850944 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 17
+I0218 14:01:27.942976 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 18
+I0218 14:01:28.035044 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 19
+I0218 14:01:28.127068 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 20
+I0218 14:01:28.219074 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 21
+I0218 14:01:28.311064 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 22
+I0218 14:01:28.403101 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 23
+I0218 14:01:28.495086 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 24
+I0218 14:01:28.587085 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 25
+I0218 14:01:28.679038 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 26
+I0218 14:01:28.771021 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 27
+I0218 14:01:28.863039 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 28
+I0218 14:01:28.955030 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 29
+I0218 14:01:29.047068 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 30
+I0218 14:01:29.139031 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 31
+I0218 14:01:29.230969 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 32
+I0218 14:01:29.322935 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 33
+I0218 14:01:29.414973 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 34
+I0218 14:01:29.506981 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 35
+I0218 14:01:29.598992 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 36
+I0218 14:01:29.690968 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 37
+I0218 14:01:29.783032 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 38
+I0218 14:01:29.875001 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 39
+I0218 14:01:29.967015 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 40
+I0218 14:01:30.059041 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 41
+I0218 14:01:30.151042 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 42
+I0218 14:01:30.243062 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 43
+I0218 14:01:30.335124 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 44
+I0218 14:01:30.427132 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 45
+I0218 14:01:30.519124 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 46
+I0218 14:01:30.611120 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 47
+I0218 14:01:30.703109 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 48
+I0218 14:01:30.795150 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 49
+I0218 14:01:30.887147 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 50
+I0218 14:01:30.979146 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 51
+I0218 14:01:31.071192 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 52
+I0218 14:01:31.163146 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 53
+I0218 14:01:31.255194 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 54
+I0218 14:01:31.347234 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 55
+I0218 14:01:31.439278 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 56
+I0218 14:01:31.531304 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 57
+I0218 14:01:31.623288 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 58
+I0218 14:01:31.715312 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 59
+I0218 14:01:31.807324 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 60
+I0218 14:01:31.899312 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 61
+I0218 14:01:31.991291 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 62
+I0218 14:01:32.083303 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 63
+I0218 14:01:32.175340 19864 hybrid_driven.cu:394] Topology-Driven Iteration: 64
+I0218 14:01:32.326998 19864 hybrid_driven.cu:410] Data-Driven Iteration: 65 INPUT 85223350 OUTPUT 79035798
+I0218 14:01:32.380961 19864 hybrid_driven.cu:410] Data-Driven Iteration: 66 INPUT 79035798 OUTPUT 72894068
+I0218 14:01:32.443498 19864 hybrid_driven.cu:410] Data-Driven Iteration: 67 INPUT 72894068 OUTPUT 65971946
+I0218 14:01:32.506553 19864 hybrid_driven.cu:410] Data-Driven Iteration: 68 INPUT 65971946 OUTPUT 57272671
+I0218 14:01:32.570737 19864 hybrid_driven.cu:410] Data-Driven Iteration: 69 INPUT 57272671 OUTPUT 48701741
+I0218 14:01:32.631935 19864 hybrid_driven.cu:410] Data-Driven Iteration: 70 INPUT 48701741 OUTPUT 37980348
+I0218 14:01:32.690709 19864 hybrid_driven.cu:410] Data-Driven Iteration: 71 INPUT 37980348 OUTPUT 23618518
+I0218 14:01:32.747987 19864 hybrid_driven.cu:410] Data-Driven Iteration: 72 INPUT 23618518 OUTPUT 21727774
+I0218 14:01:32.804247 19864 hybrid_driven.cu:410] Data-Driven Iteration: 73 INPUT 21727774 OUTPUT 18655838
+I0218 14:01:32.855340 19864 hybrid_driven.cu:410] Data-Driven Iteration: 74 INPUT 18655838 OUTPUT 14479789
+I0218 14:01:32.899094 19864 hybrid_driven.cu:410] Data-Driven Iteration: 75 INPUT 14479789 OUTPUT 6909816
+I0218 14:01:32.933131 19864 hybrid_driven.cu:410] Data-Driven Iteration: 76 INPUT 6909816 OUTPUT 3987610
+I0218 14:01:32.957770 19864 hybrid_driven.cu:410] Data-Driven Iteration: 77 INPUT 3987610 OUTPUT 2729789
+I0218 14:01:32.976315 19864 hybrid_driven.cu:410] Data-Driven Iteration: 78 INPUT 2729789 OUTPUT 2017684
+I0218 14:01:32.990628 19864 hybrid_driven.cu:410] Data-Driven Iteration: 79 INPUT 2017684 OUTPUT 1536768
+I0218 14:01:33.001958 19864 hybrid_driven.cu:410] Data-Driven Iteration: 80 INPUT 1536768 OUTPUT 1197531
+I0218 14:01:33.010939 19864 hybrid_driven.cu:410] Data-Driven Iteration: 81 INPUT 1197531 OUTPUT 952216
+I0218 14:01:33.018163 19864 hybrid_driven.cu:410] Data-Driven Iteration: 82 INPUT 952216 OUTPUT 782220
+I0218 14:01:33.024201 19864 hybrid_driven.cu:410] Data-Driven Iteration: 83 INPUT 782220 OUTPUT 651344
+I0218 14:01:33.029348 19864 hybrid_driven.cu:410] Data-Driven Iteration: 84 INPUT 651344 OUTPUT 545133
+I0218 14:01:33.033769 19864 hybrid_driven.cu:410] Data-Driven Iteration: 85 INPUT 545133 OUTPUT 459668
+I0218 14:01:33.037446 19864 hybrid_driven.cu:410] Data-Driven Iteration: 86 INPUT 459668 OUTPUT 388485
+I0218 14:01:33.040555 19864 hybrid_driven.cu:410] Data-Driven Iteration: 87 INPUT 388485 OUTPUT 330035
+I0218 14:01:33.043184 19864 hybrid_driven.cu:410] Data-Driven Iteration: 88 INPUT 330035 OUTPUT 281585
+I0218 14:01:33.045454 19864 hybrid_driven.cu:410] Data-Driven Iteration: 89 INPUT 281585 OUTPUT 241048
+I0218 14:01:33.047395 19864 hybrid_driven.cu:410] Data-Driven Iteration: 90 INPUT 241048 OUTPUT 207491
+I0218 14:01:33.049070 19864 hybrid_driven.cu:410] Data-Driven Iteration: 91 INPUT 207491 OUTPUT 179264
+I0218 14:01:33.050531 19864 hybrid_driven.cu:410] Data-Driven Iteration: 92 INPUT 179264 OUTPUT 155142
+I0218 14:01:33.051789 19864 hybrid_driven.cu:410] Data-Driven Iteration: 93 INPUT 155142 OUTPUT 134798
+I0218 14:01:33.052914 19864 hybrid_driven.cu:410] Data-Driven Iteration: 94 INPUT 134798 OUTPUT 117305
+I0218 14:01:33.053875 19864 hybrid_driven.cu:410] Data-Driven Iteration: 95 INPUT 117305 OUTPUT 102503
+I0218 14:01:33.054713 19864 hybrid_driven.cu:410] Data-Driven Iteration: 96 INPUT 102503 OUTPUT 89974
+I0218 14:01:33.055454 19864 hybrid_driven.cu:410] Data-Driven Iteration: 97 INPUT 89974 OUTPUT 79216
+I0218 14:01:33.056118 19864 hybrid_driven.cu:410] Data-Driven Iteration: 98 INPUT 79216 OUTPUT 69770
+I0218 14:01:33.056697 19864 hybrid_driven.cu:410] Data-Driven Iteration: 99 INPUT 69770 OUTPUT 61628
+I0218 14:01:33.057211 19864 hybrid_driven.cu:410] Data-Driven Iteration: 100 INPUT 61628 OUTPUT 54724
+I0218 14:01:33.057670 19864 hybrid_driven.cu:410] Data-Driven Iteration: 101 INPUT 54724 OUTPUT 48583
+I0218 14:01:33.058082 19864 hybrid_driven.cu:410] Data-Driven Iteration: 102 INPUT 48583 OUTPUT 43336
+I0218 14:01:33.058449 19864 hybrid_driven.cu:410] Data-Driven Iteration: 103 INPUT 43336 OUTPUT 38792
+I0218 14:01:33.058773 19864 hybrid_driven.cu:410] Data-Driven Iteration: 104 INPUT 38792 OUTPUT 34810
+I0218 14:01:33.059062 19864 hybrid_driven.cu:410] Data-Driven Iteration: 105 INPUT 34810 OUTPUT 31313
+I0218 14:01:33.059332 19864 hybrid_driven.cu:410] Data-Driven Iteration: 106 INPUT 31313 OUTPUT 28230
+I0218 14:01:33.059572 19864 hybrid_driven.cu:410] Data-Driven Iteration: 107 INPUT 28230 OUTPUT 25492
+I0218 14:01:33.059778 19864 hybrid_driven.cu:410] Data-Driven Iteration: 108 INPUT 25492 OUTPUT 23167
+I0218 14:01:33.059967 19864 hybrid_driven.cu:410] Data-Driven Iteration: 109 INPUT 23167 OUTPUT 20976
+I0218 14:01:33.060135 19864 hybrid_driven.cu:410] Data-Driven Iteration: 110 INPUT 20976 OUTPUT 19116
+I0218 14:01:33.060286 19864 hybrid_driven.cu:410] Data-Driven Iteration: 111 INPUT 19116 OUTPUT 17365
+I0218 14:01:33.060427 19864 hybrid_driven.cu:410] Data-Driven Iteration: 112 INPUT 17365 OUTPUT 15762
+I0218 14:01:33.060557 19864 hybrid_driven.cu:410] Data-Driven Iteration: 113 INPUT 15762 OUTPUT 14381
+I0218 14:01:33.060672 19864 hybrid_driven.cu:410] Data-Driven Iteration: 114 INPUT 14381 OUTPUT 13072
+I0218 14:01:33.060778 19864 hybrid_driven.cu:410] Data-Driven Iteration: 115 INPUT 13072 OUTPUT 11990
+I0218 14:01:33.060875 19864 hybrid_driven.cu:410] Data-Driven Iteration: 116 INPUT 11990 OUTPUT 10955
+I0218 14:01:33.060972 19864 hybrid_driven.cu:410] Data-Driven Iteration: 117 INPUT 10955 OUTPUT 10011
+I0218 14:01:33.061064 19864 hybrid_driven.cu:410] Data-Driven Iteration: 118 INPUT 10011 OUTPUT 9244
+I0218 14:01:33.061152 19864 hybrid_driven.cu:410] Data-Driven Iteration: 119 INPUT 9244 OUTPUT 8553
+I0218 14:01:33.061233 19864 hybrid_driven.cu:410] Data-Driven Iteration: 120 INPUT 8553 OUTPUT 7861
+I0218 14:01:33.061305 19864 hybrid_driven.cu:410] Data-Driven Iteration: 121 INPUT 7861 OUTPUT 7214
+I0218 14:01:33.061375 19864 hybrid_driven.cu:410] Data-Driven Iteration: 122 INPUT 7214 OUTPUT 6675
+I0218 14:01:33.061445 19864 hybrid_driven.cu:410] Data-Driven Iteration: 123 INPUT 6675 OUTPUT 6178
+I0218 14:01:33.061507 19864 hybrid_driven.cu:410] Data-Driven Iteration: 124 INPUT 6178 OUTPUT 5733
+I0218 14:01:33.061570 19864 hybrid_driven.cu:410] Data-Driven Iteration: 125 INPUT 5733 OUTPUT 5332
+I0218 14:01:33.061631 19864 hybrid_driven.cu:410] Data-Driven Iteration: 126 INPUT 5332 OUTPUT 4977
+I0218 14:01:33.061693 19864 hybrid_driven.cu:410] Data-Driven Iteration: 127 INPUT 4977 OUTPUT 4630
+I0218 14:01:33.061760 19864 hybrid_driven.cu:410] Data-Driven Iteration: 128 INPUT 4630 OUTPUT 4316
+I0218 14:01:33.061825 19864 hybrid_driven.cu:410] Data-Driven Iteration: 129 INPUT 4316 OUTPUT 4031
+I0218 14:01:33.061878 19864 hybrid_driven.cu:410] Data-Driven Iteration: 130 INPUT 4031 OUTPUT 3751
+I0218 14:01:33.061931 19864 hybrid_driven.cu:410] Data-Driven Iteration: 131 INPUT 3751 OUTPUT 3502
+I0218 14:01:33.061985 19864 hybrid_driven.cu:410] Data-Driven Iteration: 132 INPUT 3502 OUTPUT 3282
+I0218 14:01:33.062037 19864 hybrid_driven.cu:410] Data-Driven Iteration: 133 INPUT 3282 OUTPUT 3072
+I0218 14:01:33.062091 19864 hybrid_driven.cu:410] Data-Driven Iteration: 134 INPUT 3072 OUTPUT 2900
+I0218 14:01:33.062170 19864 hybrid_driven.cu:410] Data-Driven Iteration: 135 INPUT 2900 OUTPUT 2717
+I0218 14:01:33.062224 19864 hybrid_driven.cu:410] Data-Driven Iteration: 136 INPUT 2717 OUTPUT 2545
+I0218 14:01:33.062278 19864 hybrid_driven.cu:410] Data-Driven Iteration: 137 INPUT 2545 OUTPUT 2398
+I0218 14:01:33.062325 19864 hybrid_driven.cu:410] Data-Driven Iteration: 138 INPUT 2398 OUTPUT 2271
+I0218 14:01:33.062369 19864 hybrid_driven.cu:410] Data-Driven Iteration: 139 INPUT 2271 OUTPUT 2160
+I0218 14:01:33.062415 19864 hybrid_driven.cu:410] Data-Driven Iteration: 140 INPUT 2160 OUTPUT 2006
+I0218 14:01:33.062461 19864 hybrid_driven.cu:410] Data-Driven Iteration: 141 INPUT 2006 OUTPUT 1873
+I0218 14:01:33.062507 19864 hybrid_driven.cu:410] Data-Driven Iteration: 142 INPUT 1873 OUTPUT 1736
+I0218 14:01:33.062552 19864 hybrid_driven.cu:410] Data-Driven Iteration: 143 INPUT 1736 OUTPUT 1628
+I0218 14:01:33.062598 19864 hybrid_driven.cu:410] Data-Driven Iteration: 144 INPUT 1628 OUTPUT 1539
+I0218 14:01:33.062644 19864 hybrid_driven.cu:410] Data-Driven Iteration: 145 INPUT 1539 OUTPUT 1463
+I0218 14:01:33.062690 19864 hybrid_driven.cu:410] Data-Driven Iteration: 146 INPUT 1463 OUTPUT 1366
+I0218 14:01:33.062736 19864 hybrid_driven.cu:410] Data-Driven Iteration: 147 INPUT 1366 OUTPUT 1284
+I0218 14:01:33.062782 19864 hybrid_driven.cu:410] Data-Driven Iteration: 148 INPUT 1284 OUTPUT 1220
+I0218 14:01:33.062827 19864 hybrid_driven.cu:410] Data-Driven Iteration: 149 INPUT 1220 OUTPUT 1140
+I0218 14:01:33.062873 19864 hybrid_driven.cu:410] Data-Driven Iteration: 150 INPUT 1140 OUTPUT 1054
+I0218 14:01:33.062918 19864 hybrid_driven.cu:410] Data-Driven Iteration: 151 INPUT 1054 OUTPUT 1005
+I0218 14:01:33.062964 19864 hybrid_driven.cu:410] Data-Driven Iteration: 152 INPUT 1005 OUTPUT 939
+I0218 14:01:33.063010 19864 hybrid_driven.cu:410] Data-Driven Iteration: 153 INPUT 939 OUTPUT 883
+I0218 14:01:33.063056 19864 hybrid_driven.cu:410] Data-Driven Iteration: 154 INPUT 883 OUTPUT 840
+I0218 14:01:33.063112 19864 hybrid_driven.cu:410] Data-Driven Iteration: 155 INPUT 840 OUTPUT 779
+I0218 14:01:33.063159 19864 hybrid_driven.cu:410] Data-Driven Iteration: 156 INPUT 779 OUTPUT 736
+I0218 14:01:33.063206 19864 hybrid_driven.cu:410] Data-Driven Iteration: 157 INPUT 736 OUTPUT 710
+I0218 14:01:33.063252 19864 hybrid_driven.cu:410] Data-Driven Iteration: 158 INPUT 710 OUTPUT 675
+I0218 14:01:33.063297 19864 hybrid_driven.cu:410] Data-Driven Iteration: 159 INPUT 675 OUTPUT 649
+I0218 14:01:33.063344 19864 hybrid_driven.cu:410] Data-Driven Iteration: 160 INPUT 649 OUTPUT 613
+I0218 14:01:33.063390 19864 hybrid_driven.cu:410] Data-Driven Iteration: 161 INPUT 613 OUTPUT 588
+I0218 14:01:33.063434 19864 hybrid_driven.cu:410] Data-Driven Iteration: 162 INPUT 588 OUTPUT 553
+I0218 14:01:33.063480 19864 hybrid_driven.cu:410] Data-Driven Iteration: 163 INPUT 553 OUTPUT 533
+I0218 14:01:33.063526 19864 hybrid_driven.cu:410] Data-Driven Iteration: 164 INPUT 533 OUTPUT 511
+I0218 14:01:33.063572 19864 hybrid_driven.cu:410] Data-Driven Iteration: 165 INPUT 511 OUTPUT 490
+I0218 14:01:33.063617 19864 hybrid_driven.cu:410] Data-Driven Iteration: 166 INPUT 490 OUTPUT 454
+I0218 14:01:33.063670 19864 hybrid_driven.cu:410] Data-Driven Iteration: 167 INPUT 454 OUTPUT 430
+I0218 14:01:33.063716 19864 hybrid_driven.cu:410] Data-Driven Iteration: 168 INPUT 430 OUTPUT 413
+I0218 14:01:33.063762 19864 hybrid_driven.cu:410] Data-Driven Iteration: 169 INPUT 413 OUTPUT 392
+I0218 14:01:33.063808 19864 hybrid_driven.cu:410] Data-Driven Iteration: 170 INPUT 392 OUTPUT 369
+I0218 14:01:33.063854 19864 hybrid_driven.cu:410] Data-Driven Iteration: 171 INPUT 369 OUTPUT 347
+I0218 14:01:33.063900 19864 hybrid_driven.cu:410] Data-Driven Iteration: 172 INPUT 347 OUTPUT 322
+I0218 14:01:33.063946 19864 hybrid_driven.cu:410] Data-Driven Iteration: 173 INPUT 322 OUTPUT 311
+I0218 14:01:33.063992 19864 hybrid_driven.cu:410] Data-Driven Iteration: 174 INPUT 311 OUTPUT 296
+I0218 14:01:33.064036 19864 hybrid_driven.cu:410] Data-Driven Iteration: 175 INPUT 296 OUTPUT 283
+I0218 14:01:33.064095 19864 hybrid_driven.cu:410] Data-Driven Iteration: 176 INPUT 283 OUTPUT 273
+I0218 14:01:33.064142 19864 hybrid_driven.cu:410] Data-Driven Iteration: 177 INPUT 273 OUTPUT 257
+I0218 14:01:33.064188 19864 hybrid_driven.cu:410] Data-Driven Iteration: 178 INPUT 257 OUTPUT 237
+I0218 14:01:33.064234 19864 hybrid_driven.cu:410] Data-Driven Iteration: 179 INPUT 237 OUTPUT 229
+I0218 14:01:33.064280 19864 hybrid_driven.cu:410] Data-Driven Iteration: 180 INPUT 229 OUTPUT 209
+I0218 14:01:33.064326 19864 hybrid_driven.cu:410] Data-Driven Iteration: 181 INPUT 209 OUTPUT 202
+I0218 14:01:33.064371 19864 hybrid_driven.cu:410] Data-Driven Iteration: 182 INPUT 202 OUTPUT 195
+I0218 14:01:33.064415 19864 hybrid_driven.cu:410] Data-Driven Iteration: 183 INPUT 195 OUTPUT 186
+I0218 14:01:33.064461 19864 hybrid_driven.cu:410] Data-Driven Iteration: 184 INPUT 186 OUTPUT 182
+I0218 14:01:33.064507 19864 hybrid_driven.cu:410] Data-Driven Iteration: 185 INPUT 182 OUTPUT 172
+I0218 14:01:33.064553 19864 hybrid_driven.cu:410] Data-Driven Iteration: 186 INPUT 172 OUTPUT 162
+I0218 14:01:33.064599 19864 hybrid_driven.cu:410] Data-Driven Iteration: 187 INPUT 162 OUTPUT 153
+I0218 14:01:33.064644 19864 hybrid_driven.cu:410] Data-Driven Iteration: 188 INPUT 153 OUTPUT 143
+I0218 14:01:33.064690 19864 hybrid_driven.cu:410] Data-Driven Iteration: 189 INPUT 143 OUTPUT 137
+I0218 14:01:33.064734 19864 hybrid_driven.cu:410] Data-Driven Iteration: 190 INPUT 137 OUTPUT 134
+I0218 14:01:33.064779 19864 hybrid_driven.cu:410] Data-Driven Iteration: 191 INPUT 134 OUTPUT 129
+I0218 14:01:33.064837 19864 hybrid_driven.cu:410] Data-Driven Iteration: 192 INPUT 129 OUTPUT 125
+I0218 14:01:33.064894 19864 hybrid_driven.cu:410] Data-Driven Iteration: 193 INPUT 125 OUTPUT 122
+I0218 14:01:33.064939 19864 hybrid_driven.cu:410] Data-Driven Iteration: 194 INPUT 122 OUTPUT 119
+I0218 14:01:33.064985 19864 hybrid_driven.cu:410] Data-Driven Iteration: 195 INPUT 119 OUTPUT 114
+I0218 14:01:33.065029 19864 hybrid_driven.cu:410] Data-Driven Iteration: 196 INPUT 114 OUTPUT 105
+I0218 14:01:33.065075 19864 hybrid_driven.cu:410] Data-Driven Iteration: 197 INPUT 105 OUTPUT 102
+I0218 14:01:33.065120 19864 hybrid_driven.cu:410] Data-Driven Iteration: 198 INPUT 102 OUTPUT 97
+I0218 14:01:33.065165 19864 hybrid_driven.cu:410] Data-Driven Iteration: 199 INPUT 97 OUTPUT 95
+I0218 14:01:33.065209 19864 hybrid_driven.cu:410] Data-Driven Iteration: 200 INPUT 95 OUTPUT 94
+I0218 14:01:33.065254 19864 hybrid_driven.cu:410] Data-Driven Iteration: 201 INPUT 94 OUTPUT 90
+I0218 14:01:33.065299 19864 hybrid_driven.cu:410] Data-Driven Iteration: 202 INPUT 90 OUTPUT 81
+I0218 14:01:33.065343 19864 hybrid_driven.cu:410] Data-Driven Iteration: 203 INPUT 81 OUTPUT 74
+I0218 14:01:33.065387 19864 hybrid_driven.cu:410] Data-Driven Iteration: 204 INPUT 74 OUTPUT 72
+I0218 14:01:33.065431 19864 hybrid_driven.cu:410] Data-Driven Iteration: 205 INPUT 72 OUTPUT 64
+I0218 14:01:33.065475 19864 hybrid_driven.cu:410] Data-Driven Iteration: 206 INPUT 64 OUTPUT 62
+I0218 14:01:33.065520 19864 hybrid_driven.cu:410] Data-Driven Iteration: 207 INPUT 62 OUTPUT 62
+I0218 14:01:33.065564 19864 hybrid_driven.cu:410] Data-Driven Iteration: 208 INPUT 62 OUTPUT 58
+I0218 14:01:33.065608 19864 hybrid_driven.cu:410] Data-Driven Iteration: 209 INPUT 58 OUTPUT 57
+I0218 14:01:33.065652 19864 hybrid_driven.cu:410] Data-Driven Iteration: 210 INPUT 57 OUTPUT 54
+I0218 14:01:33.065697 19864 hybrid_driven.cu:410] Data-Driven Iteration: 211 INPUT 54 OUTPUT 52
+I0218 14:01:33.065742 19864 hybrid_driven.cu:410] Data-Driven Iteration: 212 INPUT 52 OUTPUT 51
+I0218 14:01:33.065786 19864 hybrid_driven.cu:410] Data-Driven Iteration: 213 INPUT 51 OUTPUT 50
+I0218 14:01:33.065830 19864 hybrid_driven.cu:410] Data-Driven Iteration: 214 INPUT 50 OUTPUT 50
+I0218 14:01:33.065874 19864 hybrid_driven.cu:410] Data-Driven Iteration: 215 INPUT 50 OUTPUT 50
+I0218 14:01:33.065917 19864 hybrid_driven.cu:410] Data-Driven Iteration: 216 INPUT 50 OUTPUT 42
+I0218 14:01:33.065961 19864 hybrid_driven.cu:410] Data-Driven Iteration: 217 INPUT 42 OUTPUT 41
+I0218 14:01:33.066017 19864 hybrid_driven.cu:410] Data-Driven Iteration: 218 INPUT 41 OUTPUT 41
+I0218 14:01:33.066062 19864 hybrid_driven.cu:410] Data-Driven Iteration: 219 INPUT 41 OUTPUT 39
+I0218 14:01:33.066107 19864 hybrid_driven.cu:410] Data-Driven Iteration: 220 INPUT 39 OUTPUT 36
+I0218 14:01:33.066153 19864 hybrid_driven.cu:410] Data-Driven Iteration: 221 INPUT 36 OUTPUT 36
+I0218 14:01:33.066196 19864 hybrid_driven.cu:410] Data-Driven Iteration: 222 INPUT 36 OUTPUT 35
+I0218 14:01:33.066241 19864 hybrid_driven.cu:410] Data-Driven Iteration: 223 INPUT 35 OUTPUT 35
+I0218 14:01:33.066285 19864 hybrid_driven.cu:410] Data-Driven Iteration: 224 INPUT 35 OUTPUT 33
+I0218 14:01:33.066329 19864 hybrid_driven.cu:410] Data-Driven Iteration: 225 INPUT 33 OUTPUT 34
+I0218 14:01:33.066373 19864 hybrid_driven.cu:410] Data-Driven Iteration: 226 INPUT 34 OUTPUT 30
+I0218 14:01:33.066418 19864 hybrid_driven.cu:410] Data-Driven Iteration: 227 INPUT 30 OUTPUT 29
+I0218 14:01:33.066463 19864 hybrid_driven.cu:410] Data-Driven Iteration: 228 INPUT 29 OUTPUT 29
+I0218 14:01:33.066507 19864 hybrid_driven.cu:410] Data-Driven Iteration: 229 INPUT 29 OUTPUT 27
+I0218 14:01:33.066551 19864 hybrid_driven.cu:410] Data-Driven Iteration: 230 INPUT 27 OUTPUT 27
+I0218 14:01:33.066596 19864 hybrid_driven.cu:410] Data-Driven Iteration: 231 INPUT 27 OUTPUT 25
+I0218 14:01:33.066640 19864 hybrid_driven.cu:410] Data-Driven Iteration: 232 INPUT 25 OUTPUT 23
+I0218 14:01:33.066684 19864 hybrid_driven.cu:410] Data-Driven Iteration: 233 INPUT 23 OUTPUT 23
+I0218 14:01:33.066728 19864 hybrid_driven.cu:410] Data-Driven Iteration: 234 INPUT 23 OUTPUT 21
+I0218 14:01:33.066772 19864 hybrid_driven.cu:410] Data-Driven Iteration: 235 INPUT 21 OUTPUT 20
+I0218 14:01:33.066817 19864 hybrid_driven.cu:410] Data-Driven Iteration: 236 INPUT 20 OUTPUT 20
+I0218 14:01:33.066860 19864 hybrid_driven.cu:410] Data-Driven Iteration: 237 INPUT 20 OUTPUT 20
+I0218 14:01:33.066905 19864 hybrid_driven.cu:410] Data-Driven Iteration: 238 INPUT 20 OUTPUT 19
+I0218 14:01:33.066949 19864 hybrid_driven.cu:410] Data-Driven Iteration: 239 INPUT 19 OUTPUT 18
+I0218 14:01:33.066993 19864 hybrid_driven.cu:410] Data-Driven Iteration: 240 INPUT 18 OUTPUT 14
+I0218 14:01:33.067037 19864 hybrid_driven.cu:410] Data-Driven Iteration: 241 INPUT 14 OUTPUT 13
+I0218 14:01:33.067081 19864 hybrid_driven.cu:410] Data-Driven Iteration: 242 INPUT 13 OUTPUT 13
+I0218 14:01:33.067126 19864 hybrid_driven.cu:410] Data-Driven Iteration: 243 INPUT 13 OUTPUT 13
+I0218 14:01:33.067170 19864 hybrid_driven.cu:410] Data-Driven Iteration: 244 INPUT 13 OUTPUT 11
+I0218 14:01:33.067215 19864 hybrid_driven.cu:410] Data-Driven Iteration: 245 INPUT 11 OUTPUT 10
+I0218 14:01:33.067272 19864 hybrid_driven.cu:410] Data-Driven Iteration: 246 INPUT 10 OUTPUT 9
+I0218 14:01:33.067318 19864 hybrid_driven.cu:410] Data-Driven Iteration: 247 INPUT 9 OUTPUT 8
+I0218 14:01:33.067363 19864 hybrid_driven.cu:410] Data-Driven Iteration: 248 INPUT 8 OUTPUT 7
+I0218 14:01:33.067407 19864 hybrid_driven.cu:410] Data-Driven Iteration: 249 INPUT 7 OUTPUT 6
+I0218 14:01:33.067451 19864 hybrid_driven.cu:410] Data-Driven Iteration: 250 INPUT 6 OUTPUT 6
+I0218 14:01:33.067495 19864 hybrid_driven.cu:410] Data-Driven Iteration: 251 INPUT 6 OUTPUT 6
+I0218 14:01:33.067539 19864 hybrid_driven.cu:410] Data-Driven Iteration: 252 INPUT 6 OUTPUT 6
+I0218 14:01:33.067584 19864 hybrid_driven.cu:410] Data-Driven Iteration: 253 INPUT 6 OUTPUT 6
+I0218 14:01:33.067627 19864 hybrid_driven.cu:410] Data-Driven Iteration: 254 INPUT 6 OUTPUT 6
+I0218 14:01:33.067677 19864 hybrid_driven.cu:410] Data-Driven Iteration: 255 INPUT 6 OUTPUT 6
+I0218 14:01:33.067734 19864 hybrid_driven.cu:410] Data-Driven Iteration: 256 INPUT 6 OUTPUT 6
+I0218 14:01:33.067790 19864 hybrid_driven.cu:410] Data-Driven Iteration: 257 INPUT 6 OUTPUT 6
+I0218 14:01:33.067836 19864 hybrid_driven.cu:410] Data-Driven Iteration: 258 INPUT 6 OUTPUT 6
+I0218 14:01:33.067880 19864 hybrid_driven.cu:410] Data-Driven Iteration: 259 INPUT 6 OUTPUT 6
+I0218 14:01:33.067926 19864 hybrid_driven.cu:410] Data-Driven Iteration: 260 INPUT 6 OUTPUT 6
+I0218 14:01:33.067988 19864 hybrid_driven.cu:410] Data-Driven Iteration: 261 INPUT 6 OUTPUT 6
+I0218 14:01:33.068037 19864 hybrid_driven.cu:410] Data-Driven Iteration: 262 INPUT 6 OUTPUT 6
+I0218 14:01:33.068083 19864 hybrid_driven.cu:410] Data-Driven Iteration: 263 INPUT 6 OUTPUT 6
+I0218 14:01:33.068130 19864 hybrid_driven.cu:410] Data-Driven Iteration: 264 INPUT 6 OUTPUT 6
+I0218 14:01:33.068176 19864 hybrid_driven.cu:410] Data-Driven Iteration: 265 INPUT 6 OUTPUT 5
+I0218 14:01:33.068222 19864 hybrid_driven.cu:410] Data-Driven Iteration: 266 INPUT 5 OUTPUT 4
+I0218 14:01:33.068269 19864 hybrid_driven.cu:410] Data-Driven Iteration: 267 INPUT 4 OUTPUT 4
+I0218 14:01:33.068313 19864 hybrid_driven.cu:410] Data-Driven Iteration: 268 INPUT 4 OUTPUT 4
+I0218 14:01:33.068357 19864 hybrid_driven.cu:410] Data-Driven Iteration: 269 INPUT 4 OUTPUT 3
+I0218 14:01:33.068401 19864 hybrid_driven.cu:410] Data-Driven Iteration: 270 INPUT 3 OUTPUT 3
+I0218 14:01:33.068445 19864 hybrid_driven.cu:410] Data-Driven Iteration: 271 INPUT 3 OUTPUT 3
+I0218 14:01:33.068490 19864 hybrid_driven.cu:410] Data-Driven Iteration: 272 INPUT 3 OUTPUT 3
+I0218 14:01:33.068532 19864 hybrid_driven.cu:410] Data-Driven Iteration: 273 INPUT 3 OUTPUT 3
+I0218 14:01:33.068576 19864 hybrid_driven.cu:410] Data-Driven Iteration: 274 INPUT 3 OUTPUT 3
+I0218 14:01:33.068620 19864 hybrid_driven.cu:410] Data-Driven Iteration: 275 INPUT 3 OUTPUT 3
+I0218 14:01:33.068665 19864 hybrid_driven.cu:410] Data-Driven Iteration: 276 INPUT 3 OUTPUT 3
+I0218 14:01:33.068708 19864 hybrid_driven.cu:410] Data-Driven Iteration: 277 INPUT 3 OUTPUT 3
+I0218 14:01:33.068753 19864 hybrid_driven.cu:410] Data-Driven Iteration: 278 INPUT 3 OUTPUT 3
+I0218 14:01:33.068796 19864 hybrid_driven.cu:410] Data-Driven Iteration: 279 INPUT 3 OUTPUT 3
+I0218 14:01:33.068840 19864 hybrid_driven.cu:410] Data-Driven Iteration: 280 INPUT 3 OUTPUT 3
+I0218 14:01:33.068883 19864 hybrid_driven.cu:410] Data-Driven Iteration: 281 INPUT 3 OUTPUT 3
+I0218 14:01:33.068928 19864 hybrid_driven.cu:410] Data-Driven Iteration: 282 INPUT 3 OUTPUT 3
+I0218 14:01:33.068971 19864 hybrid_driven.cu:410] Data-Driven Iteration: 283 INPUT 3 OUTPUT 3
+I0218 14:01:33.069015 19864 hybrid_driven.cu:410] Data-Driven Iteration: 284 INPUT 3 OUTPUT 2
+I0218 14:01:33.069058 19864 hybrid_driven.cu:410] Data-Driven Iteration: 285 INPUT 2 OUTPUT 2
+I0218 14:01:33.069103 19864 hybrid_driven.cu:410] Data-Driven Iteration: 286 INPUT 2 OUTPUT 2
+I0218 14:01:33.069146 19864 hybrid_driven.cu:410] Data-Driven Iteration: 287 INPUT 2 OUTPUT 1
+I0218 14:01:33.069190 19864 hybrid_driven.cu:410] Data-Driven Iteration: 288 INPUT 1 OUTPUT 1
+I0218 14:01:33.069234 19864 hybrid_driven.cu:410] Data-Driven Iteration: 289 INPUT 1 OUTPUT 1
+I0218 14:01:33.069278 19864 hybrid_driven.cu:410] Data-Driven Iteration: 290 INPUT 1 OUTPUT 1
+I0218 14:01:33.069321 19864 hybrid_driven.cu:410] Data-Driven Iteration: 291 INPUT 1 OUTPUT 1
+I0218 14:01:33.069365 19864 hybrid_driven.cu:410] Data-Driven Iteration: 292 INPUT 1 OUTPUT 1
+I0218 14:01:33.069409 19864 hybrid_driven.cu:410] Data-Driven Iteration: 293 INPUT 1 OUTPUT 1
+I0218 14:01:33.069453 19864 hybrid_driven.cu:410] Data-Driven Iteration: 294 INPUT 1 OUTPUT 1
+I0218 14:01:33.069497 19864 hybrid_driven.cu:410] Data-Driven Iteration: 295 INPUT 1 OUTPUT 1
+I0218 14:01:33.069540 19864 hybrid_driven.cu:410] Data-Driven Iteration: 296 INPUT 1 OUTPUT 1
+I0218 14:01:33.069584 19864 hybrid_driven.cu:410] Data-Driven Iteration: 297 INPUT 1 OUTPUT 1
+I0218 14:01:33.069628 19864 hybrid_driven.cu:410] Data-Driven Iteration: 298 INPUT 1 OUTPUT 1
+I0218 14:01:33.069672 19864 hybrid_driven.cu:410] Data-Driven Iteration: 299 INPUT 1 OUTPUT 1
+I0218 14:01:33.069716 19864 hybrid_driven.cu:410] Data-Driven Iteration: 300 INPUT 1 OUTPUT 1
+I0218 14:01:33.069761 19864 hybrid_driven.cu:410] Data-Driven Iteration: 301 INPUT 1 OUTPUT 1
+I0218 14:01:33.069803 19864 hybrid_driven.cu:410] Data-Driven Iteration: 302 INPUT 1 OUTPUT 0
+I0218 14:01:33.069892 19864 hybrid_driven.cu:425] PR terminated after 303 iterations (max: 888)
+I0218 14:01:33.069905 19864 hybrid_driven.cu:428] PR: 6966.62 ms. <filter>
+W0218 14:01:33.862978 19864 hybrid_driven.cu:439] Result not checked
+
+Context status:
+	Endpoint map (virtual endpoint, physical device):  (-1, -1) (0, 0)
+	Memcpy lanes (endpoint, lane type): 
+	Fragmentation: -1
+	Event pools (device, events):  (0, 0)
+Overall: Test passed
+==19864== Profiling application: ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -hybrid -wl_alloc_factor 0.5 -first_iteration 65 -max_pr_itera
+==19864== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   80.68%  5.97357s        65  91.901ms  91.835ms  91.960ms  void hybrid_unopt_pr::PageRankKernelTopologyDriven__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, groute<float>::graphs::dev::CSRGraph, groute<float>::graphs::dev::GraphDatum)
+                   10.65%  788.26ms       238  3.3120ms  2.0160us  64.051ms  void hybrid_unopt_pr::PageRankKernelDataDriven__Single__<groute::dev::WorkSourceArray<unsigned int>, groute::dev::Queue<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceArray<unsigned int>, float, unsigned int, groute<float>::dev::Queue<unsigned int>, groute<float>::graphs::dev::CSRGraph)
+                    4.61%  341.07ms         2  170.53ms  116.17ms  224.90ms  [CUDA memcpy HtoD]
+                    1.56%  115.87ms       478  242.41us     608ns  115.56ms  [CUDA memcpy DtoH]
+                    1.27%  93.854ms         1  93.854ms  93.854ms  93.854ms  void hybrid_unopt_pr::PageRankKernelDataDriven__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::dev::Queue<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, float, unsigned int, groute<float>::dev::Queue<unsigned int>, groute<float>::graphs::dev::CSRGraph)
+                    1.24%  91.495ms         1  91.495ms  91.495ms  91.495ms  void hybrid_unopt_pr::PageRankInit__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, groute<float>::graphs::dev::CSRGraph, groute<float>::graphs::dev::GraphDatum)
+                    0.00%  9.0240us         8  1.1280us     832ns  2.0800us  __nv_static_79__66_tmpxft_00005c3a_00000000_9_data_driven_unopt_pr_compute_52_cpp1_ii_c1e34443__ZN6groute5queue7kernels13ResetCountersEPjj
+      API calls:   89.76%  6.94788s       543  12.795ms  1.6350us  183.41ms  cudaEventSynchronize
+                    5.90%  456.83ms         3  152.28ms  115.74ms  224.89ms  cudaMemcpy
+                    2.21%  171.32ms         8  21.415ms  7.9840us  167.17ms  cudaMalloc
+                    1.41%  109.00ms         1  109.00ms  109.00ms  109.00ms  cudaDeviceReset
+                    0.45%  34.955ms        10  3.4955ms  1.4400us  7.4133ms  cudaFree
+                    0.09%  6.6658ms         2  3.3329ms  20.622us  6.6452ms  cudaFreeHost
+                    0.08%  6.4892ms       313  20.732us  8.7010us  71.635us  cudaLaunch
+                    0.05%  3.9570ms       477  8.2950us  6.0050us  53.721us  cudaMemcpyAsync
+                    0.01%  740.18us       543  1.3630us     983ns  11.303us  cudaEventRecord
+                    0.01%  634.38us         2  317.19us  7.7770us  626.60us  cudaHostAlloc
+                    0.01%  522.30us       188  2.7780us     128ns  113.56us  cuDeviceGetAttribute
+                    0.00%  275.83us      1714     160ns     101ns     908ns  cudaSetupArgument
+                    0.00%  264.93us         1  264.93us  264.93us  264.93us  cudaGetDeviceProperties
+                    0.00%  222.72us         2  111.36us  111.00us  111.72us  cuDeviceTotalMem
+                    0.00%  180.06us       313     575ns     270ns  1.8240us  cudaConfigureCall
+                    0.00%  90.475us         1  90.475us  90.475us  90.475us  cudaMemGetInfo
+                    0.00%  54.410us         2  27.205us  24.341us  30.069us  cuDeviceGetName
+                    0.00%  34.083us         1  34.083us  34.083us  34.083us  cudaStreamCreateWithFlags
+                    0.00%  18.377us         1  18.377us  18.377us  18.377us  cudaStreamDestroy
+                    0.00%  16.824us         4  4.2060us     687ns  12.883us  cudaEventDestroy
+                    0.00%  8.4860us         3  2.8280us     798ns  5.9710us  cudaSetDevice
+                    0.00%  8.2620us         1  8.2620us  8.2620us  8.2620us  cudaDeviceSynchronize
+                    0.00%  4.5670us         1  4.5670us  4.5670us  4.5670us  cudaFuncGetAttributes
+                    0.00%  4.5110us         4  1.1270us     369ns  2.7500us  cudaGetDevice
+                    0.00%  3.4260us         3  1.1420us     550ns  2.1980us  cudaEventCreate
+                    0.00%  1.7560us         1  1.7560us  1.7560us  1.7560us  cudaEventCreateWithFlags
+                    0.00%  1.7440us         3     581ns     137ns  1.2560us  cuDeviceGetCount
+                    0.00%  1.1010us         4     275ns     151ns     575ns  cuDeviceGet
+                    0.00%  1.0350us         1  1.0350us  1.0350us  1.0350us  cudaGetDeviceCount
+                    0.00%     487ns         1     487ns     487ns     487ns  cuInit
+
+==19864== NVTX result:
+
+
+
+
+
+
+-------------------------------------------Metrics----------------------------------------
+
+
+
+
+Data Driven
+
+
+==6355== Profiling application: ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -data_driven -wl_alloc_factor 0.5
+==6355== Profiling result:
+==6355== Metric result:
+Invocations                               Metric Name                        Metric Description         Min         Max         Avg
+Device "GeForce GTX 1080 (0)"
+    Kernel: void data_driven_unopt_pr::PageRankKernel__Single__<groute::dev::WorkSourceArray<unsigned int>, groute::dev::Queue<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceArray<unsigned int>, float, unsigned int, groute<float>::dev::Queue<unsigned int>, groute<float>::graphs::dev::CSRGraph)
+        156                        achieved_occupancy                        Achieved Occupancy    0.023494    0.674036    0.412859
+        156                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+        156                            gld_efficiency             Global Memory Load Efficiency      12.50%      19.32%      14.94%
+        156                            gst_efficiency            Global Memory Store Efficiency      12.50%      26.66%      20.02%
+    Kernel: __nv_static_79__66_tmpxft_00005c3a_00000000_9_data_driven_unopt_pr_compute_52_cpp1_ii_c1e34443__ZN6groute5queue7kernels13ResetCountersEPjj
+          6                        achieved_occupancy                        Achieved Occupancy    0.015605    0.015637    0.015624
+          6                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+          6                            gld_efficiency             Global Memory Load Efficiency       0.00%       0.00%       0.00%
+          6                            gst_efficiency            Global Memory Store Efficiency     100.00%     100.00%     100.00%
+    Kernel: void data_driven_unopt_pr::PageRankInit__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::dev::Queue<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, float, unsigned int, groute<float>::dev::Queue<unsigned int>, groute<float>::graphs::dev::CSRGraph)
+          1                        achieved_occupancy                        Achieved Occupancy    0.569088    0.569088    0.569088
+          1                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+          1                            gld_efficiency             Global Memory Load Efficiency      32.48%      32.48%      32.48%
+          1                            gst_efficiency            Global Memory Store Efficiency      74.97%      74.97%      74.97%
+
+
+Topology Driven
+
+
+==7419== Profiling application: ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -nodata_driven -wl_alloc_factor 0.5 -max_pr_iterations 76
+==7419== Profiling result:
+==7419== Metric result:
+Invocations                               Metric Name                        Metric Description         Min         Max         Avg
+Device "GeForce GTX 1080 (0)"
+    Kernel: _ZN4mgpu16launch_box_cta_kINS_12launch_box_tIJNS_7arch_20INS_12launch_cta_tILi128ELi11ELi11ELi0EEENS_7empty_tEEENS_7arch_35INS3_ILi128ELi7ELi7ELi0EEES5_EENS_7arch_52IS4_S5_EEEEEZNS_10scan_eventILNS_11scan_type_tE0ES5_PdSF_NS_6plus_tIdEESF_EEvT1_iT2_T3_T4_RNS_9context_tEP10CUevent_stEUliiE0_JEEEvT0_iDpSI_
+         77                        achieved_occupancy                        Achieved Occupancy    0.268208    0.271262    0.269852
+         77                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         77                            gld_efficiency             Global Memory Load Efficiency      99.15%      99.15%      99.15%
+         77                            gst_efficiency            Global Memory Store Efficiency     100.00%     100.00%     100.00%
+    Kernel: _ZN4mgpu16launch_box_cta_kINS_12launch_box_tIJNS_7arch_20INS_12launch_cta_tILi128ELi11ELi11ELi0EEENS_7empty_tEEENS_7arch_35INS3_ILi128ELi7ELi7ELi0EEES5_EENS_7arch_52IS4_S5_EEEEEZNS_10scan_eventILNS_11scan_type_tE0ES5_NS_17lambda_iterator_tIZN20data_driven_unopt_pr7ProblemIN6groute6graphs3dev8CSRGraphENSK_10GraphDatumESM_E19RankCheck__Single__INSI_3dev15WorkSourceRangeIjEEEEbT_RNS_9context_tEEUliE_S5_diEEPiNS_6plus_tIdEEPdEEvT1_iT2_T3_T4_SU_P10CUevent_stEUliiE_JEEEvT0_iDpS11_
+         77                        achieved_occupancy                        Achieved Occupancy    0.734213    0.734411    0.734301
+         77                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         77                            gld_efficiency             Global Memory Load Efficiency     100.00%     100.00%     100.00%
+         77                            gst_efficiency            Global Memory Store Efficiency      25.00%      25.00%      25.00%
+    Kernel: _ZN4mgpu16launch_box_cta_kINS_12launch_box_tIJNS_7arch_20INS_12launch_cta_tILi128ELi11ELi11ELi0EEENS_7empty_tEEENS_7arch_35INS3_ILi128ELi7ELi7ELi0EEES5_EENS_7arch_52IS4_S5_EEEEEZNS_10scan_eventILNS_11scan_type_tE0ES5_PdSF_NS_6plus_tIdEESF_EEvT1_iT2_T3_T4_RNS_9context_tEP10CUevent_stEUliiE_JEEEvT0_iDpSI_
+         77                        achieved_occupancy                        Achieved Occupancy    0.270782    0.272525    0.272053
+         77                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         77                            gld_efficiency             Global Memory Load Efficiency     100.00%     100.00%     100.00%
+         77                            gst_efficiency            Global Memory Store Efficiency      25.00%      25.00%      25.00%
+    Kernel: void data_driven_unopt_pr::PageRankKernel__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, groute<float>::graphs::dev::CSRGraph, groute<float>::graphs::dev::GraphDatum)
+         77                        achieved_occupancy                        Achieved Occupancy    0.574785    0.575601    0.575040
+         77                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         77                            gld_efficiency             Global Memory Load Efficiency      37.54%      37.55%      37.54%
+         77                            gst_efficiency            Global Memory Store Efficiency      99.98%     100.00%      99.98%
+    Kernel: _ZN4mgpu16launch_box_cta_kINS_12launch_box_tIJNS_7arch_20INS_12launch_cta_tILi128ELi11ELi11ELi0EEENS_7empty_tEEENS_7arch_35INS3_ILi128ELi7ELi7ELi0EEES5_EENS_7arch_52IS4_S5_EEEEEZNS_10scan_eventILNS_11scan_type_tE0ES5_NS_17lambda_iterator_tIZN20data_driven_unopt_pr7ProblemIN6groute6graphs3dev8CSRGraphENSK_10GraphDatumESM_E19RankCheck__Single__INSI_3dev15WorkSourceRangeIjEEEEbT_RNS_9context_tEEUliE_S5_diEEPiNS_6plus_tIdEEPdEEvT1_iT2_T3_T4_SU_P10CUevent_stEUliiE0_JEEEvT0_iDpS11_
+         77                        achieved_occupancy                        Achieved Occupancy    0.492552    0.492677    0.492612
+         77                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         77                            gld_efficiency             Global Memory Load Efficiency      98.33%      98.33%      98.33%
+         77                            gst_efficiency            Global Memory Store Efficiency     100.00%     100.00%     100.00%
+    Kernel: void data_driven_unopt_pr::PageRankInit__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, groute<float>::graphs::dev::CSRGraph, groute<float>::graphs::dev::GraphDatum)
+          1                        achieved_occupancy                        Achieved Occupancy    0.562313    0.562313    0.562313
+          1                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+          1                            gld_efficiency             Global Memory Load Efficiency      32.48%      32.48%      32.48%
+          1                            gst_efficiency            Global Memory Store Efficiency     100.00%     100.00%     100.00%
+    Kernel: _ZN4mgpu16launch_box_cta_kINS_15launch_params_tILi512ELi3ELi3ELi0EEEZNS_10scan_eventILNS_11scan_type_tE0ENS_7empty_tEPdS6_NS_6plus_tIdEES6_EEvT1_iT2_T3_T4_RNS_9context_tEP10CUevent_stEUliiE1_JEEEvT0_iDpS9_
+         77                        achieved_occupancy                        Achieved Occupancy    0.247211    0.247995    0.247800
+         77                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         77                            gld_efficiency             Global Memory Load Efficiency     100.00%     100.00%     100.00%
+         77                            gst_efficiency            Global Memory Store Efficiency      96.74%      96.74%      96.74%
+
+
+
+Hybrid:
+
+==19197== Profiling application: ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -hybrid -wl_alloc_factor 0.5 -first_iteration 65 -max_pr_itera
+==19197== Profiling result:
+==19197== Metric result:
+Invocations                               Metric Name                        Metric Description         Min         Max         Avg
+Device "GeForce GTX 1080 (0)"
+    Kernel: void hybrid_unopt_pr::PageRankKernelDataDriven__Single__<groute::dev::WorkSourceArray<unsigned int>, groute::dev::Queue<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceArray<unsigned int>, float, unsigned int, groute<float>::dev::Queue<unsigned int>, groute<float>::graphs::dev::CSRGraph)
+        259                        achieved_occupancy                        Achieved Occupancy    0.024459    0.709368    0.188241
+        259                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+        259                            gld_efficiency             Global Memory Load Efficiency      12.50%      25.00%      14.65%
+        259                            gst_efficiency            Global Memory Store Efficiency      12.50%      28.10%      19.37%
+    Kernel: __nv_static_79__66_tmpxft_00005c3a_00000000_9_data_driven_unopt_pr_compute_52_cpp1_ii_c1e34443__ZN6groute5queue7kernels13ResetCountersEPjj
+         10                        achieved_occupancy                        Achieved Occupancy    0.015605    0.015645    0.015621
+         10                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         10                            gld_efficiency             Global Memory Load Efficiency       0.00%       0.00%       0.00%
+         10                            gst_efficiency            Global Memory Store Efficiency     100.00%     100.00%     100.00%
+    Kernel: void hybrid_unopt_pr::PageRankKernelDataDriven__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::dev::Queue<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, float, unsigned int, groute<float>::dev::Queue<unsigned int>, groute<float>::graphs::dev::CSRGraph)
+          1                        achieved_occupancy                        Achieved Occupancy    0.568534    0.568534    0.568534
+          1                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+          1                            gld_efficiency             Global Memory Load Efficiency      37.54%      37.54%      37.54%
+          1                            gst_efficiency            Global Memory Store Efficiency      75.99%      75.99%      75.99%
+    Kernel: void hybrid_unopt_pr::PageRankKernelTopologyDriven__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, groute<float>::graphs::dev::CSRGraph, groute<float>::graphs::dev::GraphDatum)
+         65                        achieved_occupancy                        Achieved Occupancy    0.574764    0.575203    0.574975
+         65                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+         65                            gld_efficiency             Global Memory Load Efficiency      37.54%      37.55%      37.54%
+         65                            gst_efficiency            Global Memory Store Efficiency      99.98%     100.00%      99.99%
+    Kernel: void hybrid_unopt_pr::PageRankInit__Single__<groute::dev::WorkSourceRange<unsigned int>, groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum>(unsigned int, groute::dev::WorkSourceRange<unsigned int>, groute<float>::graphs::dev::CSRGraph, groute<float>::graphs::dev::GraphDatum)
+          1                        achieved_occupancy                        Achieved Occupancy    0.562212    0.562212    0.562212
+          1                         branch_efficiency                         Branch Efficiency     100.00%     100.00%     100.00%
+          1                            gld_efficiency             Global Memory Load Efficiency      32.48%      32.48%      32.48%
+          1                            gst_efficiency            Global Memory Store Efficiency     100.00%     100.00%     100.00%
+
+
 

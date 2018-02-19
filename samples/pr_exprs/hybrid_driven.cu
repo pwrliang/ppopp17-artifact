@@ -31,6 +31,7 @@ DECLARE_double(threshold);
 DECLARE_int32(grid_size);
 DECLARE_int32(block_size);
 DECLARE_double(epsilon);
+DECLARE_bool(cta_np);
 DEFINE_int32(first_iteration, 20, "Iteration times for Topology-Driven");
 
 namespace hybrid_unopt_pr {
@@ -103,6 +104,49 @@ namespace hybrid_unopt_pr {
     }
 
     template<
+            typename WorkSource,
+            typename TGraph, template<typename> class RankDatum,
+            template<typename> class ResidualDatum>
+    __global__ void PageRankKernelTopologyDrivenCTA__Single__(
+            WorkSource work_source, TGraph graph,
+            RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual) {
+        uint32_t tid = TID_1D;
+        uint32_t nthreads = TOTAL_THREADS_1D;
+        uint32_t work_size = work_source.get_size();
+        uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
+
+        for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+            groute::dev::np_local<rank_t> local_work = {0, 0, 0.0};
+
+            if (i < work_size) {
+                index_t node = work_source.get_work(i);
+
+                rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+
+                if (res > 0) {
+                    current_ranks[node] += res;
+
+                    local_work.start = graph.begin_edge(node);
+                    local_work.size = graph.end_edge(node) - local_work.start;
+                    if (local_work.size > 0) {
+                        rank_t update = res * ALPHA / local_work.size;
+
+                        local_work.meta_data = update;
+                    }
+                }
+            }
+
+            groute::dev::CTAWorkScheduler<rank_t>::template schedule(
+                    local_work,
+                    [&graph, &residual](index_t edge, rank_t update) {
+                        index_t dest = graph.edge_dest(edge);
+                        atomicAdd(residual.get_item_ptr(dest), update);
+                    }
+            );
+        }
+    }
+
+    template<
             typename WorkSource, typename WorkTarget,
             typename TGraph, template<typename> class RankDatum,
             template<typename> class ResidualDatum>
@@ -143,6 +187,59 @@ namespace hybrid_unopt_pr {
         }
     }
 
+    template<
+            typename WorkSource, typename WorkTarget,
+            typename TGraph, template<typename> class RankDatum,
+            template<typename> class ResidualDatum>
+    __global__ void PageRankKernelDataDrivenCTA__Single__(
+            WorkSource work_source, WorkTarget work_target,
+            float EPSILON, TGraph graph,
+            RankDatum<rank_t> current_ranks, ResidualDatum<rank_t> residual) {
+        uint32_t tid = TID_1D;
+        uint32_t nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.get_size();
+        uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
+
+        for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+
+            groute::dev::np_local<rank_t> local_work = {0, 0, 0.0};
+
+            if (i < work_size) {
+                index_t node = work_source.get_work(i);
+                rank_t res = atomicExch(residual.get_item_ptr(node), 0);
+
+                if (res > 0) {
+                    current_ranks[node] += res;
+                    local_work.start = graph.begin_edge(node);
+                    local_work.size = graph.end_edge(node) - local_work.start;
+
+                    index_t
+                            begin_edge = graph.begin_edge(node),
+                            end_edge = graph.end_edge(node),
+                            out_degree = end_edge - begin_edge;
+                    if (local_work.size > 0) {
+                        rank_t update = res * ALPHA / out_degree;
+
+                        local_work.meta_data = update;
+                    }
+                }
+            }
+
+            groute::dev::CTAWorkScheduler<rank_t>::template schedule(
+                    local_work,
+                    [&work_target, &graph, &residual, &EPSILON](index_t edge, rank_t update) {
+                        index_t dest = graph.edge_dest(edge);
+                        rank_t prev = atomicAdd(residual.get_item_ptr(dest), update);
+
+                        if (prev <= EPSILON && prev + update > EPSILON) {
+                            work_target.append(dest);
+                        }
+                    }
+            );
+        }
+    }
+
     /*
     * The per-device Page Rank problem
     */
@@ -170,37 +267,19 @@ namespace hybrid_unopt_pr {
         }
 
         template<typename WorkSource>
-        bool RankCheck__Single__(WorkSource work_source, mgpu::context_t &context) {
-            rank_t *tmp = m_current_ranks.data_ptr;
-
-            auto check_segment_sizes = [=]__device__(int idx) {
-                return tmp[idx];
-            };
-
-            mgpu::mem_t<double> checkSum(1, context);
-            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
-
-            int *scanned_offsets = deviceOffsets.data();
-
-            mgpu::transform_scan<double>(check_segment_sizes, work_source.get_size(),
-                                         scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), context);
-
-            double pr_sum = mgpu::from_mem(checkSum)[0];
-
-            VLOG(1) << "Checking... SUM: " << pr_sum << " Relative SUM: " << pr_sum / work_source.get_size();
-
-            return pr_sum / work_source.get_size() < FLAGS_threshold;
-        }
-
-        template<typename WorkSource>
         void
         RelaxTopologyDriven__Single__(const WorkSource &work_source, groute::Stream &stream) {
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
             Marker::MarkWorkitems(work_source.get_size(), "PageRankKernelTopologyDriven__Single__");
-            PageRankKernelTopologyDriven__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                                                  (work_source, m_graph, m_current_ranks, m_residual);
+
+            if (FLAGS_cta_np)
+                PageRankKernelTopologyDrivenCTA__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                                         (work_source, m_graph, m_current_ranks, m_residual);
+            else
+                PageRankKernelTopologyDriven__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                                      (work_source, m_graph, m_current_ranks, m_residual);
         }
 
         template<typename WorkSource,
@@ -212,8 +291,13 @@ namespace hybrid_unopt_pr {
 
             float EPSILON = FLAGS_epsilon;
             Marker::MarkWorkitems(work_source.get_size(), "PageRankKernel__Single__");
-            PageRankKernelDataDriven__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                                              (work_source, output_worklist.DeviceObject(), EPSILON, m_graph, m_current_ranks, m_residual);
+
+            if (FLAGS_cta_np)
+                PageRankKernelDataDrivenCTA__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                                     (work_source, output_worklist.DeviceObject(), EPSILON, m_graph, m_current_ranks, m_residual);
+            else
+                PageRankKernelDataDriven__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> >
+                                                                                  (work_source, output_worklist.DeviceObject(), EPSILON, m_graph, m_current_ranks, m_residual);
         }
     };
 
@@ -252,7 +336,8 @@ namespace hybrid_unopt_pr {
 
 bool HybridDrivenPR() {
     VLOG(0) << "HybridDrivenPR";
-
+    if (FLAGS_cta_np)
+        VLOG(0) << "CTA_NP Enabled";
     typedef groute::Queue<index_t> Worklist;
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
     groute::graphs::single::NodeOutputDatum<rank_t> current_ranks;

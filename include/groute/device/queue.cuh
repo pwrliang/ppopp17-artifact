@@ -58,7 +58,7 @@ namespace groute {
     namespace dev {
 
         __device__ __forceinline__ void warp_active_count(int &first, int &offset, int &total) {
-            unsigned int active = __ballot(1);
+            unsigned int active = __ballot_sync(0xffffffff, 1);
             total = __popc(active);
             offset = __popc(active & cub::LaneMaskLt());
             first = __ffs(active) - 1;
@@ -97,7 +97,7 @@ namespace groute {
                     assert(allocation + total <= m_capacity);
                 }
 
-                allocation = cub::ShuffleIndex(allocation, leader);
+                allocation = cub::ShuffleIndex<32>(allocation, leader, 0xffffffff);
                 m_data[allocation + offset] = item;
             }
 
@@ -110,7 +110,7 @@ namespace groute {
                     assert(allocation + total <= m_capacity);
                 }
 
-                allocation = cub::ShuffleIndex(allocation, leader);
+                allocation = cub::ShuffleIndex<32>(allocation, leader, 0xffffffff);
                 m_data[allocation + offset] = item;
             }
 
@@ -189,7 +189,7 @@ namespace groute {
                     assert((allocation + total) - *m_start < (m_capacity_mask + 1));
                 }
 
-                allocation = cub::ShuffleIndex(allocation, leader);
+                allocation = cub::ShuffleIndex<32>(allocation, leader, 0xffffffff);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
@@ -202,7 +202,7 @@ namespace groute {
                     assert((allocation + total) - *m_start < (m_capacity_mask + 1));
                 }
 
-                allocation = cub::ShuffleIndex(allocation, leader);
+                allocation = cub::ShuffleIndex<32>(allocation, leader, 0xffffffff);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
@@ -224,7 +224,7 @@ namespace groute {
                     assert(*m_end - allocation < (m_capacity_mask + 1));
                 }
 
-                allocation = cub::ShuffleIndex(allocation, leader);
+                allocation = cub::ShuffleIndex<32>(allocation, leader, 0xffffffff);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
@@ -238,7 +238,7 @@ namespace groute {
                     assert(*m_end - allocation < (m_capacity_mask + 1));
                 }
 
-                allocation = cub::ShuffleIndex(allocation, leader);
+                allocation = cub::ShuffleIndex<32>(allocation, leader, 0xffffffff);
                 m_data[(allocation + offset) & m_capacity_mask] = item;
             }
 
@@ -404,7 +404,7 @@ namespace groute {
                                 printf("\n\t[name: '%s'%s", name.c_str(),
                                        std::string(name_max + 3 - name.size(), ' ').c_str());
                             else
-                                printf("\n\t[name: '%s(%llu)'%s", name.c_str(), i + 1,
+                                printf("\n\t[name: '%s(%lu)'%s", name.c_str(), i + 1,
                                        std::string(name_max - name.size(), ' ').c_str());
 
                             printf(", capacity: %10d, usage: %10d, ratio: %.3f", entry.capacity, entry.max_usage,

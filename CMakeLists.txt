@@ -124,21 +124,22 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #        samples/pr/main.cpp)
 #target_link_libraries(pr ${EXTRA_LIBS})
 
-#cuda_add_executable(maiter src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-#        samples/framework/entry.cu samples/framework/pagerank.cu)
-#target_link_libraries(maiter ${EXTRA_LIBS})
+cuda_add_executable(maiter src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+        samples/framework/entry.cu samples/framework/pagerank.cu)
+target_link_libraries(maiter ${EXTRA_LIBS})
 
 
 
-cuda_add_executable(pr_exprs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-        samples/pr_exprs/pr_host.cpp
-        samples/pr_exprs/data_driven_unopt_pr.cu
-        samples/pr_exprs/data_driven_append_warp.cu
-        samples/pr_exprs/data_driven_ctanp_pr.cu
-        samples/pr_exprs/data_driven_outlining_pr.cu
-        samples/pr_exprs/topology_driven_unopt_pr.cu
-        samples/pr_exprs/main.cpp)
-target_link_libraries(pr_exprs ${EXTRA_LIBS})
+#cuda_add_executable(pr_exprs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+#        samples/pr_exprs/pr_host.cpp
+#        samples/pr_exprs/data_driven_unopt_pr.cu
+#        samples/pr_exprs/data_driven_append_warp.cu
+#        samples/pr_exprs/data_driven_ctanp_pr.cu
+#        samples/pr_exprs/data_driven_outlining_pr.cu
+#        samples/pr_exprs/topology_driven_unopt_pr.cu
+#        samples/pr_exprs/hybrid_driven.cu
+#        samples/pr_exprs/main.cpp)
+#target_link_libraries(pr_exprs ${EXTRA_LIBS})
 
 #cuda_add_executable(cusha src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
 #        samples/cusha/cusha.cu samples/cusha/main.cpp)

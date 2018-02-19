@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/liang/groute-dev/cmake-build-release
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/opt/clion-2017.3.2/bin/cmake/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/opt/clion-2017.3.2/bin/cmake/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,71 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named pr_exprs
+# Target rules for targets named maiter
 
 # Build rule for target.
-pr_exprs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 pr_exprs
-.PHONY : pr_exprs
+maiter: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 maiter
+.PHONY : maiter
 
 # fast build rule for target.
-pr_exprs/fast:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/build
-.PHONY : pr_exprs/fast
-
-samples/pr_exprs/main.o: samples/pr_exprs/main.cpp.o
-
-.PHONY : samples/pr_exprs/main.o
-
-# target to build an object file
-samples/pr_exprs/main.cpp.o:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/samples/pr_exprs/main.cpp.o
-.PHONY : samples/pr_exprs/main.cpp.o
-
-samples/pr_exprs/main.i: samples/pr_exprs/main.cpp.i
-
-.PHONY : samples/pr_exprs/main.i
-
-# target to preprocess a source file
-samples/pr_exprs/main.cpp.i:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/samples/pr_exprs/main.cpp.i
-.PHONY : samples/pr_exprs/main.cpp.i
-
-samples/pr_exprs/main.s: samples/pr_exprs/main.cpp.s
-
-.PHONY : samples/pr_exprs/main.s
-
-# target to generate assembly for a file
-samples/pr_exprs/main.cpp.s:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/samples/pr_exprs/main.cpp.s
-.PHONY : samples/pr_exprs/main.cpp.s
-
-samples/pr_exprs/pr_host.o: samples/pr_exprs/pr_host.cpp.o
-
-.PHONY : samples/pr_exprs/pr_host.o
-
-# target to build an object file
-samples/pr_exprs/pr_host.cpp.o:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_host.cpp.o
-.PHONY : samples/pr_exprs/pr_host.cpp.o
-
-samples/pr_exprs/pr_host.i: samples/pr_exprs/pr_host.cpp.i
-
-.PHONY : samples/pr_exprs/pr_host.i
-
-# target to preprocess a source file
-samples/pr_exprs/pr_host.cpp.i:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_host.cpp.i
-.PHONY : samples/pr_exprs/pr_host.cpp.i
-
-samples/pr_exprs/pr_host.s: samples/pr_exprs/pr_host.cpp.s
-
-.PHONY : samples/pr_exprs/pr_host.s
-
-# target to generate assembly for a file
-samples/pr_exprs/pr_host.cpp.s:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/samples/pr_exprs/pr_host.cpp.s
-.PHONY : samples/pr_exprs/pr_host.cpp.s
+maiter/fast:
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/build
+.PHONY : maiter/fast
 
 src/groute/graphs/csr_graph.o: src/groute/graphs/csr_graph.cpp.o
 
@@ -183,7 +129,7 @@ src/groute/graphs/csr_graph.o: src/groute/graphs/csr_graph.cpp.o
 
 # target to build an object file
 src/groute/graphs/csr_graph.cpp.o:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/groute/graphs/csr_graph.cpp.o
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/groute/graphs/csr_graph.cpp.o
 .PHONY : src/groute/graphs/csr_graph.cpp.o
 
 src/groute/graphs/csr_graph.i: src/groute/graphs/csr_graph.cpp.i
@@ -192,7 +138,7 @@ src/groute/graphs/csr_graph.i: src/groute/graphs/csr_graph.cpp.i
 
 # target to preprocess a source file
 src/groute/graphs/csr_graph.cpp.i:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/groute/graphs/csr_graph.cpp.i
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/groute/graphs/csr_graph.cpp.i
 .PHONY : src/groute/graphs/csr_graph.cpp.i
 
 src/groute/graphs/csr_graph.s: src/groute/graphs/csr_graph.cpp.s
@@ -201,7 +147,7 @@ src/groute/graphs/csr_graph.s: src/groute/graphs/csr_graph.cpp.s
 
 # target to generate assembly for a file
 src/groute/graphs/csr_graph.cpp.s:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/groute/graphs/csr_graph.cpp.s
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/groute/graphs/csr_graph.cpp.s
 .PHONY : src/groute/graphs/csr_graph.cpp.s
 
 src/utils/parser.o: src/utils/parser.cpp.o
@@ -210,7 +156,7 @@ src/utils/parser.o: src/utils/parser.cpp.o
 
 # target to build an object file
 src/utils/parser.cpp.o:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/utils/parser.cpp.o
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/parser.cpp.o
 .PHONY : src/utils/parser.cpp.o
 
 src/utils/parser.i: src/utils/parser.cpp.i
@@ -219,7 +165,7 @@ src/utils/parser.i: src/utils/parser.cpp.i
 
 # target to preprocess a source file
 src/utils/parser.cpp.i:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/utils/parser.cpp.i
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/parser.cpp.i
 .PHONY : src/utils/parser.cpp.i
 
 src/utils/parser.s: src/utils/parser.cpp.s
@@ -228,7 +174,7 @@ src/utils/parser.s: src/utils/parser.cpp.s
 
 # target to generate assembly for a file
 src/utils/parser.cpp.s:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/utils/parser.cpp.s
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/parser.cpp.s
 .PHONY : src/utils/parser.cpp.s
 
 src/utils/utils.o: src/utils/utils.cpp.o
@@ -237,7 +183,7 @@ src/utils/utils.o: src/utils/utils.cpp.o
 
 # target to build an object file
 src/utils/utils.cpp.o:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/utils/utils.cpp.o
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/utils.cpp.o
 .PHONY : src/utils/utils.cpp.o
 
 src/utils/utils.i: src/utils/utils.cpp.i
@@ -246,7 +192,7 @@ src/utils/utils.i: src/utils/utils.cpp.i
 
 # target to preprocess a source file
 src/utils/utils.cpp.i:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/utils/utils.cpp.i
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/utils.cpp.i
 .PHONY : src/utils/utils.cpp.i
 
 src/utils/utils.s: src/utils/utils.cpp.s
@@ -255,7 +201,7 @@ src/utils/utils.s: src/utils/utils.cpp.s
 
 # target to generate assembly for a file
 src/utils/utils.cpp.s:
-	$(MAKE) -f CMakeFiles/pr_exprs.dir/build.make CMakeFiles/pr_exprs.dir/src/utils/utils.cpp.s
+	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/utils.cpp.s
 .PHONY : src/utils/utils.cpp.s
 
 # Help Target
@@ -264,15 +210,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... pr_exprs"
-	@echo "... samples/pr_exprs/main.o"
-	@echo "... samples/pr_exprs/main.i"
-	@echo "... samples/pr_exprs/main.s"
-	@echo "... samples/pr_exprs/pr_host.o"
-	@echo "... samples/pr_exprs/pr_host.i"
-	@echo "... samples/pr_exprs/pr_host.s"
+	@echo "... rebuild_cache"
+	@echo "... maiter"
 	@echo "... src/groute/graphs/csr_graph.o"
 	@echo "... src/groute/graphs/csr_graph.i"
 	@echo "... src/groute/graphs/csr_graph.s"

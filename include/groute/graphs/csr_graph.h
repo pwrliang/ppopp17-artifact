@@ -367,7 +367,7 @@ namespace graphs {
 
             __device__ __host__ __forceinline__ bool owns(index_t node) const
             {
-                assert(node >= 0 && node < nnodes);
+                assert(node < nnodes);
                 return node >= nodes_offset && node < (nodes_offset + nnodes_local);
             }
 
@@ -423,7 +423,7 @@ namespace graphs {
 
             __device__ __host__ __forceinline__ bool owns(index_t node) const
             {
-                assert(node >= 0 && node < nnodes);
+                assert(node < nnodes);
                 return true;
             }
 
@@ -515,7 +515,7 @@ namespace graphs {
 
             __device__ __forceinline__ T get_item(index_t idx) const
             {
-                assert(idx >= 0 && idx < size);
+                assert(idx < size);
                 return data_ptr[idx];
             }
 
@@ -526,13 +526,13 @@ namespace graphs {
 
             __device__ __forceinline__ T* get_item_ptr(index_t idx) const
             {
-                assert(idx >= 0 && idx < size);
+                assert(idx < size);
                 return data_ptr + (idx);
             }
 
             __device__ __forceinline__ void set_item(index_t idx, const T& item) const
             {
-                assert(idx >= 0 && idx < size);
+                assert(idx < size);
                 data_ptr[idx] = item;
             }
         };

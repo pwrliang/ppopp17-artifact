@@ -45,5 +45,10 @@ bool PageRank() {
     GROUTE_CUDA_CHECK(cudaDeviceSynchronize());
 
     kernel->InitValue();
+
+    kernel->DataDriven();
+
+    delete kernel;
+//    kernel->
     return true;
 }
