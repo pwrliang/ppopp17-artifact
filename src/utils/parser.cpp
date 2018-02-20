@@ -22,6 +22,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cassert>
+#include <glog/logging.h>
+#include <boost/format.hpp>
 
 /*************************************************************************/
 /*! This function initializes a graph_t data structure */
@@ -406,7 +408,7 @@ graph_t *ReadGraphGR(char *filename) {
     graph->nvtxs = x[2];
     graph->nedges = x[3];
 
-    printf("%s has %lu nodes and %lu edges\n", filename, graph->nvtxs, graph->nedges);
+    VLOG(0) << boost::format("%s has %lu nodes and %lu edges") % filename % graph->nvtxs % graph->nedges;
 
     xadj = graph->xadj = (idx_t *) calloc((graph->nvtxs + 1), sizeof(idx_t));
     adjncy = graph->adjncy = (idx_t *) calloc((graph->nedges), sizeof(uint32_t));

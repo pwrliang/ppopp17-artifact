@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/liang/groute-dev/cmake-build-release
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/opt/clion-2017.3.2/bin/cmake/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/opt/clion-2017.3.2/bin/cmake/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named maiter
+# Target rules for targets named gframe
 
 # Build rule for target.
-maiter: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 maiter
-.PHONY : maiter
+gframe: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gframe
+.PHONY : gframe
 
 # fast build rule for target.
-maiter/fast:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/build
-.PHONY : maiter/fast
+gframe/fast:
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/build
+.PHONY : gframe/fast
 
 src/groute/graphs/csr_graph.o: src/groute/graphs/csr_graph.cpp.o
 
@@ -129,7 +129,7 @@ src/groute/graphs/csr_graph.o: src/groute/graphs/csr_graph.cpp.o
 
 # target to build an object file
 src/groute/graphs/csr_graph.cpp.o:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/groute/graphs/csr_graph.cpp.o
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/groute/graphs/csr_graph.cpp.o
 .PHONY : src/groute/graphs/csr_graph.cpp.o
 
 src/groute/graphs/csr_graph.i: src/groute/graphs/csr_graph.cpp.i
@@ -138,7 +138,7 @@ src/groute/graphs/csr_graph.i: src/groute/graphs/csr_graph.cpp.i
 
 # target to preprocess a source file
 src/groute/graphs/csr_graph.cpp.i:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/groute/graphs/csr_graph.cpp.i
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/groute/graphs/csr_graph.cpp.i
 .PHONY : src/groute/graphs/csr_graph.cpp.i
 
 src/groute/graphs/csr_graph.s: src/groute/graphs/csr_graph.cpp.s
@@ -147,7 +147,7 @@ src/groute/graphs/csr_graph.s: src/groute/graphs/csr_graph.cpp.s
 
 # target to generate assembly for a file
 src/groute/graphs/csr_graph.cpp.s:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/groute/graphs/csr_graph.cpp.s
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/groute/graphs/csr_graph.cpp.s
 .PHONY : src/groute/graphs/csr_graph.cpp.s
 
 src/utils/parser.o: src/utils/parser.cpp.o
@@ -156,7 +156,7 @@ src/utils/parser.o: src/utils/parser.cpp.o
 
 # target to build an object file
 src/utils/parser.cpp.o:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/parser.cpp.o
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/parser.cpp.o
 .PHONY : src/utils/parser.cpp.o
 
 src/utils/parser.i: src/utils/parser.cpp.i
@@ -165,7 +165,7 @@ src/utils/parser.i: src/utils/parser.cpp.i
 
 # target to preprocess a source file
 src/utils/parser.cpp.i:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/parser.cpp.i
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/parser.cpp.i
 .PHONY : src/utils/parser.cpp.i
 
 src/utils/parser.s: src/utils/parser.cpp.s
@@ -174,7 +174,7 @@ src/utils/parser.s: src/utils/parser.cpp.s
 
 # target to generate assembly for a file
 src/utils/parser.cpp.s:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/parser.cpp.s
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/parser.cpp.s
 .PHONY : src/utils/parser.cpp.s
 
 src/utils/utils.o: src/utils/utils.cpp.o
@@ -183,7 +183,7 @@ src/utils/utils.o: src/utils/utils.cpp.o
 
 # target to build an object file
 src/utils/utils.cpp.o:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/utils.cpp.o
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/utils.cpp.o
 .PHONY : src/utils/utils.cpp.o
 
 src/utils/utils.i: src/utils/utils.cpp.i
@@ -192,7 +192,7 @@ src/utils/utils.i: src/utils/utils.cpp.i
 
 # target to preprocess a source file
 src/utils/utils.cpp.i:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/utils.cpp.i
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/utils.cpp.i
 .PHONY : src/utils/utils.cpp.i
 
 src/utils/utils.s: src/utils/utils.cpp.s
@@ -201,7 +201,7 @@ src/utils/utils.s: src/utils/utils.cpp.s
 
 # target to generate assembly for a file
 src/utils/utils.cpp.s:
-	$(MAKE) -f CMakeFiles/maiter.dir/build.make CMakeFiles/maiter.dir/src/utils/utils.cpp.s
+	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/utils.cpp.s
 .PHONY : src/utils/utils.cpp.s
 
 # Help Target
@@ -210,9 +210,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... maiter"
+	@echo "... edit_cache"
+	@echo "... gframe"
 	@echo "... src/groute/graphs/csr_graph.o"
 	@echo "... src/groute/graphs/csr_graph.i"
 	@echo "... src/groute/graphs/csr_graph.s"

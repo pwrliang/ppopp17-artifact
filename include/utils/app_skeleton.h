@@ -208,8 +208,8 @@ struct Skeleton {
         }
 
         if (FLAGS_startwith == 1) {
-            printf("\nTesting single GPU %s\n", App::NameUpper());
-            printf("--------------------\n\n");
+            VLOG(0) << "Testing single GPU " << App::NameUpper();
+            VLOG(0) << "--------------------";
 
             if (FLAGS_single) overall &= App::Single();
         }
@@ -223,7 +223,10 @@ struct Skeleton {
             }
         }
 
-        printf("Overall: Test %s\n", overall ? "passed" : "FAILED");
+        if (overall)
+            VLOG(0) << "Overall: Test PASSED";
+        else
+            LOG(ERROR) << "Overall: Test FAILED";
         return 0;
     }
 };

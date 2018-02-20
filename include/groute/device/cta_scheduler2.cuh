@@ -47,20 +47,22 @@ namespace groute {
 
         typedef uint32_t index_type;
 
-        template<const int WARPS_PER_TB, typename TMetaData>
+        template<const int WARPS_PER_TB, typename TMetaData1, typename TMetaData2>
         struct warp_np {
             volatile index_type owner[WARPS_PER_TB];
             volatile index_type start[WARPS_PER_TB];
             volatile index_type size[WARPS_PER_TB];
-            volatile TMetaData meta_data[WARPS_PER_TB];
+            volatile TMetaData1 meta_data1[WARPS_PER_TB];
+            volatile TMetaData2 meta_data2[WARPS_PER_TB];
         };
 
-        template<typename TMetaData>
+        template<typename TMetaData1, TMetaData2>
         struct tb_np {
             index_type owner;
             index_type start;
             index_type size;
-            TMetaData meta_data;
+            TMetaData1 meta_data1;
+            TMetaData2 meta_data2;
         };
 
         struct empty_np {
@@ -84,17 +86,18 @@ namespace groute {
         /*
         * @brief A structure representing a scheduled chunk of work
         */
-        template<typename TMetaData>
+        template<typename TMetaData1, typename TMetaData2>
         struct np_local {
             index_type size; // work size
             index_type start; // work start
-            TMetaData meta_data;
+            TMetaData1 meta_data1;
+            TMetaData2 meta_data2;
         };
 
-        template<typename TMetaData>
+        template<typename TMetaData1, typename TMetaData2>
         struct CTAWorkScheduler {
             template<typename TWork>
-            __device__ __forceinline__ static void schedule(np_local<TMetaData> &np_local, TWork work) {
+            __device__ __forceinline__ static void schedule(np_local<TMetaData1, TMetaData2> &np_local, TWork work) {
                 const int WP_SIZE = CUB_PTX_WARP_THREADS;
                 const int TB_SIZE = blockDim.x;
 
@@ -102,9 +105,9 @@ namespace groute {
                 const int NP_TB_CROSSOVER = blockDim.x;
 
 #ifndef NO_CTA_WARP_INTRINSICS
-                typedef union np_shared<empty_np, tb_np<TMetaData>, empty_np> np_shared_type;
+                typedef union np_shared<empty_np, tb_np<TMetaData1, TMetaData2>, empty_np> np_shared_type;
 #else
-                typedef union np_shared<empty_np, tb_np<TMetaData>, warp_np<32, TMetaData>> np_shared_type; // 32 is max number of warps in block
+                typedef union np_shared<empty_np, tb_np<TMetaData1, TMetaData2>, warp_np<32, TMetaData1,TMetaData2>> np_shared_type; // 32 is max number of warps in block
 #endif
 
                 __shared__ np_shared_type np_shared;
@@ -149,7 +152,8 @@ namespace groute {
                         // This thread is the owner
                         np_shared.tb.start = np_local.start;
                         np_shared.tb.size = np_local.size;
-                        np_shared.tb.meta_data = np_local.meta_data;
+                        np_shared.tb.meta_data1 = np_local.meta_data1;
+                        np_shared.tb.meta_data2 = np_local.meta_data2;
 
                         // Mark this work-item as processed for future schedulers
                         np_local.start = 0;
@@ -161,7 +165,8 @@ namespace groute {
                     //threads in the block get the owner information
                     index_type start = np_shared.tb.start;
                     index_type size = np_shared.tb.size;
-                    TMetaData meta_data = np_shared.tb.meta_data;
+                    TMetaData1 meta_data1 = np_shared.tb.meta_data1;
+                    TMetaData2 meta_data2 = np_shared.tb.meta_data2;
 
                     //owner reset the flag
                     if (np_shared.tb.owner == threadIdx.x) {
@@ -171,7 +176,7 @@ namespace groute {
                     // Use all threads in thread block to execute individual work
                     for (int ii = threadIdx.x; ii < size; ii += TB_SIZE) // TB stride style
                     {
-                        work(start + ii, size, meta_data);
+                        work(start + ii, size, meta_data1, meta_data2);
                     }
 
                     __syncthreads();
@@ -187,11 +192,11 @@ namespace groute {
                 const int lane_id = cub::LaneId();
 
                 // if any len of threads's tasks in warp more than warp size, then parallel do it
-                while (__any_sync(0xffffffff,np_local.size >= NP_WP_CROSSOVER)) {
+                while (__any(np_local.size >= NP_WP_CROSSOVER)) {
 
 #ifndef NO_CTA_WARP_INTRINSICS
                     // Compete for work scheduling
-                    int mask = __ballot_sync(0xffffffff, np_local.size >= NP_WP_CROSSOVER ? 1 : 0);
+                    int mask = __ballot(np_local.size >= NP_WP_CROSSOVER ? 1 : 0);
                     // Select a deterministic winner
                     // __ffs to get the smallest lane id
                     int leader = __ffs(mask) -
@@ -200,7 +205,8 @@ namespace groute {
                     // Broadcast data from the leader
                     index_type start = cub::ShuffleIndex<32>(np_local.start, leader, 0xffffffff);
                     index_type size = cub::ShuffleIndex<32>(np_local.size, leader, 0xffffffff);
-                    TMetaData meta_data = cub::ShuffleIndex<32>(np_local.meta_data, leader, 0xffffffff);
+                    TMetaData1 meta_data1 = cub::ShuffleIndex<32>(np_local.meta_data1, leader, 0xffffffff);
+                    TMetaData2 meta_data2 = cub::ShuffleIndex<32>(np_local.meta_data2, leader, 0xffffffff);
 
                     if (leader == lane_id) {
                         // Mark this work-item as processed
@@ -218,7 +224,8 @@ namespace groute {
                         // This thread is owner
                         np_shared.warp.start[warp_id] = np_local.start;
                         np_shared.warp.size[warp_id] = np_local.size;
-                        np_shared.warp.meta_data[warp_id] = np_local.meta_data;
+                        np_shared.warp.meta_data1[warp_id] = np_local.meta_data1;
+                        np_shared.warp.meta_data2[warp_id] = np_local.meta_data2;
 
                         // Mark this work-item as processed
                         np_local.start = 0;
@@ -227,11 +234,12 @@ namespace groute {
                     __syncthreads();
                     index_type start = np_shared.warp.start[warp_id];
                     index_type size = np_shared.warp.size[warp_id];
-                    TMetaData meta_data = np_shared.warp.meta_data[warp_id];
+                    TMetaData1 meta_data1 = np_shared.warp.meta_data1[warp_id];
+                    TMetaData2 meta_data2 = np_shared.warp.meta_data2[warp_id];
 #endif
                     // Use all threads in warp to execute individual work
                     for (int ii = lane_id; ii < size; ii += WP_SIZE) {
-                        work(start + ii, size, meta_data);
+                        work(start + ii, size, meta_data1, meta_data2);
                     }
                 }
 
@@ -244,7 +252,7 @@ namespace groute {
                 // It is possible to disable this scheduler by setting NP_WP_CROSSOVER to 0
 
                 for (int ii = 0; ii < np_local.size; ii++) {
-                    work(np_local.start + ii, np_local.size, np_local.meta_data);
+                    work(np_local.start + ii, np_local.size, np_local.meta_data1, np_local.meta_data2);
                 }
             }
         };

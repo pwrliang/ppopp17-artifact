@@ -45,8 +45,9 @@
 #include <utils/utils.h>
 #include <utils/stopwatch.h>
 #include <utils/markers.h>
-
+#include <boost/format.hpp>
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 DECLARE_string(output);
 DECLARE_bool(check);
@@ -113,7 +114,8 @@ namespace utils {
             Context(int ngpus) :
                     groute::Context(ngpus), ngpus(ngpus) {
                 if (FLAGS_gen_graph) {
-                    printf("\nGenerating graph, nnodes: %d, gen_factor: %d", FLAGS_gen_nnodes, FLAGS_gen_factor);
+                    VLOG(0) << boost::format("Generating graph, nnodes: %d, gen_factor: %d") % FLAGS_gen_nnodes %
+                               FLAGS_gen_factor;
 
                     switch (FLAGS_gen_method) {
                         case 1: // No intersection chain
@@ -148,17 +150,15 @@ namespace utils {
                     graph_t *graph;
 
                     if (FLAGS_graphfile == "") {
-                        printf("A Graph File must be provided\n");
-                        exit(0);
+                        LOG(FATAL) << "A Graph File must be provided";
                     }
 
-                    printf("\nLoading graph %s (%d)\n",
-                           FLAGS_graphfile.substr(FLAGS_graphfile.find_last_of('\\') + 1).c_str(), FLAGS_ggr);
+                    VLOG(1) << boost::format("Loading graph %s (%d)") %
+                               FLAGS_graphfile.substr(FLAGS_graphfile.find_last_of('\\') + 1).c_str() % FLAGS_ggr;
                     graph = GetCachedGraph(FLAGS_graphfile, FLAGS_ggr);
 
                     if (graph->nvtxs == 0) {
-                        printf("Empty graph!\n");
-                        exit(0);
+                        LOG(FATAL) << "Empty graph!";
                     }
 
                     host_graph.Bind(
@@ -169,10 +169,11 @@ namespace utils {
                     );
 
                     if (FLAGS_stats) {
-                        printf(
-                                "The graph has %d vertices, and %d edges (avg. degree: %f, max. degree: %d)\n",
-                                host_graph.nnodes, host_graph.nedges, (float) host_graph.nedges / host_graph.nnodes,
-                                host_graph.max_degree());
+                        VLOG(0) << boost::format(
+                                "The graph has %d vertices, and %d edges (avg. degree: %f, max. degree: %d)") %
+                                   host_graph.nnodes % host_graph.nedges % ((float) host_graph.nedges /
+                                                                            host_graph.nnodes) %
+                                   host_graph.max_degree();
 
                         CleanupGraphs();
                         exit(0);
@@ -181,9 +182,9 @@ namespace utils {
 
                 if (host_graph.edge_weights == nullptr && FLAGS_gen_weights) {
 
-                    if (FLAGS_verbose)
-                        printf("\nNo edge data in the input graph, generating edge weights from the range [%d, %d]\n",
-                               1, FLAGS_gen_weight_range);
+                    VLOG(1) << boost::format(
+                            "No edge data in the input graph, generating edge weights from the range [%d, %d]") %
+                               1 % FLAGS_gen_weight_range;
 
                     // Generate edge data
                     std::default_random_engine generator;
@@ -199,12 +200,11 @@ namespace utils {
                 nvtxs = host_graph.nnodes;
                 nedges = host_graph.nedges;
 
-                printf("\n----- Running %s -----\n\n", Algo::Name());
+                VLOG(0) << "----- Running " << Algo::Name() << " -----";
 
-                if (FLAGS_verbose) {
-                    printf("The graph has %d vertices, and %d edges (average degree: %f)\n", nvtxs, nedges,
-                           (float) nedges / nvtxs);
-                }
+                VLOG(0)
+                << boost::format("The graph has %d vertices, and %d edges (average degree: %f)") % nvtxs % nedges %
+                        ((float) nedges / nvtxs);
             }
         };
 

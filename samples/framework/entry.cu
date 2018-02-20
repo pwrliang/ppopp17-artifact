@@ -18,7 +18,7 @@ DEFINE_int32(top_values, 10, "extract top k values from the result");
 bool PageRank();
 void CleanupGraphs();
 
-namespace maiter {
+namespace gframe {
     struct App {
         static const char *Name() { return "page rank"; }
 
@@ -39,7 +39,7 @@ namespace maiter {
 }
 
 int main(int argc, char **argv) {
-    Skeleton<maiter::App> app;
+    Skeleton<gframe::App> app;
     int exit = app(argc, argv);
 
     // cudaDeviceReset must be called before exiting in order for profiling and

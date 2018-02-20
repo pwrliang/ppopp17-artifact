@@ -11,10 +11,10 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.9.6/CMakeCCompiler.cmake"
   "CMakeFiles/3.9.6/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.9.6/CMakeSystem.cmake"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.depend"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.depend"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_entry.cu.o.cmake.pre-gen"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_entry.cu.o.depend"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_pagerank.cu.o.cmake.pre-gen"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_pagerank.cu.o.depend"
   "../cmake/FindGFlags.cmake"
   "../cmake/FindGlog.cmake"
   "../cmake/FindMETIS.cmake"
@@ -57,14 +57,14 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.cmake.pre-gen"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_entry.cu.o.Release.cmake"
-  "CMakeFiles/maiter.dir/samples/framework/maiter_generated_pagerank.cu.o.Release.cmake"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_entry.cu.o.cmake.pre-gen"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_pagerank.cu.o.cmake.pre-gen"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_entry.cu.o.Release.cmake"
+  "CMakeFiles/gframe.dir/samples/framework/gframe_generated_pagerank.cu.o.Release.cmake"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/maiter.dir/DependInfo.cmake"
+  "CMakeFiles/gframe.dir/DependInfo.cmake"
   )

@@ -32,3 +32,9 @@ EPSION   PR_SUM    DIFF      TIME      ITERATION
 PROFILE:
   sudo nvprof --metrics achieved_occupancy,branch_efficiency,gld_efficiency,gst_efficiency ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -epsilon 0.000001 -noappend_warp -data_driven -wl_alloc_factor 0.5 -max_pr_iterations 10
 
+
+
+
+MAITER:
+
+./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr

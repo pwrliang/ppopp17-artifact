@@ -124,9 +124,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #        samples/pr/main.cpp)
 #target_link_libraries(pr ${EXTRA_LIBS})
 
-cuda_add_executable(maiter src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+cuda_add_executable(gframe src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
         samples/framework/entry.cu samples/framework/pagerank.cu)
-target_link_libraries(maiter ${EXTRA_LIBS})
+target_link_libraries(gframe ${EXTRA_LIBS})
 
 
 
