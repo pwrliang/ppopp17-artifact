@@ -5,11 +5,10 @@
 #include "registry.h"
 #include "kernel.h"
 #include "myatomics.h"
-#include "graph_api.h"
 
 typedef float rank_t;
 
-struct MyIterateKernel : public gframe::GraphAPIBase<rank_t, rank_t> {
+struct MyIterateKernel{
     __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
 //        printf("call %d\n", node);
         //printf("Identity Elem: %f\n", IdentityElement());
@@ -27,7 +26,7 @@ struct MyIterateKernel : public gframe::GraphAPIBase<rank_t, rank_t> {
 
     __forceinline__ __device__ float
     DeltaMapper(const float delta, const index_t weight,
-           const index_t out_degree) const {
+                const index_t out_degree) const {
         return 0.8f * delta / out_degree;
     }
 
@@ -42,18 +41,23 @@ struct MyIterateKernel : public gframe::GraphAPIBase<rank_t, rank_t> {
 };
 
 bool PageRank() {
-    gframe::GFrameKernel<MyIterateKernel, rank_t, rank_t> *kernel = new gframe::GFrameKernel<MyIterateKernel, rank_t, rank_t>(
-            false);
 
-//    createFunc<MyIterateKernel> << < 1, 1, 0, kernel->getStream().cuda_stream >> > (kernel->DeviceKernelObject());
+//    gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> kernel(MyAtomicAdd(),
+//    false, true);
+//
+//    kernel.InitValue();
+//    kernel.DataDriven();
+//
+//    if (FLAGS_output.length() > 0)
+//        kernel.SaveResult(FLAGS_output.data(), true);
 
+//    gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> kernel(MyIterateKernel(), MyAtomicAdd());
+//    kernel.InitValue();
+//    kernel.DataDriven();
+    gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> *kernel =
+            new gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>(MyIterateKernel(), MyAtomicAdd());
     kernel->InitValue();
-
-    kernel->DataDriven(MyAtomicAdd<rank_t>());
-
-    if (FLAGS_output.length() > 0)
-        kernel->SaveResult(FLAGS_output.data(), true);
-
+    kernel->DataDriven();
     delete kernel;
     return true;
 }
