@@ -34,20 +34,17 @@ struct MyIterateKernel : public maiter::IterateKernel<rank_t, rank_t> {
     }
 };
 
-__global__ void createFunc(maiter::IterateKernel<rank_t, rank_t> **baseFunc) {
-    if (threadIdx.x == 0 && blockIdx.x == 0) {
-        *baseFunc = new MyIterateKernel();
-    }
-}
-
 bool PageRank() {
-    maiter::MaiterKernel<rank_t, rank_t> *kernel = new maiter::MaiterKernel<rank_t, rank_t>();
+    maiter::MaiterKernel<MyIterateKernel, rank_t, rank_t> *kernel = new maiter::MaiterKernel<MyIterateKernel, rank_t, rank_t>(false);
 
-    createFunc << < 1, 1, 0, kernel->getStream().cuda_stream >> > (kernel->DeviceKernelObject());
+//    createFunc<MyIterateKernel> << < 1, 1, 0, kernel->getStream().cuda_stream >> > (kernel->DeviceKernelObject());
 
     kernel->InitValue();
 
-    kernel->DataDriven();
+    kernel->DataDriven(MyAtomicAdd<rank_t>());
+
+    if (FLAGS_output.length() > 0)
+        kernel->SaveResult(FLAGS_output.data(), true);
 
     delete kernel;
     return true;

@@ -7,21 +7,21 @@
 
 template<typename T>
 struct MyAtomicAdd {
-    __device__ T operator()(T *address, T val) {
+    __forceinline__ __device__ T operator()(T *address, T val) {
         return atomicAdd(address, val);
     }
 };
 
 template<typename T>
 struct MyAtomicMin {
-    __device__ T operator()(T *address, T val) {
+    __forceinline__ __device__ T operator()(T *address, T val) {
         return atomicMin(address, val);
     }
 };
 
 template<typename T>
 struct MyAtomicMax {
-    __device__ T operator()(T *address, T val) {
+    __forceinline__ __device__ T operator()(T *address, T val) {
         return atomicMax(address, val);
     }
 };

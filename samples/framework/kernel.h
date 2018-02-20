@@ -20,138 +20,42 @@
 #include <device_launch_parameters.h>
 #include <utils/graphs/traversal.h>
 #include <glog/logging.h>
-#include "kernelbase.h"
 #include "myatomics.h"
+#include "graph_api.h"
+#include "work_kernel.h"
+#include "resultsaver.h"
 
 DECLARE_double(wl_alloc_factor);
 DECLARE_uint64(wl_alloc_abs);
 
 namespace maiter {
-    template<typename TValue, typename TDelta>
-    __global__ void GraphInit(groute::graphs::dev::CSRGraph dev_graph,
-                              maiter::IterateKernel<TValue, TDelta> **iterateKernel,
-                              groute::graphs::dev::GraphDatum<TValue> arr_value,
-                              groute::graphs::dev::GraphDatum<TDelta> arr_delta) {
-        const unsigned TID = TID_1D;
-        const unsigned NTHREADS = TOTAL_THREADS_1D;
 
-        index_t start_node = dev_graph.owned_start_node();
-        index_t end_node = start_node + dev_graph.owned_nnodes();
-        for (index_t node = start_node + TID;
-             node < end_node; node += NTHREADS) {
-
-            index_t
-                    begin_edge = dev_graph.begin_edge(node),
-                    end_edge = dev_graph.end_edge(node),
-                    out_degree = end_edge - begin_edge;
-
-            arr_value[node] = (*iterateKernel)->InitValue(node, out_degree);
-            arr_delta[node] = (*iterateKernel)->InitDelta(node, out_degree);
+    template<typename TAPIImple, typename TValue, typename TDelta>
+    __global__ void CreateAPIInstance(maiter::IterateKernel<TValue, TDelta> **baseFunc) {
+        if (threadIdx.x == 0 && blockIdx.x == 0) {
+            //*baseFunc = new MyIterateKernel();
+            *baseFunc = new TAPIImple();
         }
-    };
+    }
 
-    template<typename WorkSource,
-            typename TAtomicFunc,
+    template<typename TAPIImple,
             typename TValue,
-            typename TDelta>
-    __global__ void GraphKernelTopology(groute::graphs::dev::CSRGraph dev_graph,
-                                        WorkSource work_source,
-                                        TAtomicFunc atomicFunc,
-                                        maiter::IterateKernel<TValue, TDelta> **iterateKernel,
-                                        groute::graphs::dev::GraphDatum<TValue> arr_value,
-                                        groute::graphs::dev::GraphDatum<TDelta> arr_delta) {
-        unsigned tid = TID_1D;
-        unsigned nthreads = TOTAL_THREADS_1D;
-
-        uint32_t work_size = work_source.get_size();
-
-        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
-            index_t node = work_source.get_work(i);
-            TDelta old_delta = atomicExch(arr_delta.get_item_ptr(node), 0);
-
-            if (old_delta != (*iterateKernel)->IdentityElement()) {
-                arr_value[node] = (*iterateKernel)->accumulate(arr_value[node], old_delta);
-
-
-                index_t begin_edge = dev_graph.begin_edge(node),
-                        end_edge = dev_graph.end_edge(node),
-                        out_degree = end_edge - begin_edge;
-                if (out_degree > 0) {
-                    TDelta new_delta = (*iterateKernel)->g_func(old_delta, -1, out_degree);
-
-                    for (index_t edge = begin_edge; edge < end_edge; edge++) {
-                        index_t dest = dev_graph.edge_dest(edge);
-
-                        atomicFunc(arr_delta.get_item_ptr(dest), new_delta);
-                    }
-                }
-            }
-        }
-    }
-
-    template<typename WorkSource,
-            typename WorkTarget,
-            typename TAtomicFunc,
-            typename TValue,
-            typename TDelta>
-    __global__ void GraphKernelDataDriven(groute::graphs::dev::CSRGraph dev_graph,
-                                          WorkSource work_source,
-                                          WorkTarget work_target,
-                                          TAtomicFunc atomicFunc,
-                                          maiter::IterateKernel<TValue, TDelta> **iterateKernel,
-                                          groute::graphs::dev::GraphDatum<TValue> arr_value,
-                                          groute::graphs::dev::GraphDatum<TDelta> arr_delta) {
-        unsigned tid = TID_1D;
-        unsigned nthreads = TOTAL_THREADS_1D;
-
-        uint32_t work_size = work_source.get_size();
-
-        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
-            index_t node = work_source.get_work(i);
-            TDelta old_delta = atomicExch(arr_delta.get_item_ptr(node), 0);
-
-            if (old_delta != (*iterateKernel)->IdentityElement()) {
-                arr_value[node] = (*iterateKernel)->accumulate(arr_value[node], old_delta);
-
-
-                index_t begin_edge = dev_graph.begin_edge(node),
-                        end_edge = dev_graph.end_edge(node),
-                        out_degree = end_edge - begin_edge;
-
-                if (out_degree > 0) {
-                    TDelta new_delta = (*iterateKernel)->g_func(old_delta, -1, out_degree);
-
-                    for (index_t edge = begin_edge; edge < end_edge; edge++) {
-                        index_t dest = dev_graph.edge_dest(edge);
-                        TDelta prev = atomicFunc(arr_delta.get_item_ptr(dest), new_delta);
-                        const float EPSLION = 0.01;
-                        if (prev < EPSLION && prev + new_delta > EPSLION) {
-                            work_target.append_warp(dest);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    template<typename TGraph>
-    __global__ void traverseTest(TGraph graph) {
-        for (int node = 0; node < 100; node++) {
-            printf("%d %d\n", graph.begin_edge(node), graph.end_edge(node));
-        }
-
-    }
-
-    template<typename TValue, typename TDelta>
+            typename TDelta,
+            typename TWeight=unsigned>
     class MaiterKernel {
 
     private:
-        groute::Stream m_stream;
-        IterateKernel<TValue, TDelta> *iterateKernel;
+        utils::traversal::Context<maiter::Algo> *m_context;
+        groute::graphs::single::CSRGraphAllocator *m_graph_allocator;
         groute::graphs::single::NodeOutputDatum<TValue> m_arr_value;
         groute::graphs::single::NodeOutputDatum<TDelta> m_arr_delta;
-        groute::graphs::single::CSRGraphAllocator *m_dev_graph_allocator;
+        groute::graphs::single::EdgeInputDatum<TWeight> m_arr_weights;
+        groute::Stream m_stream;
+
+        IterateKernel<TValue, TDelta> *iterateKernel;
         maiter::IterateKernel<TValue, TDelta> **m_dev_kernel;
+        bool m_is_weighted;
+
         typedef groute::Queue<index_t> Worklist;
 
         template<typename WorkSource>
@@ -160,42 +64,52 @@ namespace maiter {
 
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
-            GraphKernelTopology << < grid_dims, block_dims >> >
-                                                (m_dev_graph_allocator->DeviceObject(), work_source, MyAtomicAdd<TDelta>(), m_dev_kernel, m_arr_value, m_arr_delta);
+            maiter::kernel::GraphKernelTopology << < grid_dims, block_dims >> >
+                                                                (m_graph_allocator->DeviceObject(), work_source, MyAtomicAdd<TDelta>(), m_dev_kernel, m_arr_value, m_arr_delta);
         }
 
-        template<typename WorkSource, typename WorkTarget>
-        void RelaxDataDriven(const WorkSource &work_source, WorkTarget &work_target, groute::Stream &stream) {
+        template<typename WorkSource, typename WorkTarget, typename TAtomicFunc>
+        void RelaxDataDriven(const WorkSource &work_source, WorkTarget &work_target, TAtomicFunc atomic_func) {
             dim3 grid_dims, block_dims;
 
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
-            GraphKernelDataDriven << < grid_dims, block_dims, 0, stream.cuda_stream >> >
-                                                (m_dev_graph_allocator->DeviceObject(),
-                                                        work_source,
-                                                        work_target.DeviceObject(),
-                                                        MyAtomicAdd<TDelta>(), m_dev_kernel, m_arr_value.DeviceObject(), m_arr_delta.DeviceObject());
+            maiter::kernel::GraphKernelDataDriven << < grid_dims, block_dims, 0, m_stream.cuda_stream >> > (work_source,
+                    work_target.DeviceObject(),
+                    atomic_func,
+                    m_dev_kernel,
+                    m_graph_allocator->DeviceObject(),
+                    m_arr_value.DeviceObject(),
+                    m_arr_delta.DeviceObject(),
+                    m_arr_weights.DeviceObject(), m_is_weighted);
         }
 
     public:
+        MaiterKernel(bool weighted = false) : m_is_weighted(weighted) {
+            m_context = new utils::traversal::Context<maiter::Algo>(1);
 
+            m_graph_allocator = new groute::graphs::single::CSRGraphAllocator(m_context->host_graph);
 
-        MaiterKernel() {
-            utils::traversal::Context<maiter::Algo> context(1);
+            m_context->SetDevice(0);
 
-            m_dev_graph_allocator = new groute::graphs::single::CSRGraphAllocator(context.host_graph);
+            m_graph_allocator->AllocateDatumObjects(m_arr_value, m_arr_delta);
+            if (weighted)
+                m_graph_allocator->AllocateDatum(m_arr_weights);
 
-            context.SetDevice(0);
+            m_stream = m_context->CreateStream(0);
 
-            m_dev_graph_allocator->AllocateDatumObjects(m_arr_value, m_arr_delta);
-
-            m_stream = context.CreateStream(0);
-
+            //create a function pointer which point to a APIs collection.
             GROUTE_CUDA_CHECK(cudaMalloc(&m_dev_kernel, sizeof(maiter::IterateKernel<TValue, TDelta> *)));
+
+            //Instance the Functions
+            CreateAPIInstance<TAPIImple, TValue, TDelta> << < 1, 1, 0, m_stream.cuda_stream >> > (m_dev_kernel);
+
+            m_stream.Sync();
         }
 
         ~MaiterKernel() {
-            delete m_dev_graph_allocator;
+            delete m_graph_allocator;
+            delete m_context;
         }
 
         groute::Stream &getStream() {
@@ -206,20 +120,21 @@ namespace maiter {
 
         void InitValue() const {
             dim3 grid_dims, block_dims;
-            KernelSizing(grid_dims, block_dims, m_dev_graph_allocator->DeviceObject().nnodes);
+            KernelSizing(grid_dims, block_dims, m_graph_allocator->DeviceObject().nnodes);
 
             Stopwatch sw(true);
 
-            GraphInit<TValue, TDelta> << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                                     (m_dev_graph_allocator->DeviceObject(), m_dev_kernel, m_arr_value.DeviceObject(), m_arr_delta.DeviceObject());
+            maiter::kernel::GraphInit<TValue, TDelta> << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
+                                                                                     (m_graph_allocator->DeviceObject(), m_dev_kernel, m_arr_value.DeviceObject(), m_arr_delta.DeviceObject());
             m_stream.Sync();
             sw.stop();
             LOG(INFO) << "Graph Init " << sw.ms() << " ms";
         }
 
-        void DataDriven() {
+        template<typename TAtomicFunc>
+        void DataDriven(TAtomicFunc atomic_func) {
 
-            const groute::graphs::dev::CSRGraph &dev_graph = m_dev_graph_allocator->DeviceObject();
+            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
 
             size_t max_work_size = dev_graph.nedges * FLAGS_wl_alloc_factor;
 
@@ -237,16 +152,20 @@ namespace maiter {
             Worklist *in_wl = &wl1, *out_wl = &wl2;
 
             RelaxDataDriven(
-                    groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()),
-                    *in_wl, m_stream);
+                    groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(),
+                                                          dev_graph.owned_nnodes()),
+                    *in_wl,
+                    atomic_func);
 
             groute::Segment<index_t> work_seg = in_wl->GetSeg(m_stream);
 
             int iteration = 0;
             while (work_seg.GetSegmentSize() > 0) {
                 RelaxDataDriven(
-                        groute::dev::WorkSourceArray<index_t>(work_seg.GetSegmentPtr(), work_seg.GetSegmentSize()),
-                        *out_wl, m_stream);
+                        groute::dev::WorkSourceArray<index_t>(work_seg.GetSegmentPtr(),
+                                                              work_seg.GetSegmentSize()),
+                        *out_wl,
+                        atomic_func);
 
                 VLOG(1)
                 << "Iteration: " << ++iteration << " In-Worklist: " << work_seg.GetSegmentSize() << " Out-Worklist: "
@@ -259,9 +178,17 @@ namespace maiter {
                 std::swap(in_wl, out_wl);
 
             }
+
+            sw.stop();
+
+            VLOG(0) << "DataDriven Time: " << sw.ms() << " ms.";
         }
 
 
+        bool SaveResult(const char *file, bool sort = false) {
+            m_graph_allocator->GatherDatum(m_arr_value);
+            return ResultOutput<float>(file, m_arr_value.GetHostData(), sort);
+        }
     };
 }
 #endif //GROUTE_KERNEL_H

@@ -26,25 +26,18 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
+#ifndef __GRAPH_COMMON_H
+#define __GRAPH_COMMON_H
 
-#ifndef __GROUTE_GRAPHS_COMMON_H
-#define __GROUTE_GRAPHS_COMMON_H
-
-#include <cuda_runtime.h>
-
-typedef uint32_t index_t;
-
-namespace groute {
-    namespace graphs {
-
-        struct Edge {
-            index_t u, v;
-            __host__ __device__ Edge() : u(0), v(0) {}
-
-            __host__ __device__ Edge(index_t u, index_t v) : u(u), v(v) {}
-        };
-    }
-}
+#include <climits>
+#include <queue>
+#include <gflags/gflags.h>
+#include <groute/graphs/csr_graph.h>
 
 
-#endif // __GROUTE_GRAPHS_COMMON_H
+
+std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph);
+
+int PageRankOutput(const char *file, const std::vector<rank_t> &ranks);
+
+#endif // __GRAPH_COMMON_H
