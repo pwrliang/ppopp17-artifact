@@ -7,7 +7,12 @@
 namespace gframe {
     namespace api {
         struct GraphAPIBase {
+            typedef struct {
+                index_t nnodes;
+                index_t nedges;
+            }GraphInfo ;
 
+            GraphInfo graphInfo;
         };
     }
 }

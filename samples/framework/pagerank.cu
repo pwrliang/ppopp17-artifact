@@ -9,15 +9,8 @@
 
 typedef float rank_t;
 
-struct MyIterateKernel:gframe::api::GraphAPIBase {
-    struct GraphInfo{
-        index_t nnodes;
-        index_t nedges;
-    } ;
+struct MyIterateKernel : gframe::api::GraphAPIBase {
 
-    typedef GraphInfo graphInfo;
-
-    graphInfo g;
 
     __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
 //        printf("call %d\n", node);
@@ -27,7 +20,7 @@ struct MyIterateKernel:gframe::api::GraphAPIBase {
 
     __forceinline__ __device__ rank_t InitDelta(const index_t node, index_t out_degree) const {
 //        printf("%d %d\n", GraphInfo.nnodes, GraphInfo.nedges);
-        return 0.2;
+        return 0.2f / graphInfo.nnodes;
     }
 
     __forceinline__ __device__ float DeltaReducer(const rank_t a, const rank_t b) const {
@@ -50,29 +43,17 @@ struct MyIterateKernel:gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __host__ bool IsConverge(const rank_t value) {
-        return value > 0.9999f;
+        return value > 0.841087f;
     }
 };
 
 bool PageRank() {
-
-//    gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> kernel(MyAtomicAdd(),
-//    false, true);
-//
-//    kernel.InitValue();
-//    kernel.DataDriven();
-//
-//    if (FLAGS_output.length() > 0)
-//        kernel.SaveResult(FLAGS_output.data(), true);
-
-//    gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> kernel(MyIterateKernel(), MyAtomicAdd());
-//    kernel.InitValue();
-//    kernel.DataDriven();
-    gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> *kernel =
-            new gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>(MyIterateKernel(), MyAtomicAdd());
+    gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> *kernel =
+            new gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>(MyIterateKernel(), MyAtomicAdd(),
+                                                                                             gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>::Engine_DataDriven, false, true);
     kernel->InitValue();
+    kernel->Run();
 //    kernel->DataDriven();
-    kernel->TopologyDriven();
     delete kernel;
     return true;
 }

@@ -34,7 +34,7 @@
 #include <gflags/gflags.h>
 #include <groute/graphs/csr_graph.h>
 
-
+#define __OUTLINING__
 
 std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph);
 
