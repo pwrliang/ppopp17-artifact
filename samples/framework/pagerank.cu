@@ -5,10 +5,20 @@
 #include "registry.h"
 #include "kernel.h"
 #include "myatomics.h"
+#include "graph_api.h"
 
 typedef float rank_t;
 
-struct MyIterateKernel{
+struct MyIterateKernel:gframe::api::GraphAPIBase {
+    struct GraphInfo{
+        index_t nnodes;
+        index_t nedges;
+    } ;
+
+    typedef GraphInfo graphInfo;
+
+    graphInfo g;
+
     __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
 //        printf("call %d\n", node);
         //printf("Identity Elem: %f\n", IdentityElement());
@@ -38,6 +48,10 @@ struct MyIterateKernel{
         const rank_t EPSLION = 0.01f;
         return prev_delta < EPSLION && prev_delta + new_delta > EPSLION;
     }
+
+    __forceinline__ __host__ bool IsConverge(const rank_t value) {
+        return value > 0.9999f;
+    }
 };
 
 bool PageRank() {
@@ -57,7 +71,8 @@ bool PageRank() {
     gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> *kernel =
             new gframe::GFrameKernel<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>(MyIterateKernel(), MyAtomicAdd());
     kernel->InitValue();
-    kernel->DataDriven();
+//    kernel->DataDriven();
+    kernel->TopologyDriven();
     delete kernel;
     return true;
 }

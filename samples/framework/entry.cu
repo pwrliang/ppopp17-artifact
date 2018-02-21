@@ -14,7 +14,7 @@
 DEFINE_double(wl_alloc_factor, 0.2, "Local worklists will allocate '(nedges / ngpus)' times this factor");
 DEFINE_uint64(wl_alloc_abs, 0, "Absolute size for local worklists (if not zero, overrides --wl_alloc_factor");
 DEFINE_int32(top_values, 10, "extract top k values from the result");
-
+DEFINE_int32(max_iterations, 200,"Maximum iteration limited times");
 bool PageRank();
 void CleanupGraphs();
 

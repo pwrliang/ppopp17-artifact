@@ -7,6 +7,8 @@
 
 #include <groute/common.h>
 #include <groute/device/cta_scheduler.cuh>
+#include <moderngpu/context.hxx>
+#include <moderngpu/kernel_scan.hxx>
 
 namespace gframe {
     namespace kernel {
@@ -40,13 +42,13 @@ namespace gframe {
                 typename TDelta,
                 typename TWeight>
         __global__ void GraphKernelTopology(TGraphAPI graph_api,
-                                            groute::graphs::dev::CSRGraph graph,
-                                            WorkSource work_source,
-                                            TAtomicFunc atomicFunc,
-                                            groute::graphs::dev::GraphDatum<TValue> value_datum,
-                                            groute::graphs::dev::GraphDatum<TDelta> delta_datum,
-                                            groute::graphs::dev::GraphDatum<TWeight> weight_datum,
-                                            bool IsWeighted) {
+                                              WorkSource work_source,
+                                              TAtomicFunc atomicFunc,
+                                              groute::graphs::dev::CSRGraph graph,
+                                              groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                              groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                              groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                              bool IsWeighted) {
             unsigned tid = TID_1D;
             unsigned nthreads = TOTAL_THREADS_1D;
 
@@ -265,6 +267,33 @@ namespace gframe {
                 }
             }
         }
+
+        template<typename TGraphAPI, typename WorkSource, typename TValue>
+        TValue ConvergeCheck(TGraphAPI graph_api,
+                             mgpu::context_t &context,
+                             WorkSource work_source,
+                             groute::graphs::dev::GraphDatum<TValue> value_datum) {
+            TValue *tmp = value_datum.data_ptr;
+
+            auto check_segment_sizes = [=]__device__(int idx) {
+                TValue value = tmp[idx];
+
+                if (value == graph_api.IdentityElement())
+                    return (TValue)0;
+                return tmp[idx];
+            };
+
+            mgpu::mem_t<TValue> checkSum(1, context);
+            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
+
+            int *scanned_offsets = deviceOffsets.data();
+
+            mgpu::transform_scan<TValue>(check_segment_sizes, work_source.get_size(),
+                                         scanned_offsets, mgpu::plus_t<TValue>(), checkSum.data(), context);
+
+            return mgpu::from_mem(checkSum)[0];
+        }
+
     }
 }
 

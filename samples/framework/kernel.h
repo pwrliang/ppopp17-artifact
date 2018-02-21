@@ -26,6 +26,7 @@
 
 DECLARE_double(wl_alloc_factor);
 DECLARE_uint64(wl_alloc_abs);
+DECLARE_int32(max_iterations);
 
 namespace gframe {
     struct Algo {
@@ -40,6 +41,7 @@ namespace gframe {
     class GFrameKernel {
 
     private:
+        mgpu::context_t *m_mgpu_context;
         utils::traversal::Context<gframe::Algo> *m_context;
         groute::graphs::single::CSRGraphAllocator *m_graph_allocator;
         groute::graphs::single::NodeOutputDatum<TValue> m_value_datum;
@@ -51,21 +53,6 @@ namespace gframe {
         bool m_is_weighted;
         bool m_cta;
         typedef groute::Queue<index_t> Worklist;
-
-        template<typename WorkSource>
-        void RelaxTopology(const WorkSource &work_source, groute::Stream &stream) {
-            dim3 grid_dims, block_dims;
-
-            KernelSizing(grid_dims, block_dims, work_source.get_size());
-
-            gframe::kernel::GraphKernelTopology << < grid_dims, block_dims >> >
-                                                                (m_api_imple,
-                                                                        m_graph_allocator->DeviceObject(),
-                                                                        work_source,
-                                                                        m_atomic_func,
-                                                                        m_value_datum,
-                                                                        m_delta_datum);
-        }
 
         template<typename WorkSource, typename WorkTarget>
         void RelaxDataDriven(const WorkSource &work_source, WorkTarget &work_target) {
@@ -110,20 +97,20 @@ namespace gframe {
                                                                m_graph_allocator->DeviceObject(),
                                                                work_source,
                                                                m_atomic_func,
-                                                               m_value_datum,
-                                                               m_delta_datum,
-                                                               m_weight_datum,
+                                                               m_value_datum.DeviceObject(),
+                                                               m_delta_datum.DeviceObject(),
+                                                               m_weight_datum.DeviceObject(),
                                                                m_is_weighted);
             } else {
                 gframe::kernel::GraphKernelTopology
                         << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
                                                        (m_api_imple,
-                                                               m_graph_allocator->DeviceObject(),
                                                                work_source,
                                                                m_atomic_func,
-                                                               m_value_datum,
-                                                               m_delta_datum,
-                                                               m_weight_datum,
+                                                               m_graph_allocator->DeviceObject(),
+                                                               m_value_datum.DeviceObject(),
+                                                               m_delta_datum.DeviceObject(),
+                                                               m_weight_datum.DeviceObject(),
                                                                m_is_weighted);
             }
         }
@@ -132,6 +119,7 @@ namespace gframe {
     public:
         GFrameKernel(TAPIImple api_imple, TAtomicFunc atomic_func, bool weighted = false, bool cta = true) :
                 m_api_imple(api_imple), m_atomic_func(atomic_func), m_is_weighted(weighted), m_cta(cta) {
+
             m_context = new utils::traversal::Context<gframe::Algo>(1);
 
             m_graph_allocator = new groute::graphs::single::CSRGraphAllocator(m_context->host_graph);
@@ -143,11 +131,18 @@ namespace gframe {
                 m_graph_allocator->AllocateDatum(m_weight_datum);
 
             m_stream = m_context->CreateStream(0);
+
+            m_mgpu_context = new mgpu::standard_context_t(true, m_stream.cuda_stream);
+
+            //m_api_imple.g.nnodes = m_context->host_graph.nnodes;
+//            m_api_imple.GraphInfo.nedges = m_context->host_graph.nedges;
         }
 
         ~GFrameKernel() {
+            delete m_mgpu_context;
             delete m_graph_allocator;
             delete m_context;
+
             VLOG(1) << "Destroy Engine";
         }
 
@@ -157,9 +152,12 @@ namespace gframe {
 
             Stopwatch sw(true);
 
-            gframe::kernel::GraphInit<TAPIImple, TValue, TDelta> << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                                                                (m_api_imple,
-                                                                                                        m_graph_allocator->DeviceObject(), m_value_datum.DeviceObject(), m_delta_datum.DeviceObject());
+            gframe::kernel::GraphInit<TAPIImple, TValue, TDelta>
+                    << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
+                                                   (m_api_imple,
+                                                           m_graph_allocator->DeviceObject(),
+                                                           m_value_datum.DeviceObject(),
+                                                           m_delta_datum.DeviceObject());
             m_stream.Sync();
             sw.stop();
             LOG(INFO) << "Graph Init " << sw.ms() << " ms";
@@ -207,9 +205,14 @@ namespace gframe {
                         *out_wl
                 );
 
-                VLOG(1)
+                VLOG(0)
                 << "Iteration: " << ++iteration << " In-Worklist: " << work_seg.GetSegmentSize() << " Out-Worklist: "
                 << out_wl->GetCount(m_stream);
+
+                if (iteration >= FLAGS_max_iterations) {
+                    LOG(WARNING) << "Maximum iteration times reached";
+                    break;
+                }
 
                 work_seg = out_wl->GetSeg(m_stream);
 
@@ -224,8 +227,30 @@ namespace gframe {
             VLOG(0) << "DataDriven Time: " << sw.ms() << " ms.";
         }
 
-//        template <typename TAtomicFunc>
+        void TopologyDriven() {
+            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
+            groute::dev::WorkSourceRange<index_t> work_source(dev_graph.owned_start_node(), dev_graph.owned_nnodes());
 
+            for (int iteration = 0; iteration < FLAGS_max_iterations; iteration++) {
+                RelaxTopologyDriven(groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()));
+
+                TValue accumulated_value = gframe::kernel::ConvergeCheck(m_api_imple,
+                                                                         *m_mgpu_context,
+                                                                         work_source,
+                                                                         m_value_datum.DeviceObject());
+                VLOG(0) << "Iteration: " << ++iteration << " current sum: " << accumulated_value;
+
+                if (m_api_imple.IsConverge(accumulated_value)) {
+                    VLOG(0) << "Convergence condition satisfied";
+                    break;
+                }
+
+                if (iteration == FLAGS_max_iterations - 1) {
+                    LOG(WARNING) << "Maximum iteration times reached";
+                }
+            }
+
+        }
 
         bool SaveResult(const char *file, bool sort = false) {
             m_graph_allocator->GatherDatum(m_value_datum);
