@@ -40,25 +40,34 @@
           <file leaf-file-name="data_driven_unopt_pr.cu" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="224">
+                <state relative-caret-position="-2330">
                   <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="kernel.h" pinned="false" current-in-tab="true">
+          <file leaf-file-name="graph_common.h" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/framework/graph_common.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="561">
+                  <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="kernel.h" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/framework/kernel.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="258">
-                  <caret line="242" column="41" lean-forward="false" selection-start-line="242" selection-start-column="41" selection-end-line="242" selection-end-column="41" />
+                <state relative-caret-position="577">
+                  <caret line="362" column="0" lean-forward="false" selection-start-line="362" selection-start-column="0" selection-end-line="362" selection-end-column="0" />
                   <folding>
                     <element signature="e#87#104#0" expanded="true" />
                     <element signature="e#890#1041#0" expanded="true" />
-                    <element signature="e#5689#5711#0" expanded="true" />
-                    <element signature="e#5869#5895#0" expanded="true" />
-                    <element signature="e#12321#14413#0" expanded="true" />
-                    <element signature="e#15862#17397#0" expanded="true" />
+                    <element signature="e#1178#2573#0" expanded="false" />
+                    <element signature="e#5106#5119#0" expanded="true" />
+                    <element signature="e#5290#5307#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -67,36 +76,45 @@
           <file leaf-file-name="work_kernel.h" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/samples/framework/work_kernel.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="600">
-                  <caret line="80" column="23" lean-forward="false" selection-start-line="80" selection-start-column="23" selection-end-line="80" selection-end-column="23" />
+                <state relative-caret-position="191">
+                  <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
                   <folding>
                     <element signature="e#98#134#0" expanded="true" />
-                    <element signature="e#1925#2019#0" expanded="true" />
-                    <element signature="e#3929#4087#0" expanded="true" />
-                    <element signature="e#4117#4127#0" expanded="true" />
-                    <element signature="e#6128#6286#0" expanded="true" />
-                    <element signature="e#6316#6326#0" expanded="true" />
-                    <element signature="e#9398#9556#0" expanded="true" />
-                    <element signature="e#9586#9596#0" expanded="true" />
-                    <element signature="e#11809#11967#0" expanded="true" />
-                    <element signature="e#11997#12007#0" expanded="true" />
-                    <element signature="e#15487#23602#0" expanded="true" />
-                    <element signature="e#23628#23665#0" expanded="true" />
-                    <marker date="1519267794753" expanded="true" signature="427:565" ph="&lt;TGraphAPI,TAtomicFunc,TValue,TDelta,TWeight&gt;" />
-                    <marker date="1519267794753" expanded="true" signature="1245:1907" ph="{...}" />
+                    <element signature="e#433#454#0" expanded="true" />
+                    <element signature="e#841#935#0" expanded="true" />
+                    <element signature="e#2099#2257#0" expanded="true" />
+                    <element signature="e#4298#4456#0" expanded="true" />
+                    <element signature="e#7568#7726#0" expanded="true" />
+                    <element signature="e#9979#10137#0" expanded="true" />
+                    <element signature="e#21897#21934#0" expanded="true" />
+                    <marker date="1519315455246" expanded="true" signature="2287:2297" ph="..." />
+                    <marker date="1519315455246" expanded="true" signature="4486:4496" ph="..." />
+                    <marker date="1519315455246" expanded="true" signature="7756:7766" ph="..." />
+                    <marker date="1519315455246" expanded="true" signature="10167:10177" ph="..." />
+                    <marker date="1519315455246" expanded="true" signature="13657:21871" ph="..." />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="pagerank.cu" pinned="false" current-in-tab="false">
+          <file leaf-file-name="pagerank.cu" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/samples/framework/pagerank.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="289">
-                  <caret line="23" column="15" lean-forward="false" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
+                <state relative-caret-position="530">
+                  <caret line="55" column="31" lean-forward="false" selection-start-line="55" selection-start-column="31" selection-end-line="55" selection-end-column="31" />
                   <folding>
                     <element signature="e#38#67#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="graph_api.h" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/framework/graph_api.h">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="238">
+                  <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="31" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -108,21 +126,25 @@
           <file leaf-file-name="work_kernel.h" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/samples/framework/work_kernel.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="129">
-                  <caret line="216" column="65" lean-forward="false" selection-start-line="216" selection-start-column="65" selection-end-line="216" selection-end-column="65" />
+                <state relative-caret-position="6330">
+                  <caret line="422" column="71" lean-forward="false" selection-start-line="422" selection-start-column="71" selection-end-line="422" selection-end-column="71" />
                   <folding>
                     <element signature="e#98#134#0" expanded="true" />
-                    <element signature="e#1925#2019#0" expanded="true" />
-                    <element signature="e#3929#4087#0" expanded="true" />
-                    <element signature="e#4117#4127#0" expanded="true" />
-                    <element signature="e#6128#6286#0" expanded="true" />
-                    <element signature="e#6316#6326#0" expanded="true" />
-                    <element signature="e#9398#9556#0" expanded="true" />
-                    <element signature="e#9586#9596#0" expanded="true" />
-                    <element signature="e#11809#11967#0" expanded="true" />
-                    <element signature="e#11997#12007#0" expanded="true" />
-                    <element signature="e#15487#23602#0" expanded="true" />
-                    <element signature="e#23628#23665#0" expanded="true" />
+                    <element signature="e#433#454#0" expanded="true" />
+                    <element signature="e#841#935#0" expanded="true" />
+                    <element signature="e#2099#2257#0" expanded="true" />
+                    <element signature="e#2312#2322#0" expanded="true" />
+                    <element signature="e#4298#4456#0" expanded="true" />
+                    <element signature="e#4511#4521#0" expanded="true" />
+                    <element signature="e#7568#7726#0" expanded="true" />
+                    <element signature="e#7781#7791#0" expanded="true" />
+                    <element signature="e#9979#10137#0" expanded="true" />
+                    <element signature="e#10192#10202#0" expanded="true" />
+                    <element signature="e#13665#13823#0" expanded="true" />
+                    <element signature="e#16632#16790#0" expanded="true" />
+                    <element signature="e#19793#19810#0" expanded="true" />
+                    <element signature="e#20266#20303#0" expanded="true" />
+                    <element signature="e#21897#21934#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -134,9 +156,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>atomicFunc</find>
-      <find>DataDriven</find>
-      <find>ConvergeCheckDevice</find>
       <find>PageRankCheck__Single__</find>
       <find>block_size</find>
       <find>outlining_running</find>
@@ -160,10 +179,13 @@
       <find>worksource</find>
       <find>GraphKernelTopologyCTA</find>
       <find>RelaxDataDriven</find>
-      <find>m_work_list1</find>
       <find>GraphKernelTopology</find>
-      <find>TAPIImple</find>
+      <find>QueueAppendItem</find>
       <find>GraphInitTopologyDriven</find>
+      <find>graphInfo</find>
+      <find>top_values</find>
+      <find>TAPIImple</find>
+      <find>m_work_list1</find>
     </findStrings>
     <replaceStrings>
       <replace>dest8</replace>
@@ -219,7 +241,6 @@
         <option value="$PROJECT_DIR$/include/cub/util_ptx.cuh" />
         <option value="$PROJECT_DIR$/include/groute/device/counter.cuh" />
         <option value="$PROJECT_DIR$/include/groute/graphs/csr_graph.h" />
-        <option value="$PROJECT_DIR$/include/groute/device/queue.cuh" />
         <option value="$PROJECT_DIR$/include/groute/common.h" />
         <option value="$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu" />
         <option value="$PROJECT_DIR$/samples/framework/kernelbase.h" />
@@ -233,11 +254,12 @@
         <option value="$PROJECT_DIR$/src/utils/parser.cpp" />
         <option value="$PROJECT_DIR$/samples/framework/myatomics.h" />
         <option value="$PROJECT_DIR$/samples/framework/entry.cu" />
+        <option value="$PROJECT_DIR$/include/groute/device/queue.cuh" />
         <option value="$PROJECT_DIR$/samples/framework/graph_api.h" />
-        <option value="$PROJECT_DIR$/samples/framework/graph_common.h" />
-        <option value="$PROJECT_DIR$/samples/framework/pagerank.cu" />
         <option value="$PROJECT_DIR$/samples/framework/work_kernel.h" />
+        <option value="$PROJECT_DIR$/samples/framework/graph_common.h" />
         <option value="$PROJECT_DIR$/samples/framework/kernel.h" />
+        <option value="$PROJECT_DIR$/samples/framework/pagerank.cu" />
       </list>
     </option>
   </component>
@@ -372,7 +394,7 @@
     <configuration name="cusha" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-num_gpus 1 -startwith 1 -single -graphfile $PROJECT_DIR$/../google.gr" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="cusha" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
       <envs />
     </configuration>
-    <configuration name="gframe" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -logtostderr=1 -v=1 -output=$PROJECT_DIR$/../pr_test.txt" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="gframe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="gframe">
+    <configuration name="gframe" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -logtostderr=1 -v=1 -output=$PROJECT_DIR$/../pr_test.txt -top_values -1" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="gframe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="gframe">
       <envs />
     </configuration>
     <configuration name="pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -ggr -outline  -cta_np -threshold 3916821" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
@@ -400,11 +422,11 @@
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13856691" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.196702" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25795054" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32508835" sideWeight="0.49785176" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32744405" sideWeight="0.5021075" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26030624" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2720848" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286219" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -454,7 +476,8 @@
     <MESSAGE value="using functor instead of functional pointer" />
     <MESSAGE value="temp save" />
     <MESSAGE value="temp save, implemented outlining-cta-data/topo driven" />
-    <option name="LAST_COMMIT_MESSAGE" value="temp save, implemented outlining-cta-data/topo driven" />
+    <MESSAGE value="topology&amp;cta works" />
+    <option name="LAST_COMMIT_MESSAGE" value="topology&amp;cta works" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -500,7 +523,7 @@
           <option name="timeStamp" value="86" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="88" />
+      <option name="time" value="89" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -667,16 +690,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/utils/graphs/traversal.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="206" column="48" lean-forward="false" selection-start-line="206" selection-start-column="48" selection-end-line="206" selection-end-column="48" />
-          <folding>
-            <element signature="e#1719#1736#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/groute/context.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="502">
@@ -747,14 +760,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/graph_api.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/samples/pr/my_pr_async.cu">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4756">
@@ -784,16 +789,6 @@
         <state relative-caret-position="102">
           <caret line="41" column="4" lean-forward="false" selection-start-line="41" selection-start-column="4" selection-end-line="46" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/topology_driven_unopt_pr.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-          <folding>
-            <element signature="e#38#55#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -879,14 +874,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/graph_common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/groute/dwl/work_source.cuh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="350">
@@ -895,66 +882,96 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu">
+    <entry file="file://$PROJECT_DIR$/include/groute/device/queue.cuh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+        <state relative-caret-position="380">
+          <caret line="543" column="0" lean-forward="true" selection-start-line="543" selection-start-column="0" selection-end-line="543" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/pagerank.cu">
+    <entry file="file://$PROJECT_DIR$/samples/framework/graph_api.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="23" column="15" lean-forward="false" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
-          <folding>
-            <element signature="e#38#67#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="238">
+          <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/utils/graphs/traversal.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="93" column="26" lean-forward="false" selection-start-line="93" selection-start-column="26" selection-end-line="93" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/topology_driven_unopt_pr.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/samples/framework/work_kernel.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="80" column="23" lean-forward="false" selection-start-line="80" selection-start-column="23" selection-end-line="80" selection-end-column="23" />
+        <state relative-caret-position="191">
+          <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
           <folding>
             <element signature="e#98#134#0" expanded="true" />
-            <element signature="e#1925#2019#0" expanded="true" />
-            <element signature="e#3929#4087#0" expanded="true" />
-            <element signature="e#4117#4127#0" expanded="true" />
-            <element signature="e#6128#6286#0" expanded="true" />
-            <element signature="e#6316#6326#0" expanded="true" />
-            <element signature="e#9398#9556#0" expanded="true" />
-            <element signature="e#9586#9596#0" expanded="true" />
-            <element signature="e#11809#11967#0" expanded="true" />
-            <element signature="e#11997#12007#0" expanded="true" />
-            <element signature="e#15487#23602#0" expanded="true" />
-            <element signature="e#23628#23665#0" expanded="true" />
-            <marker date="1519267794753" expanded="true" signature="427:565" ph="&lt;TGraphAPI,TAtomicFunc,TValue,TDelta,TWeight&gt;" />
-            <marker date="1519267794753" expanded="true" signature="1245:1907" ph="{...}" />
+            <element signature="e#433#454#0" expanded="true" />
+            <element signature="e#841#935#0" expanded="true" />
+            <element signature="e#2099#2257#0" expanded="true" />
+            <element signature="e#4298#4456#0" expanded="true" />
+            <element signature="e#7568#7726#0" expanded="true" />
+            <element signature="e#9979#10137#0" expanded="true" />
+            <element signature="e#21897#21934#0" expanded="true" />
+            <marker date="1519315455246" expanded="true" signature="2287:2297" ph="..." />
+            <marker date="1519315455246" expanded="true" signature="4486:4496" ph="..." />
+            <marker date="1519315455246" expanded="true" signature="7756:7766" ph="..." />
+            <marker date="1519315455246" expanded="true" signature="10167:10177" ph="..." />
+            <marker date="1519315455246" expanded="true" signature="13657:21871" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/device/queue.cuh">
+    <entry file="file://$PROJECT_DIR$/samples/framework/graph_common.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="552" column="43" lean-forward="true" selection-start-line="552" selection-start-column="43" selection-end-line="552" selection-end-column="43" />
+        <state relative-caret-position="561">
+          <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2330">
+          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/samples/framework/kernel.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="242" column="41" lean-forward="false" selection-start-line="242" selection-start-column="41" selection-end-line="242" selection-end-column="41" />
+        <state relative-caret-position="577">
+          <caret line="362" column="0" lean-forward="false" selection-start-line="362" selection-start-column="0" selection-end-line="362" selection-end-column="0" />
           <folding>
             <element signature="e#87#104#0" expanded="true" />
             <element signature="e#890#1041#0" expanded="true" />
-            <element signature="e#5689#5711#0" expanded="true" />
-            <element signature="e#5869#5895#0" expanded="true" />
-            <element signature="e#12321#14413#0" expanded="true" />
-            <element signature="e#15862#17397#0" expanded="true" />
+            <element signature="e#1178#2573#0" expanded="false" />
+            <element signature="e#5106#5119#0" expanded="true" />
+            <element signature="e#5290#5307#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/framework/pagerank.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="55" column="31" lean-forward="false" selection-start-line="55" selection-start-column="31" selection-end-line="55" selection-end-column="31" />
+          <folding>
+            <element signature="e#38#67#0" expanded="true" />
           </folding>
         </state>
       </provider>

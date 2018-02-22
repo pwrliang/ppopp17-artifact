@@ -16,47 +16,29 @@
 
 namespace gframe {
     namespace kernel {
-//        template<typename TGraphAPI,
-//                typename TAtomicFunc,
-//                typename TValue,
-//                typename TDelta>
-//        __global__ void GraphInitDataDriven(TGraphAPI graph_api,
-//                                            TAtomicFunc atomicFunc,
-//                                            groute::dev::WorkSourceRange<index_t> work_source,
-//                                            groute::graphs::dev::CSRGraph graph,
-//                                            groute::graphs::dev::GraphDatum<TValue> value_datum,
-//                                            groute::graphs::dev::GraphDatum<TDelta> delta_datum,
-//                                            groute::graphs::dev::GraphDatum<TWeight> weight_datum,
-//                                            bool IsWeighted) {
-//            unsigned tid = TID_1D;
-//            unsigned nthreads = TOTAL_THREADS_1D;
-//
-//            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
-//                index_t node = work_source.get_work(ii);
-//                index_t begin_edge = graph.begin_edge(node),
-//                        end_edge = graph.end_edge(node),
-//                        out_degree = end_edge - begin_edge;
-//
-//                value_datum[node] = graph_api.InitValue(node, out_degree);
-//                TDelta init_delta = graph_api.InitDelta(node, out_degree);
-//                delta_datum[node] = init_delta;
-//
-//            }
-//        }
-
-        template<typename TGraphAPI, typename TAtomicFunc, typename TValue, typename TDelta, typename TWeight>
+        template<typename WorkSource>
         __global__
-        void GraphInitTopologyDriven(TGraphAPI graph_api,
-                                     TAtomicFunc atomicFunc,
-                                     groute::dev::WorkSourceRange<index_t> work_source,
-                                     groute::graphs::dev::CSRGraph graph,
-                                     groute::graphs::dev::GraphDatum<TValue> value_datum,
-                                     groute::graphs::dev::GraphDatum<TDelta> delta_datum,
-                                     groute::graphs::dev::GraphDatum<TWeight> weight_datum,
-                                     bool IsWeighted) {
+        void InitWorklist(groute::dev::Queue<index_t> worklist, WorkSource work_source) {
             unsigned tid = TID_1D;
             unsigned nthreads = TOTAL_THREADS_1D;
 
+            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
+                worklist.append_warp(work_source.get_work(ii));
+            }
+        }
+
+        template<typename TGraphAPI, typename TAtomicFunc, typename TValue, typename TDelta, typename TWeight>
+        __global__
+        void GraphInit(TGraphAPI graph_api,
+                       TAtomicFunc atomicFunc,
+                       groute::dev::WorkSourceRange<index_t> work_source,
+                       groute::graphs::dev::CSRGraph graph,
+                       groute::graphs::dev::GraphDatum<TValue> value_datum,
+                       groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                       groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                       bool IsWeighted) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
 
             for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
                 index_t node = work_source.get_work(ii);
@@ -67,19 +49,6 @@ namespace gframe {
                 value_datum[node] = graph_api.InitValue(node, out_degree);
                 TDelta init_delta = graph_api.InitDelta(node, out_degree);
                 delta_datum[node] = init_delta;
-
-//                if (out_degree > 0) {
-//                    TDelta new_delta;
-//
-//                    if (!IsWeighted)
-//                        new_delta = graph_api.DeltaMapper(init_delta, 0, out_degree);
-//
-//                    for (index_t edge = begin_edge; edge < end_edge; edge++) {
-//                        index_t dest = graph.edge_dest(edge);
-//                        if (IsWeighted)new_delta = graph_api.DeltaMapper(init_delta, weight_datum.get_item(edge), out_degree);
-//                        TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
-//                    }
-//                }
             }
         }
 
@@ -353,7 +322,7 @@ namespace gframe {
             groute::dev::Queue<index_t> *out_wl = &work_target;
             int iteration;
 
-            for (iteration = 0; iteration < max_iteration; iteration++) {
+            for (iteration = 1; iteration <= max_iteration; iteration++) {
                 if (cta_np) {
                     GraphKernelDataDrivenCTA(graph_api,
                                              atomicFunc,
@@ -417,7 +386,7 @@ namespace gframe {
             uint32_t tid = TID_1D;
             TValue rtn_res;
 
-            int iteration = 0;
+            int iteration = 1;
             int counter = 0;
 
             while (*running) {
@@ -441,10 +410,7 @@ namespace gframe {
                                         IsWeighted);
                 }
                 grid_barrier.Sync();
-                iteration++;
-                if (iteration >= max_iteration) {
-                    break;
-                }
+
 
                 ConvergeCheckDevice(graph_api,
                                     work_source,
@@ -453,9 +419,15 @@ namespace gframe {
                                     value_datum);
                 if (counter++ % 10000 == 0) {
                     if (tid == 0) {
+                        printf("Iteration: %d Current sum:%lf\n", iteration, (double) rtn_res);
                         if (graph_api.IsConverge(rtn_res))*running = 0;
                     }
                     counter = 0;
+                }
+
+                iteration++;
+                if (iteration >= max_iteration) {
+                    break;
                 }
                 grid_barrier.Sync();
             }

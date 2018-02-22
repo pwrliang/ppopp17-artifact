@@ -20,7 +20,7 @@ struct MyIterateKernel : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __device__ rank_t InitDelta(const index_t node, index_t out_degree) const {
-//        return 1 - ALPHA;// / graphInfo.nnodes;
+//        return (1 - ALPHA) / graphInfo.nnodes;
         return 1 - ALPHA;
     }
 
@@ -31,7 +31,7 @@ struct MyIterateKernel : gframe::api::GraphAPIBase {
     __forceinline__ __device__ float
     DeltaMapper(const float delta, const index_t weight,
                 const index_t out_degree) const {
-        assert(weight == 0);
+        //assert(weight == 0);
         return ALPHA * delta / out_degree;
     }
 
@@ -45,7 +45,7 @@ struct MyIterateKernel : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __host__ __device__ bool IsConverge(const rank_t value) {
-        return value > 0.841087f;
+        return value > 3.91682e+06;
     }
 };
 
@@ -54,9 +54,9 @@ bool PageRank() {
             new gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>
                     (MyIterateKernel(),
                      MyAtomicAdd(),
-                     gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>::Engine_DataDriven,
+                     gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>::Engine_TopologyDriven,
                      false,
-                     false);
+                     true);
     kernel->InitValue();
     kernel->Run();
     if (FLAGS_output.length() > 0)

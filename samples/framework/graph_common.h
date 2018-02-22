@@ -34,6 +34,6 @@
 #include <gflags/gflags.h>
 #include <groute/graphs/csr_graph.h>
 
-//#define __OUTLINING__
+#define __OUTLINING__
 
 #endif // __GRAPH_COMMON_H
