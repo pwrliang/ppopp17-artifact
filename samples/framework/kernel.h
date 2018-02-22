@@ -1,366 +1,528 @@
 //
-// Created by liang on 2/5/18.
+// Created by liang on 2/19/18.
 //
 
-#ifndef GROUTE_KERNEL_H
-#define GROUTE_KERNEL_H
+#ifndef GROUTE_WORK_KERNEL_H
+#define GROUTE_WORK_KERNEL_H
 
-#include <vector>
-#include <algorithm>
-#include <thread>
-#include <memory>
-#include <random>
-#include <gflags/gflags.h>
-#include <groute/event_pool.h>
-#include <groute/graphs/csr_graph.h>
+#include <cub/grid/grid_barrier.cuh>
+#include <groute/common.h>
 #include <groute/dwl/work_source.cuh>
-#include <utils/cuda_utils.h>
-#include <utils/parser.h>
-#include <utils/utils.h>
-#include <utils/stopwatch.h>
-#include <device_launch_parameters.h>
-#include <utils/graphs/traversal.h>
-#include <glog/logging.h>
-#include "myatomics.h"
-#include "work_kernel.h"
-#include "resultsaver.h"
+#include <groute/device/queue.cuh>
+#include <groute/device/cta_scheduler.cuh>
+#include <moderngpu/context.hxx>
+#include <moderngpu/kernel_scan.hxx>
 #include "graph_common.h"
 
-DECLARE_double(wl_alloc_factor);
-DECLARE_uint64(wl_alloc_abs);
-DECLARE_int32(max_iterations);
-DECLARE_int32(grid_size);
-DECLARE_int32(block_size);
-
 namespace gframe {
-    struct Algo {
-        static const char *Name() { return "gframe Kernel"; }
-    };
+    namespace kernel {
+        template<typename WorkSource>
+        __global__
+        void InitWorklist(groute::dev::Queue<index_t> worklist, WorkSource work_source) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
 
-    template<typename TAPIImple,
-            typename TAtomicFunc,
-            typename TValue,
-            typename TDelta,
-            typename TWeight=unsigned>
-    class GFrameEngine {
-    public:
-        enum EngineType {
-            Engine_DataDriven, Engine_TopologyDriven
-        };
-
-        GFrameEngine(TAPIImple api_imple, TAtomicFunc atomic_func, EngineType engine_type, bool weighted = false, bool cta = true) :
-                m_api_imple(api_imple), m_atomic_func(atomic_func), m_engine_type(engine_type), m_is_weighted(weighted), m_cta(cta) {
-
-            m_context = new utils::traversal::Context<gframe::Algo>(1);
-
-            m_graph_allocator = new groute::graphs::single::CSRGraphAllocator(m_context->host_graph);
-
-            m_context->SetDevice(0);
-
-            m_graph_allocator->AllocateDatumObjects(m_value_datum, m_delta_datum);
-            if (m_is_weighted) m_graph_allocator->AllocateDatum(m_weight_datum);
-
-            m_stream = m_context->CreateStream(0);
-
-            m_mgpu_context = new mgpu::standard_context_t(true, m_stream.cuda_stream);
-
-            m_api_imple.graphInfo.nnodes = m_context->host_graph.nnodes;
-            m_api_imple.graphInfo.nedges = m_context->host_graph.nedges;
-
-            size_t max_work_size = m_context->host_graph.nedges * FLAGS_wl_alloc_factor;
-
-            if (FLAGS_wl_alloc_abs > 0)
-                max_work_size = FLAGS_wl_alloc_abs;
-
-            m_work_list1 = new Worklist(max_work_size, 0, "input queue");
-            m_work_list2 = new Worklist(max_work_size, 0, "output queue");
-
-            m_work_list1->ResetAsync(m_stream);
-            m_work_list2->ResetAsync(m_stream);
-            m_stream.Sync();
-
-
-        }
-
-        ~GFrameEngine() {
-            delete m_work_list1;
-            delete m_work_list2;
-            delete m_mgpu_context;
-            delete m_graph_allocator;
-            delete m_context;
-
-            VLOG(1) << "Destroy Engine";
-        }
-
-        void InitValue() const {
-            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
-            dim3 grid_dims, block_dims;
-            KernelSizing(grid_dims, block_dims, m_graph_allocator->DeviceObject().nnodes);
-
-            Stopwatch sw(true);
-
-            if (m_engine_type == Engine_DataDriven) {
-                gframe::kernel::InitWorklist << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                                            (m_work_list1->DeviceObject(),
-                                                                                    groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(),
-                                                                                                                          dev_graph.owned_nnodes()));
+            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
+                worklist.append_warp(work_source.get_work(ii));
             }
-
-            gframe::kernel::GraphInit << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                                     (m_api_imple,
-                                                                             m_atomic_func,
-                                                                             groute::dev::WorkSourceRange<index_t>
-                                                                                     (dev_graph.owned_start_node(),
-                                                                                      dev_graph.owned_nnodes()),
-                                                                             dev_graph,
-                                                                             m_value_datum.DeviceObject(),
-                                                                             m_delta_datum.DeviceObject(),
-                                                                             m_weight_datum.DeviceObject(),
-                                                                             m_is_weighted);
-            m_stream.Sync();
-            sw.stop();
-            LOG(INFO) << "Graph Init " << sw.ms() << " ms";
         }
 
-        void Run() {
-            if (m_engine_type == EngineType::Engine_DataDriven) {
+        template<typename TGraphAPI, typename TAtomicFunc, typename TValue, typename TDelta, typename TWeight>
+        __global__
+        void GraphInit(TGraphAPI graph_api,
+                       TAtomicFunc atomicFunc,
+                       groute::dev::WorkSourceRange<index_t> work_source,
+                       groute::graphs::dev::CSRGraph graph,
+                       groute::graphs::dev::GraphDatum<TValue> value_datum,
+                       groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                       groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                       bool IsWeighted) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
+
+            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
+                index_t node = work_source.get_work(ii);
+                index_t begin_edge = graph.begin_edge(node),
+                        end_edge = graph.end_edge(node),
+                        out_degree = end_edge - begin_edge;
+
+                value_datum[node] = graph_api.InitValue(node, out_degree);
+                TDelta init_delta = graph_api.InitDelta(node, out_degree);
+                delta_datum[node] = init_delta;
+            }
+        }
+
+        template<typename TGraphAPI,
+                typename TAtomicFunc,
+                typename TValue,
+                typename TDelta,
+                typename TWeight>
 #ifdef __OUTLINING__
-                DataDrivenOutlining();
+        __device__
 #else
-                DataDriven();
+        __global__
 #endif
-            } else if (m_engine_type == EngineType::Engine_TopologyDriven) {
+        void GraphKernelTopology(TGraphAPI graph_api,
+                                 TAtomicFunc atomicFunc,
+                                 groute::dev::WorkSourceRange<index_t> work_source,
+                                 groute::graphs::dev::CSRGraph graph,
+                                 groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                 groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                 groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                 bool IsWeighted) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
+
+            uint32_t work_size = work_source.get_size();
+
+            for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+                index_t node = work_source.get_work(i);
+                TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
+
+                if (old_delta != graph_api.IdentityElement()) {
+                    value_datum[node] = graph_api.DeltaReducer(value_datum[node], old_delta);
+
+
+                    index_t begin_edge = graph.begin_edge(node),
+                            end_edge = graph.end_edge(node),
+                            out_degree = end_edge - begin_edge;
+
+                    if (out_degree > 0) {
+                        TDelta new_delta;
+
+                        if (!IsWeighted)
+                            new_delta = graph_api.DeltaMapper(old_delta, 0, out_degree);
+
+                        for (index_t edge = begin_edge; edge < end_edge; edge++) {
+                            index_t dest = graph.edge_dest(edge);
+                            if (IsWeighted)new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
+
+                            atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                        }
+                    }
+                }
+            }
+        }
+
+        template<typename TGraphAPI,
+                typename TAtomicFunc,
+                typename TValue,
+                typename TDelta,
+                typename TWeight>
 #ifdef __OUTLINING__
-                TopologyDrivenOutlining();
+        __device__
 #else
-                TopologyDriven();
+        __global__
 #endif
+        void GraphKernelTopologyCTA(TGraphAPI graph_api,
+                                    TAtomicFunc atomicFunc,
+                                    groute::dev::WorkSourceRange<index_t> work_source,
+                                    groute::graphs::dev::CSRGraph graph,
+                                    groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                    groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                    groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                    bool IsWeighted) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
+
+            uint32_t work_size = work_source.get_size();
+            uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
+
+            for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+                groute::dev::np_local<TDelta> local_work = {0, 0};
+
+                if (i < work_size) {
+                    index_t node = work_source.get_work(i);
+                    TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
+
+                    if (old_delta != graph_api.IdentityElement()) {
+                        value_datum[node] = graph_api.DeltaReducer(value_datum[node], old_delta);
+
+                        local_work.start = graph.begin_edge(node);
+                        local_work.size = graph.end_edge(node) - local_work.start;
+                        if (IsWeighted)
+                            local_work.meta_data = old_delta;
+                        else
+                            local_work.meta_data = graph_api.DeltaMapper(old_delta, 0, local_work.size);
+                    }
+                }
+
+                if (IsWeighted) {
+                    groute::dev::CTAWorkScheduler<TDelta>::template schedule(
+                            local_work,
+                            [&graph, &weight_datum, &delta_datum, &atomicFunc, &graph_api](
+                                    index_t edge, index_t out_degree, TDelta old_delta) {
+                                index_t dest = graph.edge_dest(edge);
+
+                                TDelta new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
+                                TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                            }
+                    );
+                } else {
+                    groute::dev::CTAWorkScheduler<TDelta>::template schedule(
+                            local_work,
+                            [&graph, &delta_datum, &atomicFunc, &graph_api](
+                                    index_t edge, index_t out_degree, TDelta new_delta) {
+                                index_t dest = graph.edge_dest(edge);
+                                TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                            }
+                    );
+                }
+            }
+        }
+
+        template<typename TGraphAPI,
+                typename TAtomicFunc,
+                typename TValue,
+                typename TDelta,
+                typename TWeight>
+#ifdef __OUTLINING__
+        __device__
+#else
+        __global__
+#endif
+        void GraphKernelDataDriven(TGraphAPI graph_api,
+                                   TAtomicFunc atomicFunc,
+                                   groute::dev::Queue<index_t> work_source,
+                                   groute::dev::Queue<index_t> work_target,
+                                   groute::graphs::dev::CSRGraph graph,
+                                   groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                   groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                   groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                   bool IsWeighted) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
+
+            uint32_t work_size = work_source.count();
+
+            for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+                index_t node = work_source.read(i);
+                TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
+
+                if (old_delta != graph_api.IdentityElement()) {
+                    TValue value = graph_api.DeltaReducer(value_datum[node], old_delta);
+                    value_datum[node] = value;
+
+                    index_t begin_edge = graph.begin_edge(node),
+                            end_edge = graph.end_edge(node),
+                            out_degree = end_edge - begin_edge;
+
+                    if (out_degree > 0) {
+                        TDelta new_delta;
+                        if (!IsWeighted) new_delta = graph_api.DeltaMapper(old_delta, 0, out_degree);
+
+                        for (index_t edge = begin_edge; edge < end_edge; edge++) {
+                            index_t dest = graph.edge_dest(edge);
+                            if (IsWeighted)new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
+                            TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+
+                            if (graph_api.Filter(prev_delta, new_delta)) work_target.append_warp(dest);
+                        }
+                    }
+                }
             }
         }
 
 
-        bool SaveResult(const char *file, bool sort = false) {
-            m_graph_allocator->GatherDatum(m_value_datum);
-            return ResultOutput<float>(file, m_value_datum.GetHostData(), sort);
-        }
+        template<typename TGraphAPI,
+                typename TAtomicFunc,
+                typename TValue,
+                typename TDelta,
+                typename TWeight>
+#ifdef __OUTLINING__
+        __device__
+#else
+        __global__
+#endif
+        void GraphKernelDataDrivenCTA(TGraphAPI graph_api,
+                                      TAtomicFunc atomicFunc,
+                                      groute::dev::Queue<index_t> work_source,
+                                      groute::dev::Queue<index_t> work_target,
+                                      groute::graphs::dev::CSRGraph graph,
+                                      groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                      groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                      groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                      bool IsWeighted) {
+            const unsigned tid = TID_1D;
+            const unsigned nthreads = TOTAL_THREADS_1D;
 
-    private:
-        typedef groute::Queue<index_t> Worklist;
+            const uint32_t work_size = work_source.count();
+            const uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
 
-        mgpu::context_t *m_mgpu_context;
-        utils::traversal::Context<gframe::Algo> *m_context;
-        groute::Stream m_stream;
-        groute::graphs::single::CSRGraphAllocator *m_graph_allocator;
-        groute::graphs::single::NodeOutputDatum<TValue> m_value_datum;
-        groute::graphs::single::NodeOutputDatum<TDelta> m_delta_datum;
-        groute::graphs::single::EdgeInputDatum<TWeight> m_weight_datum;
-        Worklist *m_work_list1, *m_work_list2;
-        TAPIImple m_api_imple;
-        TAtomicFunc m_atomic_func;
-        EngineType m_engine_type;
-        bool m_is_weighted;
-        bool m_cta;
 
-        void RelaxDataDriven(const groute::Queue<index_t> &work_source, groute::Queue<index_t> &work_target) {
-            dim3 grid_dims, block_dims;
+            for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+                groute::dev::np_local<TDelta> local_work = {0, 0};
+                if (i < work_size) {
+                    index_t node = work_source.read(i);
+                    TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
-            KernelSizing(grid_dims, block_dims, work_source.GetCount(m_stream));
-            if (m_cta) {
-                gframe::kernel::GraphKernelDataDrivenCTA
-                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                       (m_api_imple,
-                                                               m_atomic_func,
-                                                               work_source.DeviceObject(),
-                                                               work_target.DeviceObject(),
-                                                               m_graph_allocator->DeviceObject(),
-                                                               m_value_datum.DeviceObject(),
-                                                               m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(),
-                                                               m_is_weighted);
-            } else {
-                gframe::kernel::GraphKernelDataDriven
-                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                       (m_api_imple,
-                                                               m_atomic_func,
-                                                               work_source.DeviceObject(),
-                                                               work_target.DeviceObject(),
-                                                               m_graph_allocator->DeviceObject(),
-                                                               m_value_datum.DeviceObject(),
-                                                               m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(),
-                                                               m_is_weighted);
+                    if (old_delta != graph_api.IdentityElement()) {
+                        TValue value = graph_api.DeltaReducer(value_datum[node], old_delta);
+                        value_datum[node] = value;
+
+                        local_work.start = graph.begin_edge(node);
+                        local_work.size = graph.end_edge(node) - local_work.start;
+                        if (IsWeighted)
+                            local_work.meta_data = old_delta;
+                        else
+                            local_work.meta_data = graph_api.DeltaMapper(old_delta, 0, local_work.size);
+                    }
+                }
+
+                if (IsWeighted) {
+                    groute::dev::CTAWorkScheduler<TDelta>::template schedule(
+                            local_work,
+                            [&work_target, &graph, &weight_datum, &delta_datum, &atomicFunc, &graph_api](
+                                    index_t edge, index_t out_degree, TDelta old_delta) {
+                                index_t dest = graph.edge_dest(edge);
+
+                                TDelta new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
+                                TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+
+                                if (graph_api.Filter(prev_delta, new_delta)) work_target.append_warp(dest);
+                            }
+                    );
+                } else {
+                    groute::dev::CTAWorkScheduler<TDelta>::template schedule(
+                            local_work,
+                            [&work_target, &graph, &delta_datum, &atomicFunc, &graph_api](
+                                    index_t edge, index_t out_degree, TDelta new_delta) {
+                                index_t dest = graph.edge_dest(edge);
+                                TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+
+                                if (graph_api.Filter(prev_delta, new_delta)) work_target.append_warp(dest);
+                            }
+                    );
+                }
             }
         }
 
-        void RelaxTopologyDriven(const groute::dev::WorkSourceRange<index_t> &work_source) {
-            dim3 grid_dims, block_dims;
-            KernelSizing(grid_dims, block_dims, work_source.get_size());
+#ifdef __OUTLINING__
 
-            if (m_cta) {
-                gframe::kernel::GraphKernelTopologyCTA
-                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                       (m_api_imple,
-                                                               m_atomic_func,
-                                                               work_source,
-                                                               m_graph_allocator->DeviceObject(),
-                                                               m_value_datum.DeviceObject(),
-                                                               m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(),
-                                                               m_is_weighted);
-            } else {
-                gframe::kernel::GraphKernelTopology
-                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                       (m_api_imple,
-                                                               m_atomic_func,
-                                                               work_source,
-                                                               m_graph_allocator->DeviceObject(),
-                                                               m_value_datum.DeviceObject(),
-                                                               m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(),
-                                                               m_is_weighted);
+        template<typename TGraphAPI,
+                typename TAtomicFunc,
+                typename TValue,
+                typename TDelta,
+                typename TWeight>
+        __global__
+        void KernelControllerDataDriven(TGraphAPI graph_api,
+                                        TAtomicFunc atomicFunc,
+                                        groute::dev::Queue<index_t> work_source,
+                                        groute::dev::Queue<index_t> work_target,
+                                        groute::graphs::dev::CSRGraph graph,
+                                        groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                        groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                        groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                        bool IsWeighted,
+                                        bool cta_np,
+                                        uint32_t max_iteration,
+                                        cub::GridBarrier grid_barrier) {
+            uint32_t tid = TID_1D;
+            groute::dev::Queue<index_t> *in_wl = &work_source;
+            groute::dev::Queue<index_t> *out_wl = &work_target;
+            int iteration;
+
+            for (iteration = 1; iteration <= max_iteration; iteration++) {
+                if (cta_np) {
+                    GraphKernelDataDrivenCTA(graph_api,
+                                             atomicFunc,
+                                             *in_wl,
+                                             *out_wl,
+                                             graph,
+                                             value_datum,
+                                             delta_datum,
+                                             weight_datum,
+                                             IsWeighted);
+                } else {
+                    GraphKernelDataDriven(graph_api,
+                                          atomicFunc,
+                                          *in_wl,
+                                          *out_wl,
+                                          graph,
+                                          value_datum,
+                                          delta_datum,
+                                          weight_datum,
+                                          IsWeighted);
+                }
+                grid_barrier.Sync();
+
+                if (tid == 0) {
+                    printf("Iteration: %d INPUT %d OUTPUT %d\n", iteration, in_wl->count(), out_wl->count());
+                    in_wl->reset();
+                }
+
+                if (out_wl->count() == 0)
+                    break;
+
+                groute::dev::Queue<index_t> *tmp_wl = in_wl;
+                in_wl = out_wl;
+                out_wl = tmp_wl;
+            }
+
+            if (tid == 0) {
+                printf("Total iterations: %d\n", iteration);
             }
         }
 
+        template<typename TGraphAPI,
+                typename TAtomicFunc,
+                typename TValue,
+                typename TDelta,
+                typename TWeight>
+        __global__
+        void KernelControllerTopologyDriven(TGraphAPI graph_api,
+                                            TAtomicFunc atomicFunc,
+                                            groute::dev::WorkSourceRange<index_t> work_source,
+                                            groute::graphs::dev::CSRGraph graph,
+                                            groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                            groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+                                            groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+                                            bool IsWeighted,
+                                            bool cta_np,
+                                            uint32_t max_iteration,
+                                            TValue *grid_buffer,
+                                            int *running,
+                                            cub::GridBarrier grid_barrier) {
+            uint32_t tid = TID_1D;
+            TValue rtn_res;
 
-        void DataDriven() {
-            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
-            Worklist *in_wl = m_work_list1, *out_wl = m_work_list2;
-            std::vector<index_t> host_init_wl;
+            int iteration = 1;
+            int counter = 0;
 
-            int iteration = 0;
+            while (*running) {
+                if (cta_np) {
+                    GraphKernelTopologyCTA(graph_api,
+                                           atomicFunc,
+                                           work_source,
+                                           graph,
+                                           value_datum,
+                                           delta_datum,
+                                           weight_datum,
+                                           IsWeighted);
+                } else {
+                    GraphKernelTopology(graph_api,
+                                        atomicFunc,
+                                        work_source,
+                                        graph,
+                                        value_datum,
+                                        delta_datum,
+                                        weight_datum,
+                                        IsWeighted);
+                }
+                grid_barrier.Sync();
 
-            VLOG(1)
-            << "Iteration: " << ++iteration << " In-Worklist: " << dev_graph.owned_nnodes() << " Out-Worklist: "
-            << in_wl->GetCount(m_stream);
 
-            Stopwatch sw(true);
+                ConvergeCheckDevice(graph_api,
+                                    work_source,
+                                    grid_buffer,
+                                    &rtn_res,
+                                    value_datum);
+                if (counter++ % 10000 == 0) {
+                    if (tid == 0) {
+                        printf("Iteration: %d Current sum:%lf\n", iteration, (double) rtn_res);
+                        if (graph_api.IsConverge(rtn_res))*running = 0;
+                    }
+                    counter = 0;
+                }
 
-            while (in_wl->GetCount(m_stream) > 0) {
-                RelaxDataDriven(*in_wl, *out_wl);
-
-                VLOG(0) << "Iteration: " << ++iteration << " In-Worklist: " << in_wl->GetCount(m_stream)
-                        << " Out-Worklist: " << out_wl->GetCount(m_stream);
-
-                if (iteration >= FLAGS_max_iterations) {
-                    LOG(WARNING) << "Maximum iteration times reached";
+                iteration++;
+                if (iteration >= max_iteration) {
                     break;
                 }
-
-                in_wl->ResetAsync(m_stream);
-
-                std::swap(in_wl, out_wl);
+                grid_barrier.Sync();
             }
 
-            sw.stop();
-
-            VLOG(0) << "DataDriven Time: " << sw.ms() << " ms.";
+            if (tid == 0) {
+                printf("Total iterations: %d\n", iteration);
+            }
         }
 
-#ifdef __OUTLINING__
+        template<typename TValue>
+        __forceinline__ __device__ TValue warpReduce(TValue localSum) {
+            localSum += __shfl_xor_sync(0xfffffff, localSum, 16);
+            localSum += __shfl_xor_sync(0xfffffff, localSum, 8);
+            localSum += __shfl_xor_sync(0xfffffff, localSum, 4);
+            localSum += __shfl_xor_sync(0xfffffff, localSum, 2);
+            localSum += __shfl_xor_sync(0xfffffff, localSum, 1);
 
-        void DataDrivenOutlining() {
-            int grid_size = FLAGS_grid_size;
-            int block_size = FLAGS_block_size;
-            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
-            Worklist *in_wl = m_work_list1, *out_wl = m_work_list2;
-            cub::GridBarrierLifetime grid_barrier;
+            return localSum;
+        }
 
-            VLOG(1) << "Outlining Mode - Grid Size: " << grid_size << " Block Size:" << block_size;
+        template<typename TGraphAPI, typename TValue>
+        __device__
+        void ConvergeCheckDevice(TGraphAPI graph_api,
+                                 groute::dev::WorkSourceRange<index_t> work_source,
+                                 TValue *grid_buffer,
+                                 TValue *rtn_res,
+                                 groute::graphs::dev::GraphDatum<TValue> value_datum) {
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
+            int laneIdx = threadIdx.x % warpSize;
+            int warpIdx = threadIdx.x / warpSize;
+            const int SMEMDIM = blockDim.x / warpSize;
+            extern __shared__ TValue smem[];
 
-            grid_barrier.Setup(grid_size);
+            uint32_t work_size = work_source.get_size();
+            TValue local_sum = 0;
 
-            Stopwatch sw(true);
+            for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+                index_t node = work_source.get_work(i);
+                local_sum += value_datum[node];
+            }
 
-            gframe::kernel::KernelControllerDataDriven << < grid_size, block_size, 0, m_stream.cuda_stream >> >
-                                                                                      (m_api_imple,
-                                                                                              m_atomic_func,
-                                                                                              in_wl->DeviceObject(),
-                                                                                              out_wl->DeviceObject(),
-                                                                                              dev_graph,
-                                                                                              m_value_datum.DeviceObject(),
-                                                                                              m_delta_datum.DeviceObject(),
-                                                                                              m_weight_datum.DeviceObject(),
-                                                                                              m_is_weighted,
-                                                                                              m_cta,
-                                                                                              FLAGS_max_iterations,
-                                                                                              grid_barrier);
-            m_stream.Sync();
-            sw.stop();
+            local_sum = warpReduce(local_sum);
 
-            VLOG(0) << "DataDrivenOutlining Times: " << sw.ms() << " ms.";
+            if (laneIdx == 0)
+                smem[warpIdx] = local_sum;
+            __syncthreads();
+
+            local_sum = (threadIdx.x < SMEMDIM) ? smem[threadIdx.x] : 0;
+
+            if (warpIdx == 0)
+                local_sum = warpReduce(local_sum);
+
+            if (threadIdx.x == 0) {
+                grid_buffer[blockIdx.x] = local_sum;
+            }
+
+            if (tid == 0) {
+                TValue sum = 0;
+
+                for (int bid = 0; bid < gridDim.x; bid++) {
+                    sum += grid_buffer[bid];
+                }
+                *rtn_res = sum;
+            }
         }
 
 #endif
 
-        void TopologyDriven() {
-            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
-            groute::dev::WorkSourceRange<index_t> work_source(dev_graph.owned_start_node(), dev_graph.owned_nnodes());
+        template<typename TGraphAPI, typename TValue>
+        TValue ConvergeCheck(TGraphAPI graph_api,
+                             mgpu::context_t &context,
+                             groute::dev::WorkSourceRange<index_t> work_source,
+                             groute::graphs::dev::GraphDatum<TValue> value_datum) {
+            TValue *tmp = value_datum.data_ptr;
 
-            Stopwatch sw(true);
+            auto check_segment_sizes = [=]__device__(int idx) {
+                TValue value = tmp[idx];
 
-            for (int iteration = 0; iteration < FLAGS_max_iterations; iteration++) {
-                RelaxTopologyDriven(groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()));
+                if (value == graph_api.IdentityElement())
+                    return (TValue) 0;
+                return tmp[idx];
+            };
 
-                TValue accumulated_value = gframe::kernel::ConvergeCheck(m_api_imple,
-                                                                         *m_mgpu_context,
-                                                                         work_source,
-                                                                         m_value_datum.DeviceObject());
-                VLOG(0) << "Iteration: " << ++iteration << " current sum: " << accumulated_value;
+            mgpu::mem_t<TValue> checkSum(1, context);
+            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
 
-                if (m_api_imple.IsConverge(accumulated_value)) {
-                    VLOG(0) << "Convergence condition satisfied";
-                    break;
-                }
+            int *scanned_offsets = deviceOffsets.data();
 
-                if (iteration == FLAGS_max_iterations - 1) {
-                    LOG(WARNING) << "Maximum iteration times reached";
-                }
-            }
+            mgpu::transform_scan<TValue>(check_segment_sizes, work_source.get_size(),
+                                         scanned_offsets, mgpu::plus_t<TValue>(), checkSum.data(), context);
 
-            sw.stop();
-            VLOG(0) << "TopologyDriven Time: " << sw.ms() << " ms.";
+            return mgpu::from_mem(checkSum)[0];
         }
-
-#ifdef __OUTLINING__
-
-        void TopologyDrivenOutlining() {
-            int grid_size = FLAGS_grid_size;
-            int block_size = FLAGS_block_size;
-            const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
-            cub::GridBarrierLifetime grid_barrier;
-            utils::SharedArray<TValue> grid_buffer(grid_size);
-            utils::SharedValue<int> running_flag;
-
-            VLOG(1) << "Outlining Mode - Grid Size: " << grid_size << " Block Size:" << block_size;
-
-            grid_barrier.Setup(grid_size);
-            GROUTE_CUDA_CHECK(cudaMemset(grid_buffer.dev_ptr, 0, grid_buffer.buffer_size * sizeof(TValue)));
-            running_flag.set_val_H2D(1);
-
-            Stopwatch sw(true);
-
-            gframe::kernel::KernelControllerTopologyDriven << < grid_size, block_size, grid_size * sizeof(TValue), m_stream.cuda_stream >> > (m_api_imple,
-                    m_atomic_func,
-                    groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()),
-                    dev_graph,
-                    m_value_datum.DeviceObject(),
-                    m_delta_datum.DeviceObject(),
-                    m_weight_datum.DeviceObject(),
-                    m_is_weighted,
-                    m_cta,
-                    FLAGS_max_iterations,
-                    grid_buffer.dev_ptr,
-                    running_flag.dev_ptr,
-                    grid_barrier);
-
-            m_stream.Sync();
-            sw.stop();
-
-            VLOG(0) << "TopologyDrivenOutlining Times: " << sw.ms() << " ms.";
-        }
-
-#endif
-
-    };
+    }
 }
-#endif //GROUTE_KERNEL_H
+
+#endif //GROUTE_WORK_KERNEL_H

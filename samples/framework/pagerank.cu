@@ -3,7 +3,7 @@
 //
 #include <utils/cuda_utils.h>
 #include "registry.h"
-#include "kernel.h"
+#include "gframe.h"
 #include "myatomics.h"
 #include "graph_api.h"
 
