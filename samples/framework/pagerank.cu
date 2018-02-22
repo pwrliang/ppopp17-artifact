@@ -10,51 +10,55 @@
 DECLARE_string(output);
 typedef float rank_t;
 
+template<typename TValue, typename TDelta>
 struct MyIterateKernel : gframe::api::GraphAPIBase {
+    const TValue IdentityElementForValueReducer = 0;
+    const TDelta IdentityElementForDeltaReducer = 0;
+    const TDelta IdentityElementForValueDeltaCombiner = 0;
     const rank_t ALPHA = 0.85f;
 
-    __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
-//        printf("call %d\n", node);
-        //printf("Identity Elem: %f\n", IdentityElement());
+    __forceinline__ __device__ TValue InitValue(const index_t node, index_t out_degree) const {
         return 0;
     }
 
-    __forceinline__ __device__ rank_t InitDelta(const index_t node, index_t out_degree) const {
-//        return (1 - ALPHA) / graphInfo.nnodes;
+    __forceinline__ __device__ TDelta InitDelta(const index_t node, index_t out_degree) const {
         return 1 - ALPHA;
     }
 
-    __forceinline__ __device__ float DeltaReducer(const rank_t a, const rank_t b) const {
+    __forceinline__ __device__ TValue ValueReducer(const TValue a, const TValue b) const {
         return a + b;
     }
 
-    __forceinline__ __device__ float
-    DeltaMapper(const float delta, const index_t weight,
-                const index_t out_degree) const {
-        //assert(weight == 0);
+    __forceinline__ __device__ TDelta DeltaReducer(const TDelta a, const TDelta b) const {
+        return a + b;
+    }
+
+
+    __forceinline__ __device__ TValue ValueDeltaCombiner(const TValue a, const TDelta b) const {
+        return a + b;
+    }
+
+    __forceinline__ __device__ TDelta DeltaMapper(const TDelta delta, const index_t weight, const index_t out_degree) const {
         return ALPHA * delta / out_degree;
     }
 
-    __forceinline__ __device__ float IdentityElement() const {
-        return 0.0f;
-    }
-
-    __forceinline__ __device__ bool Filter(const rank_t prev_delta, const rank_t new_delta) const {
+    __forceinline__ __device__ bool Filter(const TDelta prev_delta, const TDelta new_delta) const {
         const rank_t EPSLION = 0.01f;
         return prev_delta < EPSLION && prev_delta + new_delta > EPSLION;
     }
 
-    __forceinline__ __host__ __device__ bool IsConverge(const rank_t value) {
-        return value > 3.91682e+06;
+    __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
+        return delta < 0.01;
+//        return value > 3.91682e+06;
     }
 };
 
 bool PageRank() {
-    gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> *kernel =
-            new gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>
-                    (MyIterateKernel(),
+    gframe::GFrameEngine<MyIterateKernel<rank_t, rank_t>, MyAtomicAdd, rank_t, rank_t> *kernel =
+            new gframe::GFrameEngine<MyIterateKernel<rank_t, rank_t>, MyAtomicAdd, rank_t, rank_t>
+                    (MyIterateKernel<rank_t, rank_t>(),
                      MyAtomicAdd(),
-                     gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>::Engine_TopologyDriven,
+                     gframe::GFrameEngine<MyIterateKernel<rank_t, rank_t>, MyAtomicAdd, rank_t, rank_t>::Engine_TopologyDriven,
                      false,
                      true);
     kernel->InitValue();

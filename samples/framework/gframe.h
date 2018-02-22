@@ -62,8 +62,6 @@ namespace gframe {
 
             m_stream = m_context->CreateStream(0);
 
-            m_mgpu_context = new mgpu::standard_context_t(true, m_stream.cuda_stream);
-
             m_api_imple.graphInfo.nnodes = m_context->host_graph.nnodes;
             m_api_imple.graphInfo.nedges = m_context->host_graph.nedges;
 
@@ -85,7 +83,6 @@ namespace gframe {
         ~GFrameEngine() {
             delete m_work_list1;
             delete m_work_list2;
-            delete m_mgpu_context;
             delete m_graph_allocator;
             delete m_context;
 
@@ -147,7 +144,6 @@ namespace gframe {
     private:
         typedef groute::Queue<index_t> Worklist;
 
-        mgpu::context_t *m_mgpu_context;
         utils::traversal::Context<gframe::Algo> *m_context;
         groute::Stream m_stream;
         groute::graphs::single::CSRGraphAllocator *m_graph_allocator;
@@ -295,19 +291,41 @@ namespace gframe {
         void TopologyDriven() {
             const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
             groute::dev::WorkSourceRange<index_t> work_source(dev_graph.owned_start_node(), dev_graph.owned_nnodes());
-
+            dim3 grid_dims, block_dims;
+            KernelSizing(grid_dims, block_dims, work_source.get_size());
+            const int smem_size = block_dims.x / 32;
             Stopwatch sw(true);
+
+            utils::SharedArray<TValue> grid_value_buffer(grid_dims.x);
+            utils::SharedArray<TDelta> grid_delta_buffer(grid_dims.x);
+            utils::SharedValue<TValue> rtn_value;
+            utils::SharedValue<TDelta> rtn_delta;
+
 
             for (int iteration = 0; iteration < FLAGS_max_iterations; iteration++) {
                 RelaxTopologyDriven(groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()));
 
-                TValue accumulated_value = gframe::kernel::ConvergeCheck(m_api_imple,
-                                                                         *m_mgpu_context,
-                                                                         work_source,
-                                                                         m_value_datum.DeviceObject());
-                VLOG(0) << "Iteration: " << ++iteration << " current sum: " << accumulated_value;
+                gframe::kernel::ConvergeCheck
+                        << < grid_dims,
+                        block_dims,
+                        smem_size * sizeof(TValue) + smem_size * sizeof(TDelta),
+                        m_stream.cuda_stream >> > (m_api_imple,
+                                work_source,
+                                grid_value_buffer.dev_ptr,
+                                grid_delta_buffer.dev_ptr,
+                                rtn_value.dev_ptr,
+                                rtn_delta.dev_ptr,
+                                m_value_datum.DeviceObject(),
+                                m_delta_datum.DeviceObject());
+                m_stream.Sync();
+                TValue accumulated_value = rtn_value.get_val_D2H();
+                TDelta accumulated_delta = rtn_delta.get_val_D2H();
+                VLOG(0) << boost::format("Iteration: %d Current accumulated value: %lf Current accumulated delta: %lf") %
+                           ++iteration %
+                           accumulated_value %
+                           accumulated_delta;
 
-                if (m_api_imple.IsConverge(accumulated_value)) {
+                if (m_api_imple.IsTerminated(accumulated_value, accumulated_delta)) {
                     VLOG(0) << "Convergence condition satisfied";
                     break;
                 }
@@ -324,34 +342,43 @@ namespace gframe {
 #ifdef __OUTLINING__
 
         void TopologyDrivenOutlining() {
-            int grid_size = FLAGS_grid_size;
-            int block_size = FLAGS_block_size;
+            const int grid_size = FLAGS_grid_size;
+            const int block_size = FLAGS_block_size;
+            const int smem_size = block_size/32;
             const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
             cub::GridBarrierLifetime grid_barrier;
-            utils::SharedArray<TValue> grid_buffer(grid_size);
+            utils::SharedArray<TValue> grid_value_buffer(grid_size);
+            utils::SharedArray<TDelta> grid_delta_buffer(grid_size);
             utils::SharedValue<int> running_flag;
 
             VLOG(1) << "Outlining Mode - Grid Size: " << grid_size << " Block Size:" << block_size;
 
             grid_barrier.Setup(grid_size);
-            GROUTE_CUDA_CHECK(cudaMemset(grid_buffer.dev_ptr, 0, grid_buffer.buffer_size * sizeof(TValue)));
+            GROUTE_CUDA_CHECK(cudaMemset(grid_value_buffer.dev_ptr, 0, grid_value_buffer.buffer_size * sizeof(TValue)));
+            GROUTE_CUDA_CHECK(cudaMemset(grid_delta_buffer.dev_ptr, 0, grid_delta_buffer.buffer_size * sizeof(TDelta)));
             running_flag.set_val_H2D(1);
 
             Stopwatch sw(true);
 
-            gframe::kernel::KernelControllerTopologyDriven << < grid_size, block_size, grid_size * sizeof(TValue), m_stream.cuda_stream >> > (m_api_imple,
-                    m_atomic_func,
-                    groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()),
-                    dev_graph,
-                    m_value_datum.DeviceObject(),
-                    m_delta_datum.DeviceObject(),
-                    m_weight_datum.DeviceObject(),
-                    m_is_weighted,
-                    m_cta,
-                    FLAGS_max_iterations,
-                    grid_buffer.dev_ptr,
-                    running_flag.dev_ptr,
-                    grid_barrier);
+            gframe::kernel::KernelControllerTopologyDriven
+                    << < grid_size,
+                    block_size,
+                    smem_size * sizeof(TValue) + smem_size * sizeof(TDelta),
+                    m_stream.cuda_stream >> >
+                    (m_api_imple,
+                            m_atomic_func,
+                            groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()),
+                            dev_graph,
+                            m_value_datum.DeviceObject(),
+                            m_delta_datum.DeviceObject(),
+                            m_weight_datum.DeviceObject(),
+                            m_is_weighted,
+                            m_cta,
+                            FLAGS_max_iterations,
+                            grid_value_buffer.dev_ptr,
+                            grid_delta_buffer.dev_ptr,
+                            running_flag.dev_ptr,
+                            grid_barrier);
 
             m_stream.Sync();
             sw.stop();

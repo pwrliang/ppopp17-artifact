@@ -79,8 +79,8 @@ namespace gframe {
                 index_t node = work_source.get_work(i);
                 TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
-                if (old_delta != graph_api.IdentityElement()) {
-                    value_datum[node] = graph_api.DeltaReducer(value_datum[node], old_delta);
+                if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
+                    value_datum[node] = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
 
 
                     index_t begin_edge = graph.begin_edge(node),
@@ -135,8 +135,8 @@ namespace gframe {
                     index_t node = work_source.get_work(i);
                     TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
-                    if (old_delta != graph_api.IdentityElement()) {
-                        value_datum[node] = graph_api.DeltaReducer(value_datum[node], old_delta);
+                    if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
+                        value_datum[node] = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
 
                         local_work.start = graph.begin_edge(node);
                         local_work.size = graph.end_edge(node) - local_work.start;
@@ -155,7 +155,7 @@ namespace gframe {
                                 index_t dest = graph.edge_dest(edge);
 
                                 TDelta new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
-                                TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                                atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
                             }
                     );
                 } else {
@@ -164,7 +164,7 @@ namespace gframe {
                             [&graph, &delta_datum, &atomicFunc, &graph_api](
                                     index_t edge, index_t out_degree, TDelta new_delta) {
                                 index_t dest = graph.edge_dest(edge);
-                                TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                                atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
                             }
                     );
                 }
@@ -199,8 +199,8 @@ namespace gframe {
                 index_t node = work_source.read(i);
                 TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
-                if (old_delta != graph_api.IdentityElement()) {
-                    TValue value = graph_api.DeltaReducer(value_datum[node], old_delta);
+                if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
+                    TValue value = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
                     value_datum[node] = value;
 
                     index_t begin_edge = graph.begin_edge(node),
@@ -256,8 +256,8 @@ namespace gframe {
                     index_t node = work_source.read(i);
                     TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
-                    if (old_delta != graph_api.IdentityElement()) {
-                        TValue value = graph_api.DeltaReducer(value_datum[node], old_delta);
+                    if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
+                        TValue value = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
                         value_datum[node] = value;
 
                         local_work.start = graph.begin_edge(node);
@@ -380,11 +380,13 @@ namespace gframe {
                                             bool IsWeighted,
                                             bool cta_np,
                                             uint32_t max_iteration,
-                                            TValue *grid_buffer,
+                                            TValue *grid_value_buffer,
+                                            TDelta *grid_delta_buffer,
                                             int *running,
                                             cub::GridBarrier grid_barrier) {
             uint32_t tid = TID_1D;
-            TValue rtn_res;
+            TValue rtn_value;
+            TDelta rtn_delta;
 
             int iteration = 1;
             int counter = 0;
@@ -410,17 +412,19 @@ namespace gframe {
                                         IsWeighted);
                 }
                 grid_barrier.Sync();
-
-
                 ConvergeCheckDevice(graph_api,
                                     work_source,
-                                    grid_buffer,
-                                    &rtn_res,
-                                    value_datum);
-                if (counter++ % 10000 == 0) {
+                                    grid_value_buffer,
+                                    grid_delta_buffer,
+                                    &rtn_value,
+                                    &rtn_delta,
+                                    value_datum,
+                                    delta_datum);
+                grid_barrier.Sync();
+                if (counter++ % CHECK_INTERVAL == 0) {
                     if (tid == 0) {
-                        printf("Iteration: %d Current sum:%lf\n", iteration, (double) rtn_res);
-                        if (graph_api.IsConverge(rtn_res))*running = 0;
+                        printf("Iteration: %d Current accumulated value: %lf Current accumulated delta: %lf\n", iteration, (double) rtn_value, (double) rtn_delta);
+                        if (graph_api.IsTerminated(rtn_value, rtn_delta))*running = 0;
                     }
                     counter = 0;
                 }
@@ -437,90 +441,111 @@ namespace gframe {
             }
         }
 
-        template<typename TValue>
-        __forceinline__ __device__ TValue warpReduce(TValue localSum) {
-            localSum += __shfl_xor_sync(0xfffffff, localSum, 16);
-            localSum += __shfl_xor_sync(0xfffffff, localSum, 8);
-            localSum += __shfl_xor_sync(0xfffffff, localSum, 4);
-            localSum += __shfl_xor_sync(0xfffffff, localSum, 2);
-            localSum += __shfl_xor_sync(0xfffffff, localSum, 1);
-
-            return localSum;
-        }
+#endif
 
         template<typename TGraphAPI, typename TValue>
+        __forceinline__ __device__ TValue WarpValueReducer(TGraphAPI graph_api, TValue partial_value) {
+            partial_value = graph_api.ValueReducer(partial_value, __shfl_xor_sync(0xfffffff, partial_value, 16));
+            partial_value = graph_api.ValueReducer(partial_value, __shfl_xor_sync(0xfffffff, partial_value, 8));
+            partial_value = graph_api.ValueReducer(partial_value, __shfl_xor_sync(0xfffffff, partial_value, 4));
+            partial_value = graph_api.ValueReducer(partial_value, __shfl_xor_sync(0xfffffff, partial_value, 2));
+            partial_value = graph_api.ValueReducer(partial_value, __shfl_xor_sync(0xfffffff, partial_value, 1));
+            return partial_value;
+        }
+
+        template<typename TGraphAPI, typename TDelta>
+        __forceinline__ __device__ TDelta WarpDeltaReducer(TGraphAPI graph_api, TDelta partial_delta) {
+            partial_delta = graph_api.DeltaReducer(partial_delta, __shfl_xor_sync(0xfffffff, partial_delta, 16));
+            partial_delta = graph_api.DeltaReducer(partial_delta, __shfl_xor_sync(0xfffffff, partial_delta, 8));
+            partial_delta = graph_api.DeltaReducer(partial_delta, __shfl_xor_sync(0xfffffff, partial_delta, 4));
+            partial_delta = graph_api.DeltaReducer(partial_delta, __shfl_xor_sync(0xfffffff, partial_delta, 2));
+            partial_delta = graph_api.DeltaReducer(partial_delta, __shfl_xor_sync(0xfffffff, partial_delta, 1));
+            return partial_delta;
+        }
+
+        template<typename TGraphAPI, typename TValue, typename TDelta>
         __device__
         void ConvergeCheckDevice(TGraphAPI graph_api,
                                  groute::dev::WorkSourceRange<index_t> work_source,
-                                 TValue *grid_buffer,
-                                 TValue *rtn_res,
-                                 groute::graphs::dev::GraphDatum<TValue> value_datum) {
+                                 TValue *grid_value_buffer,
+                                 TDelta *grid_delta_buffer,
+                                 TValue *rtn_value_res,
+                                 TDelta *rtn_delta_res,
+                                 groute::graphs::dev::GraphDatum<TValue> value_datum,
+                                 groute::graphs::dev::GraphDatum<TDelta> delta_datum) {
             unsigned tid = TID_1D;
             unsigned nthreads = TOTAL_THREADS_1D;
             int laneIdx = threadIdx.x % warpSize;
             int warpIdx = threadIdx.x / warpSize;
             const int SMEMDIM = blockDim.x / warpSize;
-            extern __shared__ TValue smem[];
+            extern __shared__ TValue smem_value[];
+            extern __shared__ TDelta smem_delta[];
 
             uint32_t work_size = work_source.get_size();
-            TValue local_sum = 0;
+            TValue local_sum_value = graph_api.IdentityElementForValueReducer;
+            TDelta local_sum_delta = graph_api.IdentityElementForDeltaReducer;
 
-            for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
-                index_t node = work_source.get_work(i);
-                local_sum += value_datum[node];
+            for (uint32_t work_id = tid; work_id < work_size; work_id += nthreads) {
+                index_t node = work_source.get_work(work_id);
+
+                local_sum_value = graph_api.ValueReducer(local_sum_value, value_datum[node]);
+                local_sum_delta = graph_api.DeltaReducer(local_sum_delta, delta_datum[node]);
+
             }
 
-            local_sum = warpReduce(local_sum);
+            if (laneIdx == 0) {
+                smem_value[warpIdx] = local_sum_value;
+                smem_delta[warpIdx] = local_sum_delta;
+            }
 
-            if (laneIdx == 0)
-                smem[warpIdx] = local_sum;
             __syncthreads();
 
-            local_sum = (threadIdx.x < SMEMDIM) ? smem[threadIdx.x] : 0;
+            local_sum_value = (threadIdx.x < SMEMDIM) ? smem_value[threadIdx.x] : graph_api.IdentityElementForValueReducer;
+            local_sum_delta = (threadIdx.x < SMEMDIM) ? smem_delta[threadIdx.x] : graph_api.IdentityElementForDeltaReducer;
 
-            if (warpIdx == 0)
-                local_sum = warpReduce(local_sum);
+            // let first warp to reduce the whole block, this is ok because warpSize = 32, and max threads per block no more than 1024
+            // so SMEMDIM <= 32, a warp can hold this job.
+            if (warpIdx == 0) {
+                local_sum_value = WarpValueReducer(graph_api, local_sum_value);
+                local_sum_delta = WarpDeltaReducer(graph_api, local_sum_delta);
+            }
 
             if (threadIdx.x == 0) {
-                grid_buffer[blockIdx.x] = local_sum;
+                grid_value_buffer[blockIdx.x] = local_sum_value;
+                grid_delta_buffer[blockIdx.x] = local_sum_delta;
             }
 
             if (tid == 0) {
-                TValue sum = 0;
+                TValue accumulated_value = graph_api.IdentityElementForValueReducer;
+                TDelta accumulated_delta = graph_api.IdentityElementForDeltaReducer;
 
                 for (int bid = 0; bid < gridDim.x; bid++) {
-                    sum += grid_buffer[bid];
+                    accumulated_value = graph_api.ValueReducer(accumulated_value, grid_value_buffer[bid]);
+                    accumulated_delta = graph_api.DeltaReducer(accumulated_delta, grid_delta_buffer[bid]);
                 }
-                *rtn_res = sum;
+                *rtn_value_res = accumulated_value;
+                *rtn_delta_res = accumulated_delta;
             }
         }
 
-#endif
-
-        template<typename TGraphAPI, typename TValue>
-        TValue ConvergeCheck(TGraphAPI graph_api,
-                             mgpu::context_t &context,
-                             groute::dev::WorkSourceRange<index_t> work_source,
-                             groute::graphs::dev::GraphDatum<TValue> value_datum) {
-            TValue *tmp = value_datum.data_ptr;
-
-            auto check_segment_sizes = [=]__device__(int idx) {
-                TValue value = tmp[idx];
-
-                if (value == graph_api.IdentityElement())
-                    return (TValue) 0;
-                return tmp[idx];
-            };
-
-            mgpu::mem_t<TValue> checkSum(1, context);
-            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
-
-            int *scanned_offsets = deviceOffsets.data();
-
-            mgpu::transform_scan<TValue>(check_segment_sizes, work_source.get_size(),
-                                         scanned_offsets, mgpu::plus_t<TValue>(), checkSum.data(), context);
-
-            return mgpu::from_mem(checkSum)[0];
+        template<typename TGraphAPI, typename TValue, typename TDelta>
+        __global__
+        void ConvergeCheck(TGraphAPI graph_api,
+                           groute::dev::WorkSourceRange<index_t> work_source,
+                           TValue *grid_value_buffer,
+                           TDelta *grid_delta_buffer,
+                           TValue *rtn_value_res,
+                           TDelta *rtn_delta_res,
+                           groute::graphs::dev::GraphDatum<TValue> value_datum,
+                           groute::graphs::dev::GraphDatum<TDelta> delta_datum) {
+            ConvergeCheckDevice(graph_api,
+                          work_source,
+                          grid_value_buffer,
+                          grid_delta_buffer,
+                          rtn_value_res,
+                          rtn_delta_res,
+                          value_datum,
+                          delta_datum);
         }
     }
 }
