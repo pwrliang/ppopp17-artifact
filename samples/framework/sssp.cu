@@ -6,61 +6,64 @@
 #include "gframe.h"
 #include "myatomics.h"
 #include "graph_api.h"
+#include <stdint.h>
 
 DECLARE_string(output);
-typedef float rank_t;
+typedef uint32_t dist_t;
+__device__ dist_t last_delta = UINT32_MAX;
 
 template<typename TValue, typename TDelta>
-struct PageRankImpl : gframe::api::GraphAPIBase {
-    const TValue IdentityElementForValueReducer = 0;
-    const TDelta IdentityElementForDeltaReducer = 0;
-    const TDelta IdentityElementForValueDeltaCombiner = 0;
-    const rank_t ALPHA = 0.85f;
+struct SSSPImpl : gframe::api::GraphAPIBase {
+    const TValue IdentityElementForValueReducer = UINT32_MAX;
+    const TDelta IdentityElementForDeltaReducer = UINT32_MAX;
+    const TDelta IdentityElementForValueDeltaCombiner = UINT32_MAX;
+    const index_t SRC_NODE = 0;
 
     __forceinline__ __device__ TValue InitValue(const index_t node, index_t out_degree) const {
-        return 0;
+        return UINT32_MAX;
     }
 
     __forceinline__ __device__ TDelta InitDelta(const index_t node, index_t out_degree) const {
-        return 1 - ALPHA;
+        if (node == SRC_NODE)
+            return 0;
+        return UINT_MAX;
     }
 
     __forceinline__ __device__ TValue ValueReducer(const TValue a, const TValue b) const {
-        return a + b;
+        return a < b ? a : b;
     }
 
     __forceinline__ __device__ TDelta DeltaReducer(const TDelta a, const TDelta b) const {
-        return a + b;
+        return a < b ? b : a;
     }
 
 
     __forceinline__ __device__ TValue ValueDeltaCombiner(const TValue a, const TDelta b) const {
-        return a + b;
+        return a < b;
     }
 
     __forceinline__ __device__ TDelta DeltaMapper(const TDelta delta, const index_t weight, const index_t out_degree) const {
-        return ALPHA * delta / out_degree;
+        return delta + weight;
     }
 
     __forceinline__ __device__ bool Filter(const TDelta prev_delta, const TDelta new_delta) const {
-        const rank_t EPSLION = 0.01f;
-        return prev_delta < EPSLION && prev_delta + new_delta > EPSLION;
+        return prev_delta != new_delta;
     }
 
+
     __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
-        return delta < 0.01;
-//        return value > 3.91682e+06;
+        return delta != UINT32_MAX;
     }
 };
 
-bool PageRank() {
-    gframe::GFrameEngine<PageRankImpl<rank_t, rank_t>, MyAtomicAdd, rank_t, rank_t> *kernel =
-            new gframe::GFrameEngine<PageRankImpl<rank_t, rank_t>, MyAtomicAdd, rank_t, rank_t>
-                    (PageRankImpl<rank_t, rank_t>(),
-                     MyAtomicAdd(),
-                     gframe::GFrameEngine<PageRankImpl<rank_t, rank_t>, MyAtomicAdd, rank_t, rank_t>::Engine_TopologyDriven,
-                     false,
-                     true);
+bool SSSP() {
+    gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t> *kernel =
+            new gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>
+                    (SSSPImpl<dist_t, dist_t>(),
+                     MyAtomicMin(),
+                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_TopologyDriven,
+                     true,
+                     false);
     kernel->InitValue();
     kernel->Run();
     if (FLAGS_output.length() > 0)

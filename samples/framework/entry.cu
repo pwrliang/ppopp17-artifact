@@ -16,6 +16,7 @@ DEFINE_uint64(wl_alloc_abs, 0, "Absolute size for local worklists (if not zero, 
 DEFINE_int32(top_values, 10, "extract top k values from the result");
 DEFINE_int32(max_iterations, 200,"Maximum iteration limited times");
 bool PageRank();
+bool SSSP();
 void CleanupGraphs();
 
 namespace gframe {
@@ -26,7 +27,8 @@ namespace gframe {
 
         static bool Single() {
             LOG(INFO) << "Run Single" << std::endl;
-            return PageRank();
+//            return PageRank();
+            return SSSP();
         }
 
         static bool AsyncMulti(int G) {

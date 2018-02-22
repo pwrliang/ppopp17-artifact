@@ -138,7 +138,7 @@ namespace gframe {
 
         bool SaveResult(const char *file, bool sort = false) {
             m_graph_allocator->GatherDatum(m_value_datum);
-            return ResultOutput<float>(file, m_value_datum.GetHostData(), sort);
+            return ResultOutput<TValue>(file, m_value_datum.GetHostData(), sort);
         }
 
     private:

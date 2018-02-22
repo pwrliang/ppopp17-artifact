@@ -56,13 +56,22 @@ bool ResultOutput(const char *file, const std::vector<TValue> &values, bool sort
         std::stable_sort(p_node_value, p_node_value + values.size());
 
         for (int i = 1; i <= output_num; i++) {
-            fprintf(f, "%d %d %*e\n", i, p_node_value[values.size() - i].node, FLT_DIG,
-                    p_node_value[values.size() - i].value);
+            if (typeid(TValue) == typeid(float) || typeid(TValue) == typeid(double))
+                fprintf(f, "%d %d %*e\n", i, p_node_value[values.size() - i].node, FLT_DIG, p_node_value[values.size() - i].value);
+            else if (typeid(TValue) == typeid(short) || typeid(TValue) == typeid(int) || typeid(TValue) == typeid(long))
+                fprintf(f, "%d %d %ld\n", i, p_node_value[values.size() - i].node, p_node_value[values.size() - i].value);
+            else if (typeid(TValue) == typeid(unsigned) || typeid(TValue) == typeid(unsigned int) || typeid(TValue) == typeid(unsigned long))
+                fprintf(f, "%d %d %uld\n", i, p_node_value[values.size() - i].node, p_node_value[values.size() - i].value);
         }
         free(p_node_value);
     } else {
         for (int i = 0; i < output_num; i++) {
-            fprintf(f, "%d %*e\n", i, FLT_DIG, values[i]);
+            if (typeid(TValue) == typeid(float) || typeid(TValue) == typeid(double))
+                fprintf(f, "%d %*e\n", i, FLT_DIG, values[i]);
+            else if (typeid(TValue) == typeid(short) || typeid(TValue) == typeid(int) || typeid(TValue) == typeid(long))
+                fprintf(f, "%d %ld\n", i, values[i]);
+            else if (typeid(TValue) == typeid(unsigned) || typeid(TValue) == typeid(unsigned int) || typeid(TValue) == typeid(unsigned long))
+                fprintf(f, "%d %uld\n", i, values[i]);
         }
     }
 
