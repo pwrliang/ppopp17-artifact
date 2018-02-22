@@ -24,6 +24,7 @@
 #include "myatomics.h"
 #include "work_kernel.h"
 #include "resultsaver.h"
+#include "graph_common.h"
 
 DECLARE_double(wl_alloc_factor);
 DECLARE_uint64(wl_alloc_abs);
@@ -48,7 +49,7 @@ namespace gframe {
         };
 
         GFrameEngine(TAPIImple api_imple, TAtomicFunc atomic_func, EngineType engine_type, bool weighted = false, bool cta = true) :
-                m_api_imple(api_imple), m_atomic_func(atomic_func),m_engine_type(engine_type), m_is_weighted(weighted), m_cta(cta) {
+                m_api_imple(api_imple), m_atomic_func(atomic_func), m_engine_type(engine_type), m_is_weighted(weighted), m_cta(cta) {
 
             m_context = new utils::traversal::Context<gframe::Algo>(1);
 
@@ -57,8 +58,7 @@ namespace gframe {
             m_context->SetDevice(0);
 
             m_graph_allocator->AllocateDatumObjects(m_value_datum, m_delta_datum);
-            if (m_is_weighted)
-                m_graph_allocator->AllocateDatum(m_weight_datum);
+            if (m_is_weighted) m_graph_allocator->AllocateDatum(m_weight_datum);
 
             m_stream = m_context->CreateStream(0);
 
@@ -100,32 +100,36 @@ namespace gframe {
             Stopwatch sw(true);
 
 
-            if (m_engine_type == EngineType::Engine_DataDriven) {
-                gframe::kernel::GraphInitDataDriven
-                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                       (m_api_imple, m_atomic_func,
-                                                               groute::dev::WorkSourceRange<index_t>
-                                                                       (dev_graph.owned_start_node(),
-                                                                        dev_graph.owned_nnodes()),
-                                                               m_work_list1->DeviceObject(),
-                                                               dev_graph,
-                                                               m_value_datum.DeviceObject(),
-                                                               m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(),
-                                                               m_is_weighted);
-            } else if (m_engine_type == EngineType::Engine_TopologyDriven) {
-                gframe::kernel::GraphInitTopologyDriven
-                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
-                                                       (m_api_imple,
-                                                               m_atomic_func,
-                                                               m_graph_allocator->DeviceObject(),
-                                                               m_value_datum.DeviceObject(),
-                                                               m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(),
-                                                               m_is_weighted);
-            } else {
-                assert(false);
-            }
+//            if (m_engine_type == EngineType::Engine_DataDriven) {
+//                gframe::kernel::GraphInitDataDriven
+//                        << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
+//                                                       (m_api_imple,
+//                                                               m_atomic_func,
+//                                                               groute::dev::WorkSourceRange<index_t>
+//                                                                       (dev_graph.owned_start_node(),
+//                                                                        dev_graph.owned_nnodes()),
+//                                                               m_work_list1->DeviceObject(),
+//                                                               dev_graph,
+//                                                               m_value_datum.DeviceObject(),
+//                                                               m_delta_datum.DeviceObject(),
+//                                                               m_weight_datum.DeviceObject(),
+//                                                               m_is_weighted);
+//            } else if (m_engine_type == EngineType::Engine_TopologyDriven) {
+            gframe::kernel::GraphInitTopologyDriven
+                    << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
+                                                   (m_api_imple,
+                                                           m_atomic_func,
+                                                           groute::dev::WorkSourceRange<index_t>
+                                                                   (dev_graph.owned_start_node(),
+                                                                    dev_graph.owned_nnodes()),
+                                                           dev_graph,
+                                                           m_value_datum.DeviceObject(),
+                                                           m_delta_datum.DeviceObject(),
+                                                           m_weight_datum.DeviceObject(),
+                                                           m_is_weighted);
+//            } else {
+//                assert(false);
+//            }
             m_stream.Sync();
             sw.stop();
             LOG(INFO) << "Graph Init " << sw.ms() << " ms";
@@ -170,17 +174,16 @@ namespace gframe {
         bool m_is_weighted;
         bool m_cta;
 
-        template<typename WorkSource, typename WorkTarget>
-        void RelaxDataDriven(const WorkSource &work_source, WorkTarget &work_target) {
+        void RelaxDataDriven(const groute::Queue<index_t> &work_source, groute::Queue<index_t> &work_target) {
             dim3 grid_dims, block_dims;
 
-            KernelSizing(grid_dims, block_dims, work_source.get_size());
+            KernelSizing(grid_dims, block_dims, work_source.GetCount(m_stream));
             if (m_cta) {
                 gframe::kernel::GraphKernelDataDrivenCTA
                         << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
                                                        (m_api_imple,
                                                                m_atomic_func,
-                                                               work_source,
+                                                               work_source.DeviceObject(),
                                                                work_target.DeviceObject(),
                                                                m_graph_allocator->DeviceObject(),
                                                                m_value_datum.DeviceObject(),
@@ -192,17 +195,17 @@ namespace gframe {
                         << < grid_dims, block_dims, 0, m_stream.cuda_stream >> >
                                                        (m_api_imple,
                                                                m_atomic_func,
-                                                               work_source,
+                                                               work_source.DeviceObject(),
                                                                work_target.DeviceObject(),
                                                                m_graph_allocator->DeviceObject(),
                                                                m_value_datum.DeviceObject(),
                                                                m_delta_datum.DeviceObject(),
-                                                               m_weight_datum.DeviceObject(), m_is_weighted);
+                                                               m_weight_datum.DeviceObject(),
+                                                               m_is_weighted);
             }
         }
 
-        template<typename WorkSource>
-        void RelaxTopologyDriven(const WorkSource &work_source) {
+        void RelaxTopologyDriven(const groute::dev::WorkSourceRange<index_t> &work_source) {
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, work_source.get_size());
 
@@ -233,44 +236,37 @@ namespace gframe {
 
 
         void DataDriven() {
-
             const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
-
-            Stopwatch sw(true);
-
             Worklist *in_wl = m_work_list1, *out_wl = m_work_list2;
+            std::vector<index_t> host_init_wl;
+
+            //above slow, adjust tomorrow
+            for (index_t node = dev_graph.owned_start_node(); node < dev_graph.owned_nnodes(); node++)
+                in_wl->AppendItemAsync(m_stream, node);
+            m_stream.Sync();
 
             int iteration = 0;
 
-
-            groute::Segment<index_t> work_seg = in_wl->GetSeg(m_stream);
-
             VLOG(1)
             << "Iteration: " << ++iteration << " In-Worklist: " << dev_graph.owned_nnodes() << " Out-Worklist: "
-            << work_seg.GetSegmentSize();
+            << in_wl->GetCount(m_stream);
 
-            while (work_seg.GetSegmentSize() > 0) {
-                RelaxDataDriven(
-                        groute::dev::WorkSourceArray<index_t>(work_seg.GetSegmentPtr(),
-                                                              work_seg.GetSegmentSize()),
-                        *out_wl
-                );
+            Stopwatch sw(true);
 
-                VLOG(0)
-                << "Iteration: " << ++iteration << " In-Worklist: " << work_seg.GetSegmentSize() << " Out-Worklist: "
-                << out_wl->GetCount(m_stream);
+            while (in_wl->GetCount(m_stream) > 0) {
+                RelaxDataDriven(*in_wl, *out_wl);
+
+                VLOG(0) << "Iteration: " << ++iteration << " In-Worklist: " << in_wl->GetCount(m_stream)
+                        << " Out-Worklist: " << out_wl->GetCount(m_stream);
 
                 if (iteration >= FLAGS_max_iterations) {
                     LOG(WARNING) << "Maximum iteration times reached";
                     break;
                 }
 
-                work_seg = out_wl->GetSeg(m_stream);
-
                 in_wl->ResetAsync(m_stream);
 
                 std::swap(in_wl, out_wl);
-
             }
 
             sw.stop();
@@ -279,6 +275,7 @@ namespace gframe {
         }
 
 #ifdef __OUTLINING__
+
         void DataDrivenOutlining() {
             int grid_size = FLAGS_grid_size;
             int block_size = FLAGS_block_size;
@@ -292,23 +289,24 @@ namespace gframe {
 
             Stopwatch sw(true);
 
-            KernelControllerDataDriven << < grid_size, block_size, 0, m_stream.cuda_stream >> >
-                                                                      (m_api_imple,
-                                                                              m_atomic_func,
-                                                                              in_wl->DeviceObject(),
-                                                                              out_wl->DeviceObject(),
-                                                                              dev_graph,
-                                                                              m_value_datum,
-                                                                              m_delta_datum,
-                                                                              m_weight_datum,
-                                                                              m_is_weighted,
-                                                                              m_cta,
-                                                                              FLAGS_max_iterations,
-                                                                              grid_barrier);
+            gframe::kernel::KernelControllerDataDriven << < grid_size, block_size, 0, m_stream.cuda_stream >> >
+                                                                                      (m_api_imple,
+                                                                                              m_atomic_func,
+                                                                                              in_wl->DeviceObject(),
+                                                                                              out_wl->DeviceObject(),
+                                                                                              dev_graph,
+                                                                                              m_value_datum.DeviceObject(),
+                                                                                              m_delta_datum.DeviceObject(),
+                                                                                              m_weight_datum.DeviceObject(),
+                                                                                              m_is_weighted,
+                                                                                              m_cta,
+                                                                                              FLAGS_max_iterations,
+                                                                                              grid_barrier);
             sw.stop();
 
             VLOG(0) << "DataDrivenOutlining Times: " << sw.ms() << " ms.";
         }
+
 #endif
 
         void TopologyDriven() {
@@ -341,6 +339,7 @@ namespace gframe {
         }
 
 #ifdef __OUTLINING__
+
         void TopologyDrivenOutlining() {
             int grid_size = FLAGS_grid_size;
             int block_size = FLAGS_block_size;
@@ -357,24 +356,24 @@ namespace gframe {
 
             Stopwatch sw(true);
 
-            KernelControllerTopologyDriven << < grid_size, block_size, grid_size * sizeof(TValue), m_stream.cuda_stream >> > (
+            gframe::kernel::KernelControllerTopologyDriven << < grid_size, block_size, grid_size * sizeof(TValue), m_stream.cuda_stream >> > (m_api_imple,
+                    m_atomic_func,
+                    groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()),
                     dev_graph,
-                            m_atomic_func,
-                            groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()),
-                            dev_graph,
-                            m_value_datum.DeviceObject(),
-                            m_delta_datum.DeviceObject(),
-                            m_weight_datum.DeviceObject(),
-                            m_is_weighted,
-                            m_cta,
-                            FLAGS_max_iterations,
-                            grid_buffer,
-                            running_flag.dev_ptr,
-                            grid_barrier);
+                    m_value_datum.DeviceObject(),
+                    m_delta_datum.DeviceObject(),
+                    m_weight_datum.DeviceObject(),
+                    m_is_weighted,
+                    m_cta,
+                    FLAGS_max_iterations,
+                    grid_buffer.dev_ptr,
+                    running_flag.dev_ptr,
+                    grid_barrier);
 
             sw.stop();
             VLOG(0) << "TopologyDrivenOutlining Times: " << sw.ms() << " ms.";
         }
+
 #endif
 
     };

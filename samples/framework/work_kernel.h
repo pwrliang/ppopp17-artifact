@@ -7,79 +7,60 @@
 
 #include <cub/grid/grid_barrier.cuh>
 #include <groute/common.h>
+#include <groute/dwl/work_source.cuh>
+#include <groute/device/queue.cuh>
 #include <groute/device/cta_scheduler.cuh>
 #include <moderngpu/context.hxx>
 #include <moderngpu/kernel_scan.hxx>
+#include "graph_common.h"
 
 namespace gframe {
     namespace kernel {
-        template<typename TGraphAPI,
-                typename WorkSource,
-                typename WorkTarget,
-                typename TAtomicFunc,
-                typename TValue,
-                typename TDelta,
-                typename TWeight>
-        __global__ void GraphInitDataDriven(TGraphAPI graph_api,
-                                            TAtomicFunc atomicFunc,
-                                            WorkSource work_source,
-                                            WorkTarget work_target,
-                                            groute::graphs::dev::CSRGraph graph,
-                                            groute::graphs::dev::GraphDatum<TValue> value_datum,
-                                            groute::graphs::dev::GraphDatum<TDelta> delta_datum,
-                                            groute::graphs::dev::GraphDatum<TWeight> weight_datum,
-                                            bool IsWeighted) {
-            unsigned tid = TID_1D;
-            unsigned nthreads = TOTAL_THREADS_1D;
-
-            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
-                index_t node = work_source.get_work(ii);
-                index_t
-                        begin_edge = graph.begin_edge(node),
-                        end_edge = graph.end_edge(node),
-                        out_degree = end_edge - begin_edge;
-
-                value_datum[node] = graph_api.InitValue(node, out_degree);
-                TDelta init_delta = graph_api.InitDelta(node, out_degree);
-                delta_datum[node] = init_delta;
-
-                if (out_degree > 0) {
-                    TDelta new_delta;
-
-                    if (!IsWeighted)
-                        new_delta = graph_api.DeltaMapper(init_delta, 0, out_degree);
-
-                    for (index_t edge = begin_edge; edge < end_edge; edge++) {
-                        index_t dest = graph.edge_dest(edge);
-                        if (IsWeighted)new_delta = graph_api.DeltaMapper(init_delta, weight_datum.get_item(edge), out_degree);
-                        TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
-
-                        if (graph_api.Filter(prev_delta, new_delta))
-                            work_target.append_warp(dest);
-                    }
-                }
-            }
-        }
+//        template<typename TGraphAPI,
+//                typename TAtomicFunc,
+//                typename TValue,
+//                typename TDelta>
+//        __global__ void GraphInitDataDriven(TGraphAPI graph_api,
+//                                            TAtomicFunc atomicFunc,
+//                                            groute::dev::WorkSourceRange<index_t> work_source,
+//                                            groute::graphs::dev::CSRGraph graph,
+//                                            groute::graphs::dev::GraphDatum<TValue> value_datum,
+//                                            groute::graphs::dev::GraphDatum<TDelta> delta_datum,
+//                                            groute::graphs::dev::GraphDatum<TWeight> weight_datum,
+//                                            bool IsWeighted) {
+//            unsigned tid = TID_1D;
+//            unsigned nthreads = TOTAL_THREADS_1D;
+//
+//            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
+//                index_t node = work_source.get_work(ii);
+//                index_t begin_edge = graph.begin_edge(node),
+//                        end_edge = graph.end_edge(node),
+//                        out_degree = end_edge - begin_edge;
+//
+//                value_datum[node] = graph_api.InitValue(node, out_degree);
+//                TDelta init_delta = graph_api.InitDelta(node, out_degree);
+//                delta_datum[node] = init_delta;
+//
+//            }
+//        }
 
         template<typename TGraphAPI, typename TAtomicFunc, typename TValue, typename TDelta, typename TWeight>
         __global__
         void GraphInitTopologyDriven(TGraphAPI graph_api,
                                      TAtomicFunc atomicFunc,
+                                     groute::dev::WorkSourceRange<index_t> work_source,
                                      groute::graphs::dev::CSRGraph graph,
                                      groute::graphs::dev::GraphDatum<TValue> value_datum,
                                      groute::graphs::dev::GraphDatum<TDelta> delta_datum,
                                      groute::graphs::dev::GraphDatum<TWeight> weight_datum,
                                      bool IsWeighted) {
-            const unsigned TID = TID_1D;
-            const unsigned NTHREADS = TOTAL_THREADS_1D;
+            unsigned tid = TID_1D;
+            unsigned nthreads = TOTAL_THREADS_1D;
 
-            index_t start_node = graph.owned_start_node();
-            index_t end_node = start_node + graph.owned_nnodes();
-            for (index_t node = start_node + TID;
-                 node < end_node; node += NTHREADS) {
 
-                index_t
-                        begin_edge = graph.begin_edge(node),
+            for (index_t ii = 0 + tid; ii < work_source.get_size(); ii += nthreads) {
+                index_t node = work_source.get_work(ii);
+                index_t begin_edge = graph.begin_edge(node),
                         end_edge = graph.end_edge(node),
                         out_degree = end_edge - begin_edge;
 
@@ -87,24 +68,23 @@ namespace gframe {
                 TDelta init_delta = graph_api.InitDelta(node, out_degree);
                 delta_datum[node] = init_delta;
 
-                if (out_degree > 0) {
-                    TDelta new_delta;
-
-                    if (!IsWeighted)
-                        new_delta = graph_api.DeltaMapper(init_delta, 0, out_degree);
-
-                    for (index_t edge = begin_edge; edge < end_edge; edge++) {
-                        index_t dest = graph.edge_dest(edge);
-                        if (IsWeighted)new_delta = graph_api.DeltaMapper(init_delta, weight_datum.get_item(edge), out_degree);
-                        TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
-                    }
-                }
+//                if (out_degree > 0) {
+//                    TDelta new_delta;
+//
+//                    if (!IsWeighted)
+//                        new_delta = graph_api.DeltaMapper(init_delta, 0, out_degree);
+//
+//                    for (index_t edge = begin_edge; edge < end_edge; edge++) {
+//                        index_t dest = graph.edge_dest(edge);
+//                        if (IsWeighted)new_delta = graph_api.DeltaMapper(init_delta, weight_datum.get_item(edge), out_degree);
+//                        TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+//                    }
+//                }
             }
         }
 
         template<typename TGraphAPI,
                 typename TAtomicFunc,
-                typename WorkSource,
                 typename TValue,
                 typename TDelta,
                 typename TWeight>
@@ -115,7 +95,7 @@ namespace gframe {
 #endif
         void GraphKernelTopology(TGraphAPI graph_api,
                                  TAtomicFunc atomicFunc,
-                                 WorkSource work_source,
+                                 groute::dev::WorkSourceRange<index_t> work_source,
                                  groute::graphs::dev::CSRGraph graph,
                                  groute::graphs::dev::GraphDatum<TValue> value_datum,
                                  groute::graphs::dev::GraphDatum<TDelta> delta_datum,
@@ -156,7 +136,6 @@ namespace gframe {
         }
 
         template<typename TGraphAPI,
-                typename WorkSource,
                 typename TAtomicFunc,
                 typename TValue,
                 typename TDelta,
@@ -168,7 +147,7 @@ namespace gframe {
 #endif
         void GraphKernelTopologyCTA(TGraphAPI graph_api,
                                     TAtomicFunc atomicFunc,
-                                    WorkSource work_source,
+                                    groute::dev::WorkSourceRange<index_t> work_source,
                                     groute::graphs::dev::CSRGraph graph,
                                     groute::graphs::dev::GraphDatum<TValue> value_datum,
                                     groute::graphs::dev::GraphDatum<TDelta> delta_datum,
@@ -224,8 +203,6 @@ namespace gframe {
         }
 
         template<typename TGraphAPI,
-                typename WorkSource,
-                typename WorkTarget,
                 typename TAtomicFunc,
                 typename TValue,
                 typename TDelta,
@@ -237,8 +214,8 @@ namespace gframe {
 #endif
         void GraphKernelDataDriven(TGraphAPI graph_api,
                                    TAtomicFunc atomicFunc,
-                                   WorkSource work_source,
-                                   WorkTarget work_target,
+                                   groute::dev::Queue<index_t> work_source,
+                                   groute::dev::Queue<index_t> work_target,
                                    groute::graphs::dev::CSRGraph graph,
                                    groute::graphs::dev::GraphDatum<TValue> value_datum,
                                    groute::graphs::dev::GraphDatum<TDelta> delta_datum,
@@ -247,10 +224,10 @@ namespace gframe {
             unsigned tid = TID_1D;
             unsigned nthreads = TOTAL_THREADS_1D;
 
-            uint32_t work_size = work_source.get_size();
+            uint32_t work_size = work_source.count();
 
             for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
-                index_t node = work_source.get_work(i);
+                index_t node = work_source.read(i);
                 TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
                 if (old_delta != graph_api.IdentityElement()) {
@@ -279,8 +256,6 @@ namespace gframe {
 
 
         template<typename TGraphAPI,
-                typename WorkSource,
-                typename WorkTarget,
                 typename TAtomicFunc,
                 typename TValue,
                 typename TDelta,
@@ -292,24 +267,24 @@ namespace gframe {
 #endif
         void GraphKernelDataDrivenCTA(TGraphAPI graph_api,
                                       TAtomicFunc atomicFunc,
-                                      WorkSource work_source,
-                                      WorkTarget work_target,
+                                      groute::dev::Queue<index_t> work_source,
+                                      groute::dev::Queue<index_t> work_target,
                                       groute::graphs::dev::CSRGraph graph,
                                       groute::graphs::dev::GraphDatum<TValue> value_datum,
                                       groute::graphs::dev::GraphDatum<TDelta> delta_datum,
                                       groute::graphs::dev::GraphDatum<TWeight> weight_datum,
                                       bool IsWeighted) {
-            unsigned tid = TID_1D;
-            unsigned nthreads = TOTAL_THREADS_1D;
+            const unsigned tid = TID_1D;
+            const unsigned nthreads = TOTAL_THREADS_1D;
 
-            uint32_t work_size = work_source.get_size();
-            uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
+            const uint32_t work_size = work_source.count();
+            const uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x;
 
 
             for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
                 groute::dev::np_local<TDelta> local_work = {0, 0};
                 if (i < work_size) {
-                    index_t node = work_source.get_work(i);
+                    index_t node = work_source.read(i);
                     TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
 
                     if (old_delta != graph_api.IdentityElement()) {
@@ -335,9 +310,7 @@ namespace gframe {
                                 TDelta new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
                                 TDelta prev_delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
 
-                                if (graph_api.Filter(prev_delta, new_delta)) {
-                                    work_target.append_warp(dest);
-                                }
+                                if (graph_api.Filter(prev_delta, new_delta)) work_target.append_warp(dest);
                             }
                     );
                 } else {
@@ -355,10 +328,9 @@ namespace gframe {
             }
         }
 
-//#ifdef __OUTLINING__
+#ifdef __OUTLINING__
+
         template<typename TGraphAPI,
-                typename WorkSource,
-                typename WorkTarget,
                 typename TAtomicFunc,
                 typename TValue,
                 typename TDelta,
@@ -366,8 +338,8 @@ namespace gframe {
         __global__
         void KernelControllerDataDriven(TGraphAPI graph_api,
                                         TAtomicFunc atomicFunc,
-                                        WorkSource work_source,
-                                        WorkTarget work_target,
+                                        groute::dev::Queue<index_t> work_source,
+                                        groute::dev::Queue<index_t> work_target,
                                         groute::graphs::dev::CSRGraph graph,
                                         groute::graphs::dev::GraphDatum<TValue> value_datum,
                                         groute::graphs::dev::GraphDatum<TDelta> delta_datum,
@@ -377,29 +349,31 @@ namespace gframe {
                                         uint32_t max_iteration,
                                         cub::GridBarrier grid_barrier) {
             uint32_t tid = TID_1D;
-            WorkSource *in_wl = &work_source;
-            WorkTarget *out_wl = &work_target;
+            groute::dev::Queue<index_t> *in_wl = &work_source;
+            groute::dev::Queue<index_t> *out_wl = &work_target;
             int iteration;
 
             for (iteration = 0; iteration < max_iteration; iteration++) {
                 if (cta_np) {
                     GraphKernelDataDrivenCTA(graph_api,
+                                             atomicFunc,
                                              *in_wl,
                                              *out_wl,
-                                             atomicFunc,
                                              graph,
                                              value_datum,
                                              delta_datum,
-                                             weight_datum);
+                                             weight_datum,
+                                             IsWeighted);
                 } else {
                     GraphKernelDataDriven(graph_api,
+                                          atomicFunc,
                                           *in_wl,
                                           *out_wl,
-                                          atomicFunc,
                                           graph,
                                           value_datum,
                                           delta_datum,
-                                          weight_datum);
+                                          weight_datum,
+                                          IsWeighted);
                 }
                 grid_barrier.Sync();
 
@@ -408,10 +382,10 @@ namespace gframe {
                     in_wl->reset();
                 }
 
-                if (out_wl->get_size() == 0)
+                if (out_wl->count() == 0)
                     break;
 
-                WorkSource *tmp_wl = in_wl;
+                groute::dev::Queue<index_t> *tmp_wl = in_wl;
                 in_wl = out_wl;
                 out_wl = tmp_wl;
             }
@@ -421,10 +395,7 @@ namespace gframe {
             }
         }
 
-//#endif
-
         template<typename TGraphAPI,
-                typename WorkSource,
                 typename TAtomicFunc,
                 typename TValue,
                 typename TDelta,
@@ -432,7 +403,7 @@ namespace gframe {
         __global__
         void KernelControllerTopologyDriven(TGraphAPI graph_api,
                                             TAtomicFunc atomicFunc,
-                                            WorkSource work_source,
+                                            groute::dev::WorkSourceRange<index_t> work_source,
                                             groute::graphs::dev::CSRGraph graph,
                                             groute::graphs::dev::GraphDatum<TValue> value_datum,
                                             groute::graphs::dev::GraphDatum<TDelta> delta_datum,
@@ -444,7 +415,6 @@ namespace gframe {
                                             int *running,
                                             cub::GridBarrier grid_barrier) {
             uint32_t tid = TID_1D;
-            WorkSource *in_wl = &work_source;
             TValue rtn_res;
 
             int iteration = 0;
@@ -454,19 +424,21 @@ namespace gframe {
                 if (cta_np) {
                     GraphKernelTopologyCTA(graph_api,
                                            atomicFunc,
-                                           *in_wl,
+                                           work_source,
                                            graph,
                                            value_datum,
                                            delta_datum,
-                                           weight_datum);
+                                           weight_datum,
+                                           IsWeighted);
                 } else {
                     GraphKernelTopology(graph_api,
                                         atomicFunc,
-                                        *in_wl,
+                                        work_source,
                                         graph,
                                         value_datum,
                                         delta_datum,
-                                        weight_datum);
+                                        weight_datum,
+                                        IsWeighted);
                 }
                 grid_barrier.Sync();
                 iteration++;
@@ -476,7 +448,7 @@ namespace gframe {
 
                 ConvergeCheckDevice(graph_api,
                                     work_source,
-                                    grid_barrier,
+                                    grid_buffer,
                                     &rtn_res,
                                     value_datum);
                 if (counter++ % 10000 == 0) {
@@ -493,32 +465,6 @@ namespace gframe {
             }
         }
 
-        template<typename TGraphAPI, typename WorkSource, typename TValue>
-        TValue ConvergeCheck(TGraphAPI graph_api,
-                             mgpu::context_t &context,
-                             WorkSource work_source,
-                             groute::graphs::dev::GraphDatum<TValue> value_datum) {
-            TValue *tmp = value_datum.data_ptr;
-
-            auto check_segment_sizes = [=]__device__(int idx) {
-                TValue value = tmp[idx];
-
-                if (value == graph_api.IdentityElement())
-                    return (TValue) 0;
-                return tmp[idx];
-            };
-
-            mgpu::mem_t<TValue> checkSum(1, context);
-            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
-
-            int *scanned_offsets = deviceOffsets.data();
-
-            mgpu::transform_scan<TValue>(check_segment_sizes, work_source.get_size(),
-                                         scanned_offsets, mgpu::plus_t<TValue>(), checkSum.data(), context);
-
-            return mgpu::from_mem(checkSum)[0];
-        }
-
         template<typename TValue>
         __forceinline__ __device__ TValue warpReduce(TValue localSum) {
             localSum += __shfl_xor_sync(0xfffffff, localSum, 16);
@@ -530,10 +476,10 @@ namespace gframe {
             return localSum;
         }
 
-        template<typename TGraphAPI, typename WorkSource, typename TValue>
+        template<typename TGraphAPI, typename TValue>
         __device__
         void ConvergeCheckDevice(TGraphAPI graph_api,
-                                 WorkSource work_source,
+                                 groute::dev::WorkSourceRange<index_t> work_source,
                                  TValue *grid_buffer,
                                  TValue *rtn_res,
                                  groute::graphs::dev::GraphDatum<TValue> value_datum) {
@@ -575,7 +521,35 @@ namespace gframe {
                 }
                 *rtn_res = sum;
             }
-        };
+        }
+
+#endif
+
+        template<typename TGraphAPI, typename TValue>
+        TValue ConvergeCheck(TGraphAPI graph_api,
+                             mgpu::context_t &context,
+                             groute::dev::WorkSourceRange<index_t> work_source,
+                             groute::graphs::dev::GraphDatum<TValue> value_datum) {
+            TValue *tmp = value_datum.data_ptr;
+
+            auto check_segment_sizes = [=]__device__(int idx) {
+                TValue value = tmp[idx];
+
+                if (value == graph_api.IdentityElement())
+                    return (TValue) 0;
+                return tmp[idx];
+            };
+
+            mgpu::mem_t<TValue> checkSum(1, context);
+            mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(work_source.get_size(), context);
+
+            int *scanned_offsets = deviceOffsets.data();
+
+            mgpu::transform_scan<TValue>(check_segment_sizes, work_source.get_size(),
+                                         scanned_offsets, mgpu::plus_t<TValue>(), checkSum.data(), context);
+
+            return mgpu::from_mem(checkSum)[0];
+        }
     }
 }
 

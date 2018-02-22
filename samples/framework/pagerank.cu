@@ -7,10 +7,11 @@
 #include "myatomics.h"
 #include "graph_api.h"
 
+DECLARE_string(output);
 typedef float rank_t;
 
 struct MyIterateKernel : gframe::api::GraphAPIBase {
-
+    const rank_t ALPHA = 0.85f;
 
     __forceinline__ __device__ rank_t InitValue(const index_t node, index_t out_degree) const {
 //        printf("call %d\n", node);
@@ -19,8 +20,8 @@ struct MyIterateKernel : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __device__ rank_t InitDelta(const index_t node, index_t out_degree) const {
-//        printf("%d %d\n", GraphInfo.nnodes, GraphInfo.nedges);
-        return 0.2f / graphInfo.nnodes;
+//        return 1 - ALPHA;// / graphInfo.nnodes;
+        return 1 - ALPHA;
     }
 
     __forceinline__ __device__ float DeltaReducer(const rank_t a, const rank_t b) const {
@@ -30,7 +31,8 @@ struct MyIterateKernel : gframe::api::GraphAPIBase {
     __forceinline__ __device__ float
     DeltaMapper(const float delta, const index_t weight,
                 const index_t out_degree) const {
-        return 0.8f * delta / out_degree;
+        assert(weight == 0);
+        return ALPHA * delta / out_degree;
     }
 
     __forceinline__ __device__ float IdentityElement() const {
@@ -42,18 +44,23 @@ struct MyIterateKernel : gframe::api::GraphAPIBase {
         return prev_delta < EPSLION && prev_delta + new_delta > EPSLION;
     }
 
-    __forceinline__ __host__ bool IsConverge(const rank_t value) {
+    __forceinline__ __host__ __device__ bool IsConverge(const rank_t value) {
         return value > 0.841087f;
     }
 };
 
 bool PageRank() {
     gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t> *kernel =
-            new gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>(MyIterateKernel(), MyAtomicAdd(),
-                                                                                             gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>::Engine_DataDriven, false, true);
+            new gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>
+                    (MyIterateKernel(),
+                     MyAtomicAdd(),
+                     gframe::GFrameEngine<MyIterateKernel, MyAtomicAdd, rank_t, rank_t>::Engine_DataDriven,
+                     false,
+                     false);
     kernel->InitValue();
     kernel->Run();
-//    kernel->DataDriven();
+    if (FLAGS_output.length() > 0)
+        kernel->SaveResult(FLAGS_output.data(), true);
     delete kernel;
     return true;
 }
