@@ -30,29 +30,45 @@ struct SSSPImpl : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __device__ TValue ValueReducer(const TValue a, const TValue b) const {
-        return a < b ? a : b;
+//        return a < b ? a : b;
+        if (a == IdentityElementForValueReducer && b != IdentityElementForValueReducer)
+            return b;
+        else if (a != IdentityElementForValueReducer && b == IdentityElementForValueReducer)
+            return a;
+        else if (a != IdentityElementForValueReducer && b != IdentityElementForValueReducer)
+            return a + b;
+        return 0;
     }
 
     __forceinline__ __device__ TDelta DeltaReducer(const TDelta a, const TDelta b) const {
-        return a < b ? b : a;
+        if (a == IdentityElementForDeltaReducer && b != IdentityElementForDeltaReducer)
+            return b;
+        else if (a != IdentityElementForDeltaReducer && b == IdentityElementForDeltaReducer)
+            return a;
+        else if (a != IdentityElementForDeltaReducer && b != IdentityElementForDeltaReducer)
+            return a + b;
+        return 0;
     }
 
 
     __forceinline__ __device__ TValue ValueDeltaCombiner(const TValue a, const TDelta b) const {
-        return a < b;
+        return a < b ? a : b;
     }
 
     __forceinline__ __device__ TDelta DeltaMapper(const TDelta delta, const index_t weight, const index_t out_degree) const {
+        //printf("%uld -> %uld\n", delta, delta + weight);
         return delta + weight;
     }
 
     __forceinline__ __device__ bool Filter(const TDelta prev_delta, const TDelta new_delta) const {
-        return prev_delta != new_delta;
+        return new_delta <= prev_delta;
     }
 
 
     __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
-        return delta != UINT32_MAX;
+//        return delta != UINT32_MAX;
+        printf("value sum:%uld delta sum:%uld\n", value, delta);
+        return delta == 0;
     }
 };
 
@@ -61,7 +77,7 @@ bool SSSP() {
             new gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>
                     (SSSPImpl<dist_t, dist_t>(),
                      MyAtomicMin(),
-                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_TopologyDriven,
+                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_DataDriven,
                      true,
                      false);
     kernel->InitValue();

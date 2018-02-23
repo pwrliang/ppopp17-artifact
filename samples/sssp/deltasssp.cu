@@ -148,7 +148,7 @@ namespace deltasssp {
 
             groute::dev::CTAWorkScheduler<distance_t>::template schedule(
                     np_local,
-                    [&work_target, &graph, &edge_weights, &node_distances_delta](index_t edge, distance_t delta) {
+                    [&work_target, &graph, &edge_weights, &node_distances_delta](index_t edge, index_t size, distance_t delta) {
                         index_t dest = graph.edge_dest(edge);
                         distance_t weight = edge_weights.get_item(edge);
 
@@ -211,7 +211,7 @@ namespace deltasssp {
 
                 groute::dev::CTAWorkScheduler<distance_t>::template schedule(
                         np_local,
-                        [&graph, &edge_weights, &node_distances_delta](index_t edge, distance_t delta) {
+                        [&graph, &edge_weights, &node_distances_delta](index_t edge, index_t size, distance_t delta) {
                             index_t dest = graph.edge_dest(edge);
                             distance_t weight = edge_weights.get_item(edge);
 

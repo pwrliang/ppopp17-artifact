@@ -447,7 +447,7 @@ graph_t *ReadGraphGR(char *filename) {
         if (read < graph->nedges)
             errexit("Error: Partial read of edge destinations\n");
 
-        fprintf(stderr, "read %llu edges\n", graph->nedges);
+        VLOG(0) << "read " << graph->nedges << " edges";
     } else {
         assert(false && "Not implemented"); /* need to convert sizes when reading */
     }
@@ -463,7 +463,7 @@ graph_t *ReadGraphGR(char *filename) {
             if (read < graph->nedges)
                 errexit("Error: Partial read of edge data\n");
 
-            fprintf(stderr, "read data for %llu edges\n", graph->nedges);
+            VLOG(0) << "read data for " << graph->nedges << " edges";
         } else {
             assert(false && "Not implemented"); /* need to convert sizes when reading */
         }

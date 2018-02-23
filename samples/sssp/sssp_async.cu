@@ -50,51 +50,45 @@ DEFINE_int32(source_node, 0, "The source node for the SSSP traversal (clamped to
 
 namespace sssp {
 
-    struct DistanceData
-    {
+    struct DistanceData {
         index_t node;
         distance_t distance;
 
-        __device__ __host__ __forceinline__ DistanceData(index_t node, distance_t distance) : node(node), distance(distance) { }
-        __device__ __host__ __forceinline__ DistanceData() : node(INF), distance(INF) { }
+        __device__ __host__ __forceinline__ DistanceData(index_t node, distance_t distance) : node(node), distance(distance) {}
+
+        __device__ __host__ __forceinline__ DistanceData() : node(INF), distance(INF) {}
     };
 
     typedef index_t local_work_t;
     typedef DistanceData remote_work_t;
 
-    __global__ void SSSPMemsetKernel(distance_t* distances, int nnodes)
-    {
+    __global__ void SSSPMemsetKernel(distance_t *distances, int nnodes) {
         int tid = TID_1D;
-        if (tid < nnodes)
-        {
+        if (tid < nnodes) {
             distances[tid] = INF;
         }
     }
 
-    template<bool CTAScheduling = true> 
+    template<bool CTAScheduling = true>
     /// SSSP work with Collective Thread Array scheduling for exploiting nested parallelism 
-    struct SSSPWork
-    {
+    struct SSSPWork {
         template<
-            typename WorkSource, typename WorkTarget, 
-            typename TGraph, typename TWeightDatum, typename TDistanceDatum>
+                typename WorkSource, typename WorkTarget,
+                typename TGraph, typename TWeightDatum, typename TDistanceDatum>
         __device__ static void work(
-            const WorkSource& work_source, WorkTarget& work_target,
-            const TGraph& graph, TWeightDatum& edge_weights, TDistanceDatum& node_distances
-            )
-        {
+                const WorkSource &work_source, WorkTarget &work_target,
+                const TGraph &graph, TWeightDatum &edge_weights, TDistanceDatum &node_distances
+        ) {
             uint32_t tid = TID_1D;
             uint32_t nthreads = TOTAL_THREADS_1D;
 
             uint32_t work_size = work_source.get_size();
             uint32_t work_size_rup = round_up(work_size, blockDim.x) * blockDim.x; // we want all threads in active blocks to enter the loop
 
-            for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads)
-            {
-                groute::dev::np_local<distance_t> np_local = { 0, 0, 0 };
+            for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+                groute::dev::np_local<distance_t> np_local = {0, 0, 0};
 
-                if (i < work_size)
-                {
+                if (i < work_size) {
                     index_t node = work_source.get_work(i);
                     np_local.start = graph.begin_edge(node);
                     np_local.size = graph.end_edge(node) - np_local.start;
@@ -102,17 +96,15 @@ namespace sssp {
                 }
 
                 groute::dev::CTAWorkScheduler<distance_t>::template schedule(
-                    np_local,
-                    [&work_target, &graph, &edge_weights, &node_distances](index_t edge, distance_t distance)
-                {
-                    index_t dest = graph.edge_dest(edge);
-                    distance_t weight = edge_weights.get_item(edge);
+                        np_local,
+                        [&work_target, &graph, &edge_weights, &node_distances](index_t edge, index_t size, distance_t distance) {
+                            index_t dest = graph.edge_dest(edge);
+                            distance_t weight = edge_weights.get_item(edge);
 
-                    if (distance + weight < atomicMin(node_distances.get_item_ptr(dest), distance + weight))
-                    {
-                        work_target.append_work(DistanceData(dest, distance + weight));
-                    }
-                }
+                            if (distance + weight < atomicMin(node_distances.get_item_ptr(dest), distance + weight)) {
+                                work_target.append_work(DistanceData(dest, distance + weight));
+                            }
+                        }
                 );
             }
         }
@@ -120,33 +112,28 @@ namespace sssp {
 
     template<>
     /// SSSP work without CTA support
-    struct SSSPWork< false >
-    {
+    struct SSSPWork<false> {
         template<
-            typename WorkSource, typename WorkTarget, 
-            typename TGraph, typename TWeightDatum, typename TDistanceDatum>
+                typename WorkSource, typename WorkTarget,
+                typename TGraph, typename TWeightDatum, typename TDistanceDatum>
         __device__ static void work(
-            const WorkSource& work_source, WorkTarget& work_target,
-            const TGraph& graph, TWeightDatum& edge_weights, TDistanceDatum& node_distances
-            )
-        {
+                const WorkSource &work_source, WorkTarget &work_target,
+                const TGraph &graph, TWeightDatum &edge_weights, TDistanceDatum &node_distances
+        ) {
             uint32_t tid = TID_1D;
             uint32_t nthreads = TOTAL_THREADS_1D;
 
             uint32_t work_size = work_source.get_size();
 
-            for (uint32_t i = 0 + tid; i < work_size; i += nthreads)
-            {
+            for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
                 index_t node = work_source.get_work(i);
                 distance_t distance = node_distances.get_item(node);
 
-                for (index_t edge = graph.begin_edge(node), end_edge = graph.end_edge(node); edge < end_edge; ++edge)
-                {
+                for (index_t edge = graph.begin_edge(node), end_edge = graph.end_edge(node); edge < end_edge; ++edge) {
                     index_t dest = graph.edge_dest(edge);
                     distance_t weight = edge_weights.get_item(edge);
 
-                    if (distance + weight < atomicMin(node_distances.get_item_ptr(dest), distance + weight))
-                    {
+                    if (distance + weight < atomicMin(node_distances.get_item_ptr(dest), distance + weight)) {
                         work_target.append_work(DistanceData(dest, distance + weight));
                     }
                 }
@@ -154,8 +141,7 @@ namespace sssp {
         }
     };
 
-    struct DWCallbacks
-    {
+    struct DWCallbacks {
     private:
         groute::graphs::dev::CSRGraphSeg m_graph_seg;
         groute::graphs::dev::GraphDatum<distance_t> m_distances_datum;
@@ -163,63 +149,55 @@ namespace sssp {
     public:
         template<typename...UnusedData>
         DWCallbacks(
-            const groute::graphs::dev::CSRGraphSeg& graph_seg,
-            const groute::graphs::dev::GraphDatumSeg<distance_t>& weights_datum,
-            const groute::graphs::dev::GraphDatum<distance_t>& distances_datum,
-            UnusedData&... data)
-            : m_graph_seg(graph_seg), m_distances_datum(distances_datum)
-        {
+                const groute::graphs::dev::CSRGraphSeg &graph_seg,
+                const groute::graphs::dev::GraphDatumSeg<distance_t> &weights_datum,
+                const groute::graphs::dev::GraphDatum<distance_t> &distances_datum,
+                UnusedData &... data)
+                : m_graph_seg(graph_seg), m_distances_datum(distances_datum) {
         }
 
-        DWCallbacks() { }
+        DWCallbacks() {}
 
-        __device__ __forceinline__ groute::SplitFlags on_receive(const remote_work_t& work)
-        {
-            if (m_graph_seg.owns(work.node))
-            {
+        __device__ __forceinline__ groute::SplitFlags on_receive(const remote_work_t &work) {
+            if (m_graph_seg.owns(work.node)) {
                 return (work.distance < atomicMin(m_distances_datum.get_item_ptr(work.node), work.distance))
-                    ? groute::SF_Take
-                    : groute::SF_None; // Filter
+                       ? groute::SF_Take
+                       : groute::SF_None; // Filter
             }
 
             return groute::SF_Pass;
         }
 
-        __device__ __forceinline__ bool should_defer(const local_work_t& work, const distance_t& global_threshold)
-        {
+        __device__ __forceinline__ bool should_defer(const local_work_t &work, const distance_t &global_threshold) {
             return m_distances_datum[work] > global_threshold;
         }
 
-        __device__ __forceinline__ groute::SplitFlags on_send(local_work_t work)
-        {
+        __device__ __forceinline__ groute::SplitFlags on_send(local_work_t work) {
             return (m_graph_seg.owns(work))
-                ? groute::SF_Take
-                : groute::SF_Pass;
+                   ? groute::SF_Take
+                   : groute::SF_Pass;
         }
 
-        __device__ __forceinline__ remote_work_t pack(local_work_t work)
-        {
+        __device__ __forceinline__ remote_work_t pack(local_work_t work) {
             return DistanceData(work, m_distances_datum.get_item(work));
         }
 
-        __device__ __forceinline__ local_work_t unpack(const remote_work_t& work)
-        {
+        __device__ __forceinline__ local_work_t unpack(const remote_work_t &work) {
             return work.node;
         }
     };
 
-    struct Algo
-    {
-        static const char* NameLower()      { return "sssp"; }
-        static const char* Name()           { return "SSSP"; }
+    struct Algo {
+        static const char *NameLower() { return "sssp"; }
+
+        static const char *Name() { return "SSSP"; }
 
         static void HostInit(
-            utils::traversal::Context<sssp::Algo>& context,
-            groute::graphs::multi::CSRGraphAllocator& graph_manager,
-            groute::IDistributedWorklist<local_work_t, remote_work_t>& distributed_worklist)
-        {
+                utils::traversal::Context<sssp::Algo> &context,
+                groute::graphs::multi::CSRGraphAllocator &graph_manager,
+                groute::IDistributedWorklist<local_work_t, remote_work_t> &distributed_worklist) {
             // Get a valid source_node from flag 
-            index_t source_node = min(max((index_t)0, (index_t)FLAGS_source_node), context.host_graph.nnodes - 1);
+            index_t source_node = min(max((index_t) 0, (index_t) FLAGS_source_node), context.host_graph.nnodes - 1);
 
             // Map to the (possibly new) partitioned vertex space
             source_node = graph_manager.GetGraphPartitioner()->ReverseLookup(source_node);
@@ -233,78 +211,71 @@ namespace sssp {
             std::vector<remote_work_t> initial_work;
             initial_work.push_back(remote_work_t(source_node, 0));
             distributed_worklist
-                .GetLink(host)
-                .Send(groute::Segment<remote_work_t>(&initial_work[0], 1), groute::Event());
+                    .GetLink(host)
+                    .Send(groute::Segment<remote_work_t>(&initial_work[0], 1), groute::Event());
         }
 
         template<typename TGraph, typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
-        static void DeviceMemset(groute::Stream& stream, TGraph& graph, TWeightDatum& weights_datum, TDistanceDatum& distances_datum, const UnusedData&... data)
-        {
+        static void DeviceMemset(groute::Stream &stream, TGraph &graph, TWeightDatum &weights_datum, TDistanceDatum &distances_datum, const UnusedData &... data) {
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, distances_datum.size);
 
-            SSSPMemsetKernel <<< grid_dims, block_dims, 0, stream.cuda_stream >>>(
-                distances_datum.data_ptr, distances_datum.size);
+            SSSPMemsetKernel << < grid_dims, block_dims, 0, stream.cuda_stream >> > (
+                    distances_datum.data_ptr, distances_datum.size);
         }
 
         template<typename TGraph, typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
         static void DeviceInit(
-            groute::Endpoint endpoint, groute::Stream& stream, 
-            groute::IDistributedWorklist<local_work_t, remote_work_t>& distributed_worklist, 
-            groute::IDistributedWorklistPeer<local_work_t, remote_work_t, DWCallbacks>* peer, 
-            TGraph& graph, TWeightDatum& weights_datum, TDistanceDatum& distances_datum, const UnusedData&... data)
-        {
+                groute::Endpoint endpoint, groute::Stream &stream,
+                groute::IDistributedWorklist<local_work_t, remote_work_t> &distributed_worklist,
+                groute::IDistributedWorklistPeer<local_work_t, remote_work_t, DWCallbacks> *peer,
+                TGraph &graph, TWeightDatum &weights_datum, TDistanceDatum &distances_datum, const UnusedData &... data) {
         }
 
         template<
-            typename TGraphAllocator,
-            typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
-        static const std::vector<distance_t>& Gather(TGraphAllocator& graph_allocator, TWeightDatum& weights_datum, TDistanceDatum& distances_datum, UnusedData&... data)
-        {
+                typename TGraphAllocator,
+                typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
+        static const std::vector<distance_t> &Gather(TGraphAllocator &graph_allocator, TWeightDatum &weights_datum, TDistanceDatum &distances_datum, UnusedData &... data) {
             graph_allocator.GatherDatum(distances_datum);
             return distances_datum.GetHostData();
         }
 
         template<
-            typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
-        static std::vector<distance_t> Host(groute::graphs::host::CSRGraph& graph, TWeightDatum& weights_datum, TDistanceDatum& distances_datum, UnusedData&... data)
-        {
-            return SSSPHostNaive(graph, weights_datum.GetHostDataPtr(), min(max((index_t)0, (index_t)FLAGS_source_node), graph.nnodes - 1));
+                typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
+        static std::vector<distance_t> Host(groute::graphs::host::CSRGraph &graph, TWeightDatum &weights_datum, TDistanceDatum &distances_datum, UnusedData &... data) {
+            return SSSPHostNaive(graph, weights_datum.GetHostDataPtr(), min(max((index_t) 0, (index_t) FLAGS_source_node), graph.nnodes - 1));
         }
 
-        static int Output(const char *file, const std::vector<distance_t>& distances)
-        {
+        static int Output(const char *file, const std::vector<distance_t> &distances) {
             return SSSPOutput(file, distances);
         }
 
-        static int CheckErrors(const std::vector<distance_t>& distances, const std::vector<distance_t>& regression)
-        {
+        static int CheckErrors(const std::vector<distance_t> &distances, const std::vector<distance_t> &regression) {
             return SSSPCheckErrors(distances, regression);
         }
     };
 
-    using EdgeWeightDatumType = groute::graphs::multi::EdgeInputDatum < distance_t > ;
-    using NodeDistanceDatumType = groute::graphs::multi::NodeOutputGlobalDatum < distance_t > ;
+    using EdgeWeightDatumType = groute::graphs::multi::EdgeInputDatum<distance_t>;
+    using NodeDistanceDatumType = groute::graphs::multi::NodeOutputGlobalDatum<distance_t>;
 
     template<bool IterationFusion = true, bool CTAScheduling = true>
-    using FusedWorkerType = groute::FusedWorker <
-        IterationFusion, local_work_t, remote_work_t, int, DWCallbacks, SSSPWork<CTAScheduling>,
-        groute::graphs::dev::CSRGraphSeg, EdgeWeightDatumType::DeviceObjectType, NodeDistanceDatumType::DeviceObjectType> ;
-    
+    using FusedWorkerType = groute::FusedWorker<
+            IterationFusion, local_work_t, remote_work_t, int, DWCallbacks, SSSPWork<CTAScheduling>,
+            groute::graphs::dev::CSRGraphSeg, EdgeWeightDatumType::DeviceObjectType, NodeDistanceDatumType::DeviceObjectType>;
+
     template<bool CTAScheduling = true>
-    using WorkerType = groute::Worker <
-        local_work_t, remote_work_t, DWCallbacks, SSSPWork<CTAScheduling>,
-        groute::graphs::dev::CSRGraphSeg, EdgeWeightDatumType::DeviceObjectType, NodeDistanceDatumType::DeviceObjectType> ;
+    using WorkerType = groute::Worker<
+            local_work_t, remote_work_t, DWCallbacks, SSSPWork<CTAScheduling>,
+            groute::graphs::dev::CSRGraphSeg, EdgeWeightDatumType::DeviceObjectType, NodeDistanceDatumType::DeviceObjectType>;
 
     template<typename TWorker>
-    using RunnerType = utils::traversal::Runner <
-        Algo, TWorker, DWCallbacks, local_work_t, remote_work_t,
-        EdgeWeightDatumType, NodeDistanceDatumType > ;
+    using RunnerType = utils::traversal::Runner<
+            Algo, TWorker, DWCallbacks, local_work_t, remote_work_t,
+            EdgeWeightDatumType, NodeDistanceDatumType>;
 }
 
 template<typename TWorker>
-bool TestSSSPAsyncMultiTemplate(int ngpus)
-{
+bool TestSSSPAsyncMultiTemplate(int ngpus) {
     sssp::RunnerType<TWorker> runner;
 
     sssp::EdgeWeightDatumType edge_weights;
@@ -313,25 +284,22 @@ bool TestSSSPAsyncMultiTemplate(int ngpus)
     return runner(ngpus, FLAGS_prio_delta, edge_weights, node_distances);
 }
 
-bool TestSSSPAsyncMultiOptimized(int ngpus)
-{
+bool TestSSSPAsyncMultiOptimized(int ngpus) {
     return FLAGS_cta_np
-        ? FLAGS_iteration_fusion
-            ? TestSSSPAsyncMultiTemplate< sssp::FusedWorkerType< true, true   >>(ngpus)
-            : TestSSSPAsyncMultiTemplate< sssp::FusedWorkerType< false, true  >>(ngpus)
-        : FLAGS_iteration_fusion                               
-            ? TestSSSPAsyncMultiTemplate< sssp::FusedWorkerType< true, false  >>(ngpus)
-            : TestSSSPAsyncMultiTemplate< sssp::FusedWorkerType< false, false >>(ngpus);
+           ? FLAGS_iteration_fusion
+             ? TestSSSPAsyncMultiTemplate<sssp::FusedWorkerType<true, true   >>(ngpus)
+             : TestSSSPAsyncMultiTemplate<sssp::FusedWorkerType<false, true  >>(ngpus)
+           : FLAGS_iteration_fusion
+             ? TestSSSPAsyncMultiTemplate<sssp::FusedWorkerType<true, false  >>(ngpus)
+             : TestSSSPAsyncMultiTemplate<sssp::FusedWorkerType<false, false >>(ngpus);
 }
 
-bool TestSSSPAsyncMulti(int ngpus)
-{
+bool TestSSSPAsyncMulti(int ngpus) {
     return FLAGS_cta_np
-        ? TestSSSPAsyncMultiTemplate< sssp::WorkerType< true  >>(ngpus)
-        : TestSSSPAsyncMultiTemplate< sssp::WorkerType< false >>(ngpus);
+           ? TestSSSPAsyncMultiTemplate<sssp::WorkerType<true  >>(ngpus)
+           : TestSSSPAsyncMultiTemplate<sssp::WorkerType<false >>(ngpus);
 }
 
-bool TestSSSPSingle()
-{
+bool TestSSSPSingle() {
     return TestSSSPAsyncMultiOptimized(1);
 }

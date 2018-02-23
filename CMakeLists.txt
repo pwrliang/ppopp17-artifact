@@ -22,8 +22,8 @@ include_directories(SYSTEM ${GFLAGS_INCLUDE_DIRS})
 list(APPEND LINKER_LIBS ${GFLAGS_LIBRARIES})
 
 #boost
-FIND_PACKAGE( Boost COMPONENTS program_options REQUIRED )
-INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+FIND_PACKAGE(Boost COMPONENTS program_options REQUIRED)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 # gtest
 #include("cmake/FindGTest.cmake")
@@ -105,12 +105,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #					samples/bfs/main.cpp)
 #target_link_libraries(bfs ${EXTRA_LIBS})
 
-#cuda_add_executable(sssp src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-#        samples/sssp/sssp_async.cu
-#        samples/sssp/deltasssp.cu
-#        samples/sssp/sssp_host.cpp
-#        samples/sssp/main.cpp)
-#target_link_libraries(sssp ${EXTRA_LIBS})
+cuda_add_executable(sssp src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+        samples/sssp/sssp_async.cu
+        samples/sssp/deltasssp.cu
+        samples/sssp/sssp_host.cpp
+        samples/sssp/main.cpp)
+target_link_libraries(sssp ${EXTRA_LIBS})
 
 #cuda_add_executable(pr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
 #        samples/pr/test.cu
@@ -124,11 +124,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #        samples/pr/main.cpp)
 #target_link_libraries(pr ${EXTRA_LIBS})
 
-cuda_add_executable(gframe src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-        samples/framework/entry.cu samples/framework/pagerank.cu)
-target_link_libraries(gframe ${EXTRA_LIBS})
+cuda_add_executable(gframe_pr src/utils/parser.cpp
+                    src/utils/utils.cpp
+                    src/groute/graphs/csr_graph.cpp
+                    samples/framework/entry.cu
+                    samples/framework/pagerank.cu)
+target_link_libraries(gframe_pr ${EXTRA_LIBS})
 
-
+cuda_add_executable(gframe_sssp src/utils/parser.cpp
+        src/utils/utils.cpp
+        src/groute/graphs/csr_graph.cpp
+        samples/framework/entry.cu
+        samples/framework/sssp.cu)
+target_link_libraries(gframe_sssp ${EXTRA_LIBS})
 
 #cuda_add_executable(pr_exprs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
 #        samples/pr_exprs/pr_host.cpp

@@ -47,8 +47,7 @@ namespace gframe {
                         out_degree = end_edge - begin_edge;
 
                 value_datum[node] = graph_api.InitValue(node, out_degree);
-                TDelta init_delta = graph_api.InitDelta(node, out_degree);
-                delta_datum[node] = init_delta;
+                delta_datum[node] = graph_api.InitDelta(node, out_degree);
             }
         }
 
@@ -77,7 +76,7 @@ namespace gframe {
 
             for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
                 index_t node = work_source.get_work(i);
-                TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
+                TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
 
                 if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
                     value_datum[node] = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
@@ -97,7 +96,8 @@ namespace gframe {
                             index_t dest = graph.edge_dest(edge);
                             if (IsWeighted)new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
 
-                            atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                            TDelta delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
+                            //printf("after update:%uld\n", delta);
                         }
                     }
                 }
@@ -133,7 +133,7 @@ namespace gframe {
 
                 if (i < work_size) {
                     index_t node = work_source.get_work(i);
-                    TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
+                    TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
 
                     if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
                         value_datum[node] = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
@@ -197,11 +197,11 @@ namespace gframe {
 
             for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
                 index_t node = work_source.read(i);
-                TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
-
-                if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
-                    TValue value = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
-                    value_datum[node] = value;
+                TValue old_value = value_datum[node];
+                TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
+                TValue new_value = graph_api.ValueDeltaCombiner(old_value, old_delta);
+                if (new_value != old_value) {
+                    value_datum[node] = new_value;
 
                     index_t begin_edge = graph.begin_edge(node),
                             end_edge = graph.end_edge(node),
@@ -254,7 +254,7 @@ namespace gframe {
                 groute::dev::np_local<TDelta> local_work = {0, 0};
                 if (i < work_size) {
                     index_t node = work_source.read(i);
-                    TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), 0);
+                    TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
 
                     if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
                         TValue value = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
@@ -490,7 +490,6 @@ namespace gframe {
 
                 local_sum_value = graph_api.ValueReducer(local_sum_value, value_datum[node]);
                 local_sum_delta = graph_api.DeltaReducer(local_sum_delta, delta_datum[node]);
-
             }
 
             if (laneIdx == 0) {
@@ -539,13 +538,13 @@ namespace gframe {
                            groute::graphs::dev::GraphDatum<TValue> value_datum,
                            groute::graphs::dev::GraphDatum<TDelta> delta_datum) {
             ConvergeCheckDevice(graph_api,
-                          work_source,
-                          grid_value_buffer,
-                          grid_delta_buffer,
-                          rtn_value_res,
-                          rtn_delta_res,
-                          value_datum,
-                          delta_datum);
+                                work_source,
+                                grid_value_buffer,
+                                grid_delta_buffer,
+                                rtn_value_res,
+                                rtn_delta_res,
+                                value_datum,
+                                delta_datum);
         }
     }
 }
