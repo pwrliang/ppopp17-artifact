@@ -16,7 +16,6 @@ template<typename TValue, typename TDelta>
 struct SSSPImpl : gframe::api::GraphAPIBase {
     const TValue IdentityElementForValueReducer = UINT32_MAX;
     const TDelta IdentityElementForDeltaReducer = UINT32_MAX;
-    const TDelta IdentityElementForValueDeltaCombiner = UINT32_MAX;
     const index_t SRC_NODE = 0;
 
     __forceinline__ __device__ TValue InitValue(const index_t node, index_t out_degree) const {
@@ -77,7 +76,7 @@ bool SSSP() {
             new gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>
                     (SSSPImpl<dist_t, dist_t>(),
                      MyAtomicMin(),
-                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_DataDriven,
+                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_TopologyDriven,
                      true,
                      false);
     kernel->InitValue();

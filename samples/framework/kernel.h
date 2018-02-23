@@ -76,12 +76,12 @@ namespace gframe {
 
             for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
                 index_t node = work_source.get_work(i);
+                TValue old_value = value_datum[node];
                 TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
+                TValue new_value = graph_api.ValueDeltaCombiner(old_value, old_delta);
 
-                if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
-                    value_datum[node] = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
-
-
+                if (new_value != old_value) {
+                    value_datum[node] = new_value;
                     index_t begin_edge = graph.begin_edge(node),
                             end_edge = graph.end_edge(node),
                             out_degree = end_edge - begin_edge;
@@ -133,13 +133,15 @@ namespace gframe {
 
                 if (i < work_size) {
                     index_t node = work_source.get_work(i);
+                    TValue old_value = value_datum[node];
                     TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
+                    TValue new_value = graph_api.ValueDeltaCombiner(old_value, old_delta);
 
-                    if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
-                        value_datum[node] = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
-
+                    if (new_value != old_value) {
+                        value_datum[node] = new_value;
                         local_work.start = graph.begin_edge(node);
                         local_work.size = graph.end_edge(node) - local_work.start;
+
                         if (IsWeighted)
                             local_work.meta_data = old_delta;
                         else
@@ -200,9 +202,9 @@ namespace gframe {
                 TValue old_value = value_datum[node];
                 TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
                 TValue new_value = graph_api.ValueDeltaCombiner(old_value, old_delta);
+
                 if (new_value != old_value) {
                     value_datum[node] = new_value;
-
                     index_t begin_edge = graph.begin_edge(node),
                             end_edge = graph.end_edge(node),
                             out_degree = end_edge - begin_edge;
@@ -254,14 +256,15 @@ namespace gframe {
                 groute::dev::np_local<TDelta> local_work = {0, 0};
                 if (i < work_size) {
                     index_t node = work_source.read(i);
+                    TValue old_value = value_datum[node];
                     TDelta old_delta = atomicExch(delta_datum.get_item_ptr(node), graph_api.IdentityElementForDeltaReducer);
+                    TValue new_value = graph_api.ValueDeltaCombiner(old_value, old_delta);
 
-                    if (old_delta != graph_api.IdentityElementForValueDeltaCombiner) {
-                        TValue value = graph_api.ValueDeltaCombiner(value_datum[node], old_delta);
-                        value_datum[node] = value;
-
+                    if (new_value != old_value) {
+                        value_datum[node] = new_value;
                         local_work.start = graph.begin_edge(node);
                         local_work.size = graph.end_edge(node) - local_work.start;
+
                         if (IsWeighted)
                             local_work.meta_data = old_delta;
                         else

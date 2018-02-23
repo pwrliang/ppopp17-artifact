@@ -307,17 +307,17 @@ namespace gframe {
 
                 return delta;
             };
-
+            mgpu::standard_context_t m_gpu_context;
 
             for (int iteration = 0; iteration < FLAGS_max_iterations; iteration++) {
                 RelaxTopologyDriven(groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()));
+                m_stream.Sync();
 
-//                mgpu::standard_context_t m_gpu_context;
 //                mgpu::mem_t<TDelta> check_sum(1, m_gpu_context);
 //                mgpu::mem_t<int> device_offsets = mgpu::mem_t<int> (work_source.get_size(), m_gpu_context);
 //                int *scanned_offsets = device_offsets.data();
 //                mgpu::transform_scan<TDelta>(check_delta, work_source.get_size(), scanned_offsets, mgpu::minimum_t<TDelta>(), check_sum.data(), m_gpu_context);
-//                printf("%d\n", mgpu::from_mem(check_sum)[0]);
+//                printf("%uld\n", mgpu::from_mem(check_sum)[0]);
 
                 gframe::kernel::ConvergeCheck
                         << < grid_dims,
