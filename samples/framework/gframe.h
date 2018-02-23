@@ -141,7 +141,7 @@ namespace gframe {
             return ResultOutput<TValue>(file, m_value_datum.GetHostData(), sort);
         }
 
-   // private:
+        // private:
         typedef groute::Queue<index_t> Worklist;
 
         utils::traversal::Context<gframe::Algo> *m_context;
@@ -293,7 +293,6 @@ namespace gframe {
             groute::dev::WorkSourceRange<index_t> work_source(dev_graph.owned_start_node(), dev_graph.owned_nnodes());
             dim3 grid_dims, block_dims;
             KernelSizing(grid_dims, block_dims, work_source.get_size());
-            const int smem_size = block_dims.x / 32;
             Stopwatch sw(true);
 
             utils::SharedArray<TValue> grid_value_buffer(grid_dims.x);
@@ -302,27 +301,46 @@ namespace gframe {
             utils::SharedValue<TDelta> rtn_delta;
 
             TDelta *dev_ptr_delta = m_delta_datum.DeviceObject().data_ptr;
+            TValue *dev_ptr_value = m_value_datum.DeviceObject().data_ptr;
+
             auto check_delta = [=]__device__(int idx) {
                 TDelta delta = dev_ptr_delta[idx];
 
-                return delta;
+                return delta != UINT32_MAX ? delta : 0;
             };
+
+            auto check_value = [=]__device__(int idx) {
+                TValue value = dev_ptr_value[idx];
+                return value != UINT32_MAX ? value : 0;
+            };
+
+
             mgpu::standard_context_t m_gpu_context;
 
             for (int iteration = 0; iteration < FLAGS_max_iterations; iteration++) {
                 RelaxTopologyDriven(groute::dev::WorkSourceRange<index_t>(dev_graph.owned_start_node(), dev_graph.owned_nnodes()));
                 m_stream.Sync();
 
-//                mgpu::mem_t<TDelta> check_sum(1, m_gpu_context);
-//                mgpu::mem_t<int> device_offsets = mgpu::mem_t<int> (work_source.get_size(), m_gpu_context);
-//                int *scanned_offsets = device_offsets.data();
-//                mgpu::transform_scan<TDelta>(check_delta, work_source.get_size(), scanned_offsets, mgpu::minimum_t<TDelta>(), check_sum.data(), m_gpu_context);
-//                printf("%uld\n", mgpu::from_mem(check_sum)[0]);
+//                {
+//                    mgpu::mem_t<TDelta> check_sum2(1, m_gpu_context);
+//                    mgpu::mem_t<int> device_offsets = mgpu::mem_t<int>(work_source.get_size(), m_gpu_context);
+//                    int *scanned_offsets = device_offsets.data();
+//                    mgpu::transform_scan<TDelta>(check_delta, work_source.get_size(), scanned_offsets, mgpu::plus_t<TDelta>(), check_sum2.data(), m_gpu_context);
+//                    printf("%uld\n", mgpu::from_mem(check_sum2)[0]);
+//                }
+//
+//                {
+//                    mgpu::mem_t<TValue> check_sum2(1, m_gpu_context);
+//                    mgpu::mem_t<int> device_offsets = mgpu::mem_t<int>(work_source.get_size(), m_gpu_context);
+//                    int *scanned_offsets = device_offsets.data();
+//                    mgpu::transform_scan<TValue>(check_value, work_source.get_size(), scanned_offsets, mgpu::plus_t<TValue>(), check_sum2.data(), m_gpu_context);
+//                    printf("%uld\n", mgpu::from_mem(check_sum2)[0]);
+//                }
 
                 gframe::kernel::ConvergeCheck
                         << < grid_dims,
                         block_dims,
-                        smem_size * sizeof(TValue) + smem_size * sizeof(TDelta),
+                        0,
                         m_stream.cuda_stream >> > (m_api_imple,
                                 work_source,
                                 grid_value_buffer.dev_ptr,

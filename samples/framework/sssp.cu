@@ -14,7 +14,7 @@ __device__ dist_t last_delta = UINT32_MAX;
 
 template<typename TValue, typename TDelta>
 struct SSSPImpl : gframe::api::GraphAPIBase {
-    const TValue IdentityElementForValueReducer = UINT32_MAX;
+    const TValue IdentityElementForValueReducer = 0;
     const TDelta IdentityElementForDeltaReducer = UINT32_MAX;
     const index_t SRC_NODE = 0;
 
@@ -30,11 +30,11 @@ struct SSSPImpl : gframe::api::GraphAPIBase {
 
     __forceinline__ __device__ TValue ValueReducer(const TValue a, const TValue b) const {
 //        return a < b ? a : b;
-        if (a == IdentityElementForValueReducer && b != IdentityElementForValueReducer)
+        if (a == IdentityElementForDeltaReducer && b != IdentityElementForDeltaReducer)
             return b;
-        else if (a != IdentityElementForValueReducer && b == IdentityElementForValueReducer)
+        else if (a != IdentityElementForDeltaReducer && b == IdentityElementForDeltaReducer)
             return a;
-        else if (a != IdentityElementForValueReducer && b != IdentityElementForValueReducer)
+        else if (a != IdentityElementForDeltaReducer && b != IdentityElementForDeltaReducer)
             return a + b;
         return 0;
     }
@@ -55,7 +55,6 @@ struct SSSPImpl : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __device__ TDelta DeltaMapper(const TDelta delta, const index_t weight, const index_t out_degree) const {
-        //printf("%uld -> %uld\n", delta, delta + weight);
         return delta + weight;
     }
 
@@ -66,7 +65,6 @@ struct SSSPImpl : gframe::api::GraphAPIBase {
 
     __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
 //        return delta != UINT32_MAX;
-        printf("value sum:%uld delta sum:%uld\n", value, delta);
         return delta == 0;
     }
 };
@@ -76,13 +74,13 @@ bool SSSP() {
             new gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>
                     (SSSPImpl<dist_t, dist_t>(),
                      MyAtomicMin(),
-                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_TopologyDriven,
+                     gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_DataDriven,
                      true,
                      false);
     kernel->InitValue();
     kernel->Run();
     if (FLAGS_output.length() > 0)
-        kernel->SaveResult(FLAGS_output.data(), true);
+        kernel->SaveResult(FLAGS_output.data(), false);
     delete kernel;
     return true;
 }

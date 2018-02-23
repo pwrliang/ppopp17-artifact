@@ -97,7 +97,6 @@ namespace gframe {
                             if (IsWeighted)new_delta = graph_api.DeltaMapper(old_delta, weight_datum.get_item(edge), out_degree);
 
                             TDelta delta = atomicFunc(delta_datum.get_item_ptr(dest), new_delta);
-                            //printf("after update:%uld\n", delta);
                         }
                     }
                 }
@@ -481,8 +480,11 @@ namespace gframe {
             int laneIdx = threadIdx.x % warpSize;
             int warpIdx = threadIdx.x / warpSize;
             const int SMEMDIM = blockDim.x / warpSize;
-            extern __shared__ TValue smem_value[];
-            extern __shared__ TDelta smem_delta[];
+//            extern __shared__ TValue smem[];
+            __shared__ TValue smem_value[32];
+            __shared__ TDelta smem_delta[32];
+//            TValue *smem_value = (TValue *) smem[0];
+//            TDelta *smem_delta = (TDelta *) smem[SMEMDIM];
 
             uint32_t work_size = work_source.get_size();
             TValue local_sum_value = graph_api.IdentityElementForValueReducer;
@@ -494,6 +496,9 @@ namespace gframe {
                 local_sum_value = graph_api.ValueReducer(local_sum_value, value_datum[node]);
                 local_sum_delta = graph_api.DeltaReducer(local_sum_delta, delta_datum[node]);
             }
+
+            local_sum_value = WarpValueReducer(graph_api, local_sum_value);
+            local_sum_delta = WarpDeltaReducer(graph_api, local_sum_delta);
 
             if (laneIdx == 0) {
                 smem_value[warpIdx] = local_sum_value;
@@ -540,6 +545,7 @@ namespace gframe {
                            TDelta *rtn_delta_res,
                            groute::graphs::dev::GraphDatum<TValue> value_datum,
                            groute::graphs::dev::GraphDatum<TDelta> delta_datum) {
+
             ConvergeCheckDevice(graph_api,
                                 work_source,
                                 grid_value_buffer,

@@ -38,3 +38,6 @@ PROFILE:
 MAITER:
 
 ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr
+
+
+./sssp -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/soc-Livj_groute_sssp.txt
