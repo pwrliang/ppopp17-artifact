@@ -17,6 +17,7 @@ DEFINE_int32(top_values, 10, "extract top k values from the result");
 DEFINE_int32(max_iterations, 200,"Maximum iteration limited times");
 bool PageRank();
 bool SSSP();
+bool CC();
 void CleanupGraphs();
 
 namespace gframe {
@@ -28,7 +29,8 @@ namespace gframe {
         static bool Single() {
             LOG(INFO) << "Run Single" << std::endl;
 //            return PageRank();
-            return SSSP();
+//            return SSSP();
+            return CC();
         }
 
         static bool AsyncMulti(int G) {
