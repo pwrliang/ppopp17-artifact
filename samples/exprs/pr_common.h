@@ -26,14 +26,21 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-#ifndef __GRAPH_COMMON_H
-#define __GRAPH_COMMON_H
+#ifndef __PR_COMMON_H
+#define __PR_COMMON_H
 
 #include <climits>
 #include <queue>
 #include <gflags/gflags.h>
 #include <groute/graphs/csr_graph.h>
-#define CHECK_INTERVAL 20000
-#define __OUTLINING__
 
-#endif // __GRAPH_COMMON_H
+typedef float rank_t;
+#define ALPHA 0.85
+
+std::vector<rank_t> PageRankHost(groute::graphs::host::CSRGraph &graph);
+
+int PageRankCheckErrors(std::vector<rank_t> &ranks, std::vector<rank_t> &regression);
+
+int PageRankOutput(const char *file, const std::vector<rank_t> &ranks);
+
+#endif // __PR_COMMON_H

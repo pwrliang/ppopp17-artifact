@@ -13,13 +13,13 @@ DECLARE_string(output);
 template<typename TValue, typename TDelta>
 struct CCImpl : gframe::api::GraphAPIBase {
     const TValue IdentityElementForValueReducer = 0;
-    const TDelta IdentityElementForDeltaReducer = -UINT32_MAX;
+    const TDelta IdentityElementForDeltaReducer = -999999999;
 
-    __forceinline__ __device__ TValue InitValue(const index_t node, index_t out_degree) const {
-        return -UINT32_MAX;
+    __forceinline__ __device__ TValue InitValue(const int node, int out_degree) const {
+        return IdentityElementForDeltaReducer;
     }
 
-    __forceinline__ __device__ TDelta InitDelta(const index_t node, index_t out_degree) const {
+    __forceinline__ __device__ TDelta InitDelta(const int node, int out_degree) const {
         return node;
     }
 
@@ -48,7 +48,7 @@ struct CCImpl : gframe::api::GraphAPIBase {
         return a < b ? b : a;
     }
 
-    __forceinline__ __device__ TDelta DeltaMapper(const TDelta delta, const index_t weight, const index_t out_degree) const {
+    __forceinline__ __device__ TDelta DeltaMapper(const TDelta delta, const int weight, const int out_degree) const {
         return delta;
     }
 
@@ -58,16 +58,17 @@ struct CCImpl : gframe::api::GraphAPIBase {
 
 
     __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
+        printf("%d\n", value);
         return delta == 0;
     }
 };
 
 bool CC() {
-    gframe::GFrameEngine<CCImpl<index_t, index_t>, MyAtomicMax, index_t, index_t> *kernel =
-            new gframe::GFrameEngine<CCImpl<index_t, index_t>, MyAtomicMax, index_t, index_t>
-                    (CCImpl<index_t, index_t>(),
+    gframe::GFrameEngine<CCImpl<int, int>, MyAtomicMax, int, int> *kernel =
+            new gframe::GFrameEngine<CCImpl<int, int>, MyAtomicMax, int, int>
+                    (CCImpl<int, int>(),
                      MyAtomicMax(),
-                     gframe::GFrameEngine<CCImpl<index_t, index_t>, MyAtomicMax, index_t, index_t>::Engine_TopologyDriven,
+                     gframe::GFrameEngine<CCImpl<int, int>, MyAtomicMax, int, int>::Engine_TopologyDriven,
                      false,
                      false);
     kernel->InitValue();

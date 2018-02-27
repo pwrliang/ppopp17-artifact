@@ -50,7 +50,6 @@ namespace gframe {
                 delta_datum[node] = graph_api.InitDelta(node, out_degree);
             }
         }
-
         template<typename TGraphAPI,
                 typename TAtomicFunc,
                 typename TValue,
@@ -359,6 +358,7 @@ namespace gframe {
                 groute::dev::Queue<index_t> *tmp_wl = in_wl;
                 in_wl = out_wl;
                 out_wl = tmp_wl;
+                grid_barrier.Sync();//???????????/?
             }
 
             if (tid == 0) {
@@ -386,6 +386,7 @@ namespace gframe {
                                             TDelta *grid_delta_buffer,
                                             int *running,
                                             cub::GridBarrier grid_barrier) {
+            //printf("start KernelControllerTopologyDriven\n");
             uint32_t tid = TID_1D;
             TValue rtn_value;
             TDelta rtn_delta;

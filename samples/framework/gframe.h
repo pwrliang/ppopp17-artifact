@@ -376,7 +376,7 @@ namespace gframe {
         void TopologyDrivenOutlining() {
             const int grid_size = FLAGS_grid_size;
             const int block_size = FLAGS_block_size;
-            const int smem_size = block_size/32;
+//            const int smem_size = block_size / 32;
             const groute::graphs::dev::CSRGraph &dev_graph = m_graph_allocator->DeviceObject();
             cub::GridBarrierLifetime grid_barrier;
             utils::SharedArray<TValue> grid_value_buffer(grid_size);
@@ -392,10 +392,13 @@ namespace gframe {
 
             Stopwatch sw(true);
 
+//            gframe::kernel::test_kernel << < grid_size, block_size, 0, m_stream.cuda_stream >> > ();
+//            m_stream.Sync();
+
             gframe::kernel::KernelControllerTopologyDriven
                     << < grid_size,
                     block_size,
-                    smem_size * sizeof(TValue) + smem_size * sizeof(TDelta),
+                    0,
                     m_stream.cuda_stream >> >
                     (m_api_imple,
                             m_atomic_func,

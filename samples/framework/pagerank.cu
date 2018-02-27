@@ -48,8 +48,7 @@ struct PageRankImpl : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
-        return delta < 0.01;
-//        return value > 3.91682e+06;
+        return delta < 20000;
     }
 };
 

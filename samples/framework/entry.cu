@@ -28,9 +28,9 @@ namespace gframe {
 
         static bool Single() {
             LOG(INFO) << "Run Single" << std::endl;
-//            return PageRank();
+            return PageRank();
 //            return SSSP();
-            return CC();
+//            return CC();
         }
 
         static bool AsyncMulti(int G) {

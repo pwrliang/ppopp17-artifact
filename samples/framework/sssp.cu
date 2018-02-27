@@ -29,7 +29,6 @@ struct SSSPImpl : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __device__ TValue ValueReducer(const TValue a, const TValue b) const {
-//        return a < b ? a : b;
         if (a == IdentityElementForDeltaReducer && b != IdentityElementForDeltaReducer)
             return b;
         else if (a != IdentityElementForDeltaReducer && b == IdentityElementForDeltaReducer)
@@ -59,12 +58,11 @@ struct SSSPImpl : gframe::api::GraphAPIBase {
     }
 
     __forceinline__ __device__ bool Filter(const TDelta prev_delta, const TDelta new_delta) const {
-        return new_delta <= prev_delta;
+        return new_delta < prev_delta;
     }
 
 
     __forceinline__ __host__ __device__ bool IsTerminated(const TValue value, const TDelta delta) {
-//        return delta != UINT32_MAX;
         return delta == 0;
     }
 };
@@ -76,7 +74,7 @@ bool SSSP() {
                      MyAtomicMin(),
                      gframe::GFrameEngine<SSSPImpl<dist_t, dist_t>, MyAtomicMin, dist_t, dist_t>::Engine_DataDriven,
                      true,
-                     false);
+                     true);
     kernel->InitValue();
     kernel->Run();
     if (FLAGS_output.length() > 0)
