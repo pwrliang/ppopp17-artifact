@@ -3,7 +3,8 @@ project(groute)
 
 ############## DEPENDENCIES ##############
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-SET(CUDA_SEPARABLE_COMPILATION ON)
+set(CUDA_SEPARABLE_COMPILATION ON)
+set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda")
 find_package(CUDA 7 REQUIRED)
 
 #Dynamic Parallelism
