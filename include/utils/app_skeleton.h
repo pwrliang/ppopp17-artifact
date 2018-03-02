@@ -223,10 +223,10 @@ struct Skeleton {
             }
         }
 
-        if (overall)
-            VLOG(0) << "Overall: Test PASSED";
+        if(overall)
+            VLOG(0)<<"Overall: Test PASSED";
         else
-            LOG(ERROR) << "Overall: Test FAILED";
+            LOG(ERROR)<<"Overall: Test FAILED";
         return 0;
     }
 };

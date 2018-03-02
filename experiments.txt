@@ -27,6 +27,13 @@ EPSION   PR_SUM    DIFF      TIME      ITERATION
 ./pr_exprs -noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.000001 -data_driven -nooutlining -noappend_warp
 
 
+GROUTE:
+
+/mnt/sda2/liang/ppopp17-artifact/code/groute/build/pr -num_gpus 1 -startwith 1 -nopn -top_ranks -1 -print_ranks -output /home/liang/sda2/groute_result/groute_livej.result -graphfile /mnt/sda2/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -noopt
+/mnt/sda2/liang/ppopp17-artifact/code/groute/build/pr -num_gpus 1 -startwith 1 -nopn -top_ranks -1 -print_ranks -output /mnt/sda2/liang/groute_result/groute_osm-eur-k.result -graphfile /mnt/sda2/liang/ppopp17-artifact/dataset/OSM-eur-k/osm-eur-karlsruhe.gr -noopt
+/mnt/sda2/liang/ppopp17-artifact/code/groute/build/pr -num_gpus 1 -startwith 1 -nopn -top_ranks -1 -print_ranks -output /mnt/sda2/liang/groute_result/groute_usa.result -graphfile /mnt/sda2/liang/ppopp17-artifact/dataset/USA/USA-road-d.USA.gr -noopt
+/mnt/sda2/liang/ppopp17-artifact/code/groute/build/pr -num_gpus 1 -startwith 1 -nopn -top_ranks -1 -print_ranks -output /mnt/sda2/liang/groute_result/groute_kron.result -graphfile /mnt/sda2/liang/ppopp17-artifact/dataset/kron21.sym/kron_g500-simple-logn21-weighted-random.sym.gr -noopt
+
 
 
 PROFILE:
@@ -41,3 +48,981 @@ MAITER:
 
 
 ./sssp -noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/soc-Livj_groute_sssp.txt
+
+
+Note:
+PageRank:
+SYNC+DATADRIVEN -> Slow
+SYNC+TOPO -> Maybe feasible at end of iteration
+ASYNC+DATADRIVEN/TOPOLOGY -> UNKNOWN
+
+
+
+
+
+
+
+
+
+
+I0226 18:01:51.540640 15380 hybrid_datadriven.cu:440] THROUGHPUT: 11893.7 nodes/ms
+I0226 18:01:51.540721 15380 hybrid_datadriven.cu:443] Iteration: 1 ASYNC  INPUT: 2097152 OUTPUT: 1294225
+I0226 18:01:51.723714 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7073.5 nodes/ms
+I0226 18:01:51.723790 15380 hybrid_datadriven.cu:443] Iteration: 2 ASYNC  INPUT: 1294225 OUTPUT: 1465880
+I0226 18:01:51.908504 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7937.06 nodes/ms
+I0226 18:01:51.908592 15380 hybrid_datadriven.cu:443] Iteration: 3 ASYNC  INPUT: 1465880 OUTPUT: 1377604
+I0226 18:01:52.092933 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7474.34 nodes/ms
+I0226 18:01:52.093008 15380 hybrid_datadriven.cu:443] Iteration: 4 ASYNC  INPUT: 1377604 OUTPUT: 1400584
+I0226 18:01:52.277452 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7594.74 nodes/ms
+I0226 18:01:52.277526 15380 hybrid_datadriven.cu:443] Iteration: 5 ASYNC  INPUT: 1400584 OUTPUT: 1382867
+I0226 18:01:52.461931 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7500.17 nodes/ms
+I0226 18:01:52.462002 15380 hybrid_datadriven.cu:443] Iteration: 6 ASYNC  INPUT: 1382867 OUTPUT: 1391919
+I0226 18:01:52.646402 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7549.35 nodes/ms
+I0226 18:01:52.646481 15380 hybrid_datadriven.cu:443] Iteration: 7 ASYNC  INPUT: 1391919 OUTPUT: 1393310
+I0226 18:01:52.831039 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7551.04 nodes/ms
+I0226 18:01:52.831106 15380 hybrid_datadriven.cu:443] Iteration: 8 ASYNC  INPUT: 1393310 OUTPUT: 1390536
+I0226 18:01:53.015609 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7538.37 nodes/ms
+I0226 18:01:53.015681 15380 hybrid_datadriven.cu:443] Iteration: 9 ASYNC  INPUT: 1390536 OUTPUT: 1392258
+I0226 18:01:53.200088 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7551.56 nodes/ms
+I0226 18:01:53.200142 15380 hybrid_datadriven.cu:443] Iteration: 10 ASYNC  INPUT: 1392258 OUTPUT: 1390513
+I0226 18:01:53.384554 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7541.56 nodes/ms
+I0226 18:01:53.384620 15380 hybrid_datadriven.cu:443] Iteration: 11 ASYNC  INPUT: 1390513 OUTPUT: 1389042
+I0226 18:01:53.569172 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7527.66 nodes/ms
+I0226 18:01:53.569236 15380 hybrid_datadriven.cu:443] Iteration: 12 ASYNC  INPUT: 1389042 OUTPUT: 1393496
+I0226 18:01:53.753849 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7549.26 nodes/ms
+I0226 18:01:53.753939 15380 hybrid_datadriven.cu:443] Iteration: 13 ASYNC  INPUT: 1393496 OUTPUT: 1388137
+I0226 18:01:53.938628 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7517.38 nodes/ms
+I0226 18:01:53.938685 15380 hybrid_datadriven.cu:443] Iteration: 14 ASYNC  INPUT: 1388137 OUTPUT: 1392648
+I0226 18:01:54.123237 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7547.04 nodes/ms
+I0226 18:01:54.123298 15380 hybrid_datadriven.cu:443] Iteration: 15 ASYNC  INPUT: 1392648 OUTPUT: 1376201
+I0226 18:01:54.307819 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7459.12 nodes/ms
+I0226 18:01:54.307889 15380 hybrid_datadriven.cu:443] Iteration: 16 ASYNC  INPUT: 1376201 OUTPUT: 1384041
+I0226 18:01:54.492117 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7514.24 nodes/ms
+I0226 18:01:54.492187 15380 hybrid_datadriven.cu:443] Iteration: 17 ASYNC  INPUT: 1384041 OUTPUT: 1384276
+I0226 18:01:54.676729 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7502.81 nodes/ms
+I0226 18:01:54.676811 15380 hybrid_datadriven.cu:443] Iteration: 18 ASYNC  INPUT: 1384276 OUTPUT: 1388788
+I0226 18:01:54.861603 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7516.39 nodes/ms
+I0226 18:01:54.861675 15380 hybrid_datadriven.cu:443] Iteration: 19 ASYNC  INPUT: 1388788 OUTPUT: 1395992
+I0226 18:01:55.046700 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7546.47 nodes/ms
+I0226 18:01:55.046761 15380 hybrid_datadriven.cu:443] Iteration: 20 ASYNC  INPUT: 1395992 OUTPUT: 1386337
+I0226 18:01:55.231497 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7506.05 nodes/ms
+I0226 18:01:55.231567 15380 hybrid_datadriven.cu:443] Iteration: 21 ASYNC  INPUT: 1386337 OUTPUT: 1389844
+I0226 18:01:55.416517 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7516.33 nodes/ms
+I0226 18:01:55.416585 15380 hybrid_datadriven.cu:443] Iteration: 22 ASYNC  INPUT: 1389844 OUTPUT: 1377178
+I0226 18:01:55.600972 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7470.62 nodes/ms
+I0226 18:01:55.601044 15380 hybrid_datadriven.cu:443] Iteration: 23 ASYNC  INPUT: 1377178 OUTPUT: 1391411
+I0226 18:01:55.785588 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7541.03 nodes/ms
+I0226 18:01:55.785653 15380 hybrid_datadriven.cu:443] Iteration: 24 ASYNC  INPUT: 1391411 OUTPUT: 1381036
+I0226 18:01:55.970844 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7458.25 nodes/ms
+I0226 18:01:55.970944 15380 hybrid_datadriven.cu:443] Iteration: 25 ASYNC  INPUT: 1381036 OUTPUT: 1385364
+I0226 18:01:56.155712 15380 hybrid_datadriven.cu:440] THROUGHPUT: 7499.16 nodes/ms
+I0226 18:01:56.155768 15380 hybrid_datadriven.cu:443] Iteration: 26 ASYNC  INPUT: 1385364 OUTPUT: 1149109
+I0226 18:01:56.337870 15380 hybrid_datadriven.cu:440] THROUGHPUT: 6311.01 nodes/ms
+I0226 18:01:56.337932 15380 hybrid_datadriven.cu:443] Iteration: 27 ASYNC  INPUT: 1149109 OUTPUT: 1210831
+I0226 18:01:56.521500 15380 hybrid_datadriven.cu:440] THROUGHPUT: 6596.84 nodes/ms
+I0226 18:01:56.521562 15380 hybrid_datadriven.cu:443] Iteration: 28 ASYNC  INPUT: 1210831 OUTPUT: 1194245
+I0226 18:01:56.704545 15380 hybrid_datadriven.cu:440] THROUGHPUT: 6528.03 nodes/ms
+I0226 18:01:56.704615 15380 hybrid_datadriven.cu:443] Iteration: 29 ASYNC  INPUT: 1194245 OUTPUT: 1038195
+I0226 18:01:56.887290 15380 hybrid_datadriven.cu:440] THROUGHPUT: 5684.6 nodes/ms
+I0226 18:01:56.887372 15380 hybrid_datadriven.cu:443] Iteration: 30 ASYNC  INPUT: 1038195 OUTPUT: 1009370
+I0226 18:01:57.068470 15380 hybrid_datadriven.cu:440] THROUGHPUT: 5574.6 nodes/ms
+I0226 18:01:57.068542 15380 hybrid_datadriven.cu:443] Iteration: 31 ASYNC  INPUT: 1009370 OUTPUT: 949165
+I0226 18:01:57.249783 15380 hybrid_datadriven.cu:440] THROUGHPUT: 5238.22 nodes/ms
+I0226 18:01:57.249872 15380 hybrid_datadriven.cu:443] Iteration: 32 ASYNC  INPUT: 949165 OUTPUT: 910660
+I0226 18:01:57.429244 15380 hybrid_datadriven.cu:440] THROUGHPUT: 5078.01 nodes/ms
+I0226 18:01:57.429318 15380 hybrid_datadriven.cu:443] Iteration: 33 ASYNC  INPUT: 910660 OUTPUT: 799393
+I0226 18:01:57.607417 15380 hybrid_datadriven.cu:440] THROUGHPUT: 4489.51 nodes/ms
+I0226 18:01:57.607489 15380 hybrid_datadriven.cu:443] Iteration: 34 ASYNC  INPUT: 799393 OUTPUT: 776527
+I0226 18:01:57.782899 15380 hybrid_datadriven.cu:440] THROUGHPUT: 4427.99 nodes/ms
+I0226 18:01:57.782996 15380 hybrid_datadriven.cu:443] Iteration: 35 ASYNC  INPUT: 776527 OUTPUT: 680540
+I0226 18:01:57.955884 15380 hybrid_datadriven.cu:440] THROUGHPUT: 3936.99 nodes/ms
+I0226 18:01:57.955930 15380 hybrid_datadriven.cu:443] Iteration: 36 ASYNC  INPUT: 680540 OUTPUT: 608034
+I0226 18:01:58.124294 15380 hybrid_datadriven.cu:440] THROUGHPUT: 3611.9 nodes/ms
+I0226 18:01:58.124366 15380 hybrid_datadriven.cu:443] Iteration: 37 ASYNC  INPUT: 608034 OUTPUT: 544155
+I0226 18:01:58.288676 15380 hybrid_datadriven.cu:440] THROUGHPUT: 3312.54 nodes/ms
+I0226 18:01:58.288738 15380 hybrid_datadriven.cu:443] Iteration: 38 ASYNC  INPUT: 544155 OUTPUT: 484281
+I0226 18:01:58.450395 15380 hybrid_datadriven.cu:440] THROUGHPUT: 2996.16 nodes/ms
+I0226 18:01:58.450459 15380 hybrid_datadriven.cu:443] Iteration: 39 ASYNC  INPUT: 484281 OUTPUT: 433334
+I0226 18:01:58.609483 15380 hybrid_datadriven.cu:440] THROUGHPUT: 2725.42 nodes/ms
+I0226 18:01:58.609552 15380 hybrid_datadriven.cu:443] Iteration: 40 ASYNC  INPUT: 433334 OUTPUT: 388462
+I0226 18:01:58.765100 15380 hybrid_datadriven.cu:440] THROUGHPUT: 2497.78 nodes/ms
+I0226 18:01:58.765166 15380 hybrid_datadriven.cu:443] Iteration: 41 ASYNC  INPUT: 388462 OUTPUT: 331033
+I0226 18:01:58.915516 15380 hybrid_datadriven.cu:440] THROUGHPUT: 2202.09 nodes/ms
+I0226 18:01:58.915587 15380 hybrid_datadriven.cu:443] Iteration: 42 ASYNC  INPUT: 331033 OUTPUT: 288750
+I0226 18:01:59.061465 15380 hybrid_datadriven.cu:440] THROUGHPUT: 1979.94 nodes/ms
+I0226 18:01:59.061558 15380 hybrid_datadriven.cu:443] Iteration: 43 ASYNC  INPUT: 288750 OUTPUT: 252166
+I0226 18:01:59.204083 15380 hybrid_datadriven.cu:440] THROUGHPUT: 1769.65 nodes/ms
+I0226 18:01:59.204140 15380 hybrid_datadriven.cu:443] Iteration: 44 ASYNC  INPUT: 252166 OUTPUT: 215733
+I0226 18:01:59.342555 15380 hybrid_datadriven.cu:440] THROUGHPUT: 1558.84 nodes/ms
+I0226 18:01:59.342629 15380 hybrid_datadriven.cu:443] Iteration: 45 ASYNC  INPUT: 215733 OUTPUT: 185944
+I0226 18:01:59.476305 15380 hybrid_datadriven.cu:440] THROUGHPUT: 1391.41 nodes/ms
+I0226 18:01:59.476367 15380 hybrid_datadriven.cu:443] Iteration: 46 ASYNC  INPUT: 185944 OUTPUT: 150576
+I0226 18:01:59.601264 15380 hybrid_datadriven.cu:440] THROUGHPUT: 1206 nodes/ms
+I0226 18:01:59.601351 15380 hybrid_datadriven.cu:443] Iteration: 47 ASYNC  INPUT: 150576 OUTPUT: 132155
+I0226 18:01:59.725020 15380 hybrid_datadriven.cu:440] THROUGHPUT: 1068.83 nodes/ms
+I0226 18:01:59.725082 15380 hybrid_datadriven.cu:443] Iteration: 48 ASYNC  INPUT: 132155 OUTPUT: 111933
+I0226 18:01:59.840412 15380 hybrid_datadriven.cu:440] THROUGHPUT: 970.731 nodes/ms
+I0226 18:01:59.840478 15380 hybrid_datadriven.cu:443] Iteration: 49 ASYNC  INPUT: 111933 OUTPUT: 95136
+I0226 18:01:59.955214 15380 hybrid_datadriven.cu:440] THROUGHPUT: 829.339 nodes/ms
+I0226 18:01:59.955278 15380 hybrid_datadriven.cu:443] Iteration: 50 ASYNC  INPUT: 95136 OUTPUT: 79241
+I0226 18:02:00.064040 15380 hybrid_datadriven.cu:440] THROUGHPUT: 728.72 nodes/ms
+I0226 18:02:00.064092 15380 hybrid_datadriven.cu:443] Iteration: 51 ASYNC  INPUT: 79241 OUTPUT: 67116
+I0226 18:02:00.163446 15380 hybrid_datadriven.cu:440] THROUGHPUT: 675.667 nodes/ms
+I0226 18:02:00.163509 15380 hybrid_datadriven.cu:443] Iteration: 52 ASYNC  INPUT: 67116 OUTPUT: 53998
+I0226 18:02:00.259801 15380 hybrid_datadriven.cu:440] THROUGHPUT: 560.907 nodes/ms
+I0226 18:02:00.259867 15380 hybrid_datadriven.cu:443] Iteration: 53 ASYNC  INPUT: 53998 OUTPUT: 46006
+I0226 18:02:00.348196 15380 hybrid_datadriven.cu:440] THROUGHPUT: 520.978 nodes/ms
+I0226 18:02:00.348248 15380 hybrid_datadriven.cu:443] Iteration: 54 ASYNC  INPUT: 46006 OUTPUT: 40489
+I0226 18:02:00.439532 15380 hybrid_datadriven.cu:440] THROUGHPUT: 443.657 nodes/ms
+I0226 18:02:00.439594 15380 hybrid_datadriven.cu:443] Iteration: 55 ASYNC  INPUT: 40489 OUTPUT: 34331
+I0226 18:02:00.521289 15380 hybrid_datadriven.cu:440] THROUGHPUT: 420.347 nodes/ms
+I0226 18:02:00.521366 15380 hybrid_datadriven.cu:443] Iteration: 56 ASYNC  INPUT: 34331 OUTPUT: 27563
+I0226 18:02:00.592731 15380 hybrid_datadriven.cu:440] THROUGHPUT: 386.339 nodes/ms
+I0226 18:02:00.592806 15380 hybrid_datadriven.cu:443] Iteration: 57 ASYNC  INPUT: 27563 OUTPUT: 22239
+I0226 18:02:00.646934 15380 hybrid_datadriven.cu:440] THROUGHPUT: 411.034 nodes/ms
+I0226 18:02:00.647001 15380 hybrid_datadriven.cu:443] Iteration: 58 ASYNC  INPUT: 22239 OUTPUT: 17616
+I0226 18:02:00.708904 15380 hybrid_datadriven.cu:440] THROUGHPUT: 284.685 nodes/ms
+I0226 18:02:00.708973 15380 hybrid_datadriven.cu:443] Iteration: 59 ASYNC  INPUT: 17616 OUTPUT: 16338
+I0226 18:02:00.757792 15380 hybrid_datadriven.cu:440] THROUGHPUT: 334.932 nodes/ms
+I0226 18:02:00.757866 15380 hybrid_datadriven.cu:443] Iteration: 60 ASYNC  INPUT: 16338 OUTPUT: 13389
+I0226 18:02:00.815359 15380 hybrid_datadriven.cu:440] THROUGHPUT: 233.051 nodes/ms
+I0226 18:02:00.815443 15380 hybrid_datadriven.cu:443] Iteration: 61 ASYNC  INPUT: 13389 OUTPUT: 9015
+I0226 18:02:00.845783 15380 hybrid_datadriven.cu:440] THROUGHPUT: 297.378 nodes/ms
+I0226 18:02:00.845818 15380 hybrid_datadriven.cu:443] Iteration: 62 ASYNC  INPUT: 9015 OUTPUT: 5013
+I0226 18:02:00.866065 15380 hybrid_datadriven.cu:440] THROUGHPUT: 247.984 nodes/ms
+I0226 18:02:00.866159 15380 hybrid_datadriven.cu:443] Iteration: 63 ASYNC  INPUT: 5013 OUTPUT: 3602
+I0226 18:02:00.888727 15380 hybrid_datadriven.cu:440] THROUGHPUT: 160.032 nodes/ms
+I0226 18:02:00.888793 15380 hybrid_datadriven.cu:443] Iteration: 64 ASYNC  INPUT: 3602 OUTPUT: 2231
+I0226 18:02:00.896672 15380 hybrid_datadriven.cu:440] THROUGHPUT: 285.112 nodes/ms
+I0226 18:02:00.896708 15380 hybrid_datadriven.cu:443] Iteration: 65 ASYNC  INPUT: 2231 OUTPUT: 2032
+I0226 18:02:00.909404 15380 hybrid_datadriven.cu:440] THROUGHPUT: 160.531 nodes/ms
+I0226 18:02:00.909442 15380 hybrid_datadriven.cu:443] Iteration: 66 ASYNC  INPUT: 2032 OUTPUT: 2473
+I0226 18:02:00.918076 15380 hybrid_datadriven.cu:440] THROUGHPUT: 287.358 nodes/ms
+I0226 18:02:00.918118 15380 hybrid_datadriven.cu:443] Iteration: 67 ASYNC  INPUT: 2473 OUTPUT: 3570
+I0226 18:02:00.933176 15380 hybrid_datadriven.cu:440] THROUGHPUT: 237.525 nodes/ms
+I0226 18:02:00.933223 15380 hybrid_datadriven.cu:443] Iteration: 68 ASYNC  INPUT: 3570 OUTPUT: 4653
+I0226 18:02:00.955235 15380 hybrid_datadriven.cu:440] THROUGHPUT: 211.75 nodes/ms
+I0226 18:02:00.955287 15380 hybrid_datadriven.cu:443] Iteration: 69 ASYNC  INPUT: 4653 OUTPUT: 4472
+I0226 18:02:00.970791 15380 hybrid_datadriven.cu:440] THROUGHPUT: 288.721 nodes/ms
+I0226 18:02:00.970816 15380 hybrid_datadriven.cu:443] Iteration: 70 ASYNC  INPUT: 4472 OUTPUT: 3351
+I0226 18:02:00.983489 15380 hybrid_datadriven.cu:440] THROUGHPUT: 264.713 nodes/ms
+I0226 18:02:00.983511 15380 hybrid_datadriven.cu:443] Iteration: 71 ASYNC  INPUT: 3351 OUTPUT: 2270
+I0226 18:02:00.994000 15380 hybrid_datadriven.cu:440] THROUGHPUT: 216.686 nodes/ms
+I0226 18:02:00.994024 15380 hybrid_datadriven.cu:443] Iteration: 72 ASYNC  INPUT: 2270 OUTPUT: 1793
+I0226 18:02:01.010146 15380 hybrid_datadriven.cu:440] THROUGHPUT: 111.311 nodes/ms
+I0226 18:02:01.010177 15380 hybrid_datadriven.cu:443] Iteration: 73 ASYNC  INPUT: 1793 OUTPUT: 1121
+I0226 18:02:01.013304 15380 hybrid_datadriven.cu:440] THROUGHPUT: 362.197 nodes/ms
+I0226 18:02:01.013327 15380 hybrid_datadriven.cu:443] Iteration: 74 ASYNC  INPUT: 1121 OUTPUT: 852
+I0226 18:02:01.021870 15380 hybrid_datadriven.cu:440] THROUGHPUT: 99.8828 nodes/ms
+I0226 18:02:01.021894 15380 hybrid_datadriven.cu:443] Iteration: 75 ASYNC  INPUT: 852 OUTPUT: 756
+I0226 18:02:01.028005 15380 hybrid_datadriven.cu:440] THROUGHPUT: 123.975 nodes/ms
+I0226 18:02:01.028028 15380 hybrid_datadriven.cu:443] Iteration: 76 ASYNC  INPUT: 756 OUTPUT: 633
+I0226 18:02:01.033255 15380 hybrid_datadriven.cu:440] THROUGHPUT: 121.404 nodes/ms
+I0226 18:02:01.033298 15380 hybrid_datadriven.cu:443] Iteration: 77 ASYNC  INPUT: 633 OUTPUT: 425
+I0226 18:02:01.038223 15380 hybrid_datadriven.cu:440] THROUGHPUT: 86.6993 nodes/ms
+I0226 18:02:01.038246 15380 hybrid_datadriven.cu:443] Iteration: 78 ASYNC  INPUT: 425 OUTPUT: 369
+I0226 18:02:01.045538 15380 hybrid_datadriven.cu:440] THROUGHPUT: 50.7007 nodes/ms
+I0226 18:02:01.045560 15380 hybrid_datadriven.cu:443] Iteration: 79 ASYNC  INPUT: 369 OUTPUT: 294
+I0226 18:02:01.054523 15380 hybrid_datadriven.cu:440] THROUGHPUT: 32.8455 nodes/ms
+I0226 18:02:01.054556 15380 hybrid_datadriven.cu:443] Iteration: 80 ASYNC  INPUT: 294 OUTPUT: 256
+I0226 18:02:01.059346 15380 hybrid_datadriven.cu:440] THROUGHPUT: 53.5901 nodes/ms
+I0226 18:02:01.059378 15380 hybrid_datadriven.cu:443] Iteration: 81 ASYNC  INPUT: 256 OUTPUT: 181
+I0226 18:02:01.063141 15380 hybrid_datadriven.cu:440] THROUGHPUT: 48.5125 nodes/ms
+I0226 18:02:01.063164 15380 hybrid_datadriven.cu:443] Iteration: 82 ASYNC  INPUT: 181 OUTPUT: 82
+I0226 18:02:01.064023 15380 hybrid_datadriven.cu:440] THROUGHPUT: 97.0414 nodes/ms
+I0226 18:02:01.064054 15380 hybrid_datadriven.cu:443] Iteration: 83 ASYNC  INPUT: 82 OUTPUT: 45
+I0226 18:02:01.064574 15380 hybrid_datadriven.cu:440] THROUGHPUT: 88.5827 nodes/ms
+I0226 18:02:01.064596 15380 hybrid_datadriven.cu:443] Iteration: 84 ASYNC  INPUT: 45 OUTPUT: 26
+I0226 18:02:01.064846 15380 hybrid_datadriven.cu:440] THROUGHPUT: 109.705 nodes/ms
+I0226 18:02:01.064867 15380 hybrid_datadriven.cu:443] Iteration: 85 ASYNC  INPUT: 26 OUTPUT: 24
+I0226 18:02:01.065084 15380 hybrid_datadriven.cu:440] THROUGHPUT: 117.647 nodes/ms
+I0226 18:02:01.065105 15380 hybrid_datadriven.cu:443] Iteration: 86 ASYNC  INPUT: 24 OUTPUT: 18
+I0226 18:02:01.065256 15380 hybrid_datadriven.cu:440] THROUGHPUT: 130.435 nodes/ms
+I0226 18:02:01.065279 15380 hybrid_datadriven.cu:443] Iteration: 87 ASYNC  INPUT: 18 OUTPUT: 19
+I0226 18:02:01.065448 15380 hybrid_datadriven.cu:440] THROUGHPUT: 120.253 nodes/ms
+I0226 18:02:01.065479 15380 hybrid_datadriven.cu:443] Iteration: 88 ASYNC  INPUT: 19 OUTPUT: 4
+I0226 18:02:01.065562 15380 hybrid_datadriven.cu:440] THROUGHPUT: 58.8235 nodes/ms
+I0226 18:02:01.065601 15380 hybrid_datadriven.cu:443] Iteration: 89 ASYNC  INPUT: 4 OUTPUT: 4
+I0226 18:02:01.065681 15380 hybrid_datadriven.cu:440] THROUGHPUT: 71.4286 nodes/ms
+I0226 18:02:01.065703 15380 hybrid_datadriven.cu:443] Iteration: 90 ASYNC  INPUT: 4 OUTPUT: 5
+I0226 18:02:01.065765 15380 hybrid_datadriven.cu:440] THROUGHPUT: 121.951 nodes/ms
+I0226 18:02:01.065788 15380 hybrid_datadriven.cu:443] Iteration: 91 ASYNC  INPUT: 5 OUTPUT: 3
+I0226 18:02:01.065888 15380 hybrid_datadriven.cu:440] THROUGHPUT: 37.037 nodes/ms
+I0226 18:02:01.065918 15380 hybrid_datadriven.cu:443] Iteration: 92 ASYNC  INPUT: 3 OUTPUT: 1
+I0226 18:02:01.065968 15380 hybrid_datadriven.cu:440] THROUGHPUT: 27.7778 nodes/ms
+I0226 18:02:01.065999 15380 hybrid_datadriven.cu:443] Iteration: 93 ASYNC  INPUT: 1 OUTPUT: 1
+I0226 18:02:01.066052 15380 hybrid_datadriven.cu:440] THROUGHPUT: 25 nodes/ms
+I0226 18:02:01.066084 15380 hybrid_datadriven.cu:443] Iteration: 94 ASYNC  INPUT: 1 OUTPUT: 0
+I0226 18:02:01.066123 15380 hybrid_datadriven.cu:461] PR terminated after 94 iterations (max: 200, sync: 0, async: 94)
+I0226 18:02:01.066130 15380 hybrid_datadriven.cu:464] PR: 9701.79 ms. <filter>
+I0226 18:02:01.066136 15380 hybrid_datadriven.cu:465] AVG SYNC: -nanms TOTAL ASYNC: 103.126 ms.
+W0226 18:02:01.087926 15380 hybrid_datadriven.cu:477] Result not checked
+I0226 18:02:01.096536 15380 context.h:173] Context status:
+I0226 18:02:01.096549 15380 context.h:351] 		Endpoint map (virtual endpoint, physical device): 
+I0226 18:02:01.096570 15380 context.h:353] 						 (-1, -1)
+I0226 18:02:01.096591 15380 context.h:353] 						 (0, 0)
+I0226 18:02:01.096597 15380 context.h:357] 		Memcpy lanes (endpoint, lane type): 
+I0226 18:02:01.096602 15380 context.h:362] 		Fragmentation: -1
+I0226 18:02:01.096606 15380 context.h:364] 		Event pools (device, events): 
+I0226 18:02:01.096616 15380 context.h:366] 						 (0, 0)
+I0226 18:02:01.109220 15380 app_skeleton.h:227] Overall: Test PASSED
+
+
+
+
+
+I0226 18:03:13.221985 15450 hybrid_datadriven.cu:425] THROUGHPUT: 11852.7 nodes/ms
+I0226 18:03:13.222095 15450 hybrid_datadriven.cu:443] Iteration: 1 SYNC  INPUT: 2097152 OUTPUT: 1544087
+I0226 18:03:13.407449 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8332.09 nodes/ms
+I0226 18:03:13.407551 15450 hybrid_datadriven.cu:443] Iteration: 2 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:13.593323 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8313.3 nodes/ms
+I0226 18:03:13.593396 15450 hybrid_datadriven.cu:443] Iteration: 3 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:13.778832 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8328.32 nodes/ms
+I0226 18:03:13.778911 15450 hybrid_datadriven.cu:443] Iteration: 4 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:13.964699 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8312.09 nodes/ms
+I0226 18:03:13.964762 15450 hybrid_datadriven.cu:443] Iteration: 5 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:14.150494 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8315.09 nodes/ms
+I0226 18:03:14.150614 15450 hybrid_datadriven.cu:443] Iteration: 6 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:14.336470 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8309.27 nodes/ms
+I0226 18:03:14.336562 15450 hybrid_datadriven.cu:443] Iteration: 7 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:14.522011 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8327.82 nodes/ms
+I0226 18:03:14.522078 15450 hybrid_datadriven.cu:443] Iteration: 8 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:14.707852 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8312.63 nodes/ms
+I0226 18:03:14.707914 15450 hybrid_datadriven.cu:443] Iteration: 9 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:14.893333 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8328.63 nodes/ms
+I0226 18:03:14.893409 15450 hybrid_datadriven.cu:443] Iteration: 10 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:15.079272 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8309.54 nodes/ms
+I0226 18:03:15.079339 15450 hybrid_datadriven.cu:443] Iteration: 11 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:15.264662 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8332.99 nodes/ms
+I0226 18:03:15.264742 15450 hybrid_datadriven.cu:443] Iteration: 12 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:15.450479 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8314.73 nodes/ms
+I0226 18:03:15.450587 15450 hybrid_datadriven.cu:443] Iteration: 13 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:15.635938 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8331.64 nodes/ms
+I0226 18:03:15.636004 15450 hybrid_datadriven.cu:443] Iteration: 14 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:15.821857 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8309.14 nodes/ms
+I0226 18:03:15.821944 15450 hybrid_datadriven.cu:443] Iteration: 15 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:16.007335 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8329.89 nodes/ms
+I0226 18:03:16.007439 15450 hybrid_datadriven.cu:443] Iteration: 16 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:16.193235 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8312.13 nodes/ms
+I0226 18:03:16.193310 15450 hybrid_datadriven.cu:443] Iteration: 17 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:16.378682 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8330.84 nodes/ms
+I0226 18:03:16.378762 15450 hybrid_datadriven.cu:443] Iteration: 18 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:16.564568 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8312.04 nodes/ms
+I0226 18:03:16.564642 15450 hybrid_datadriven.cu:443] Iteration: 19 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:16.749925 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8335.15 nodes/ms
+I0226 18:03:16.750010 15450 hybrid_datadriven.cu:443] Iteration: 20 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:16.935858 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8309.81 nodes/ms
+I0226 18:03:16.935930 15450 hybrid_datadriven.cu:443] Iteration: 21 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:17.121307 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8331.33 nodes/ms
+I0226 18:03:17.121397 15450 hybrid_datadriven.cu:443] Iteration: 22 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:17.307225 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8310.7 nodes/ms
+I0226 18:03:17.307313 15450 hybrid_datadriven.cu:443] Iteration: 23 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:17.492718 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8329.71 nodes/ms
+I0226 18:03:17.492805 15450 hybrid_datadriven.cu:443] Iteration: 24 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:17.678581 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8312.98 nodes/ms
+I0226 18:03:17.678664 15450 hybrid_datadriven.cu:443] Iteration: 25 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:17.864007 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8332.45 nodes/ms
+I0226 18:03:17.864081 15450 hybrid_datadriven.cu:443] Iteration: 26 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:18.049790 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8316.39 nodes/ms
+I0226 18:03:18.049877 15450 hybrid_datadriven.cu:443] Iteration: 27 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:18.235342 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8327.11 nodes/ms
+I0226 18:03:18.235425 15450 hybrid_datadriven.cu:443] Iteration: 28 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:18.421231 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8311.73 nodes/ms
+I0226 18:03:18.421310 15450 hybrid_datadriven.cu:443] Iteration: 29 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:18.606525 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8337.81 nodes/ms
+I0226 18:03:18.606600 15450 hybrid_datadriven.cu:443] Iteration: 30 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:18.792536 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8306.23 nodes/ms
+I0226 18:03:18.792613 15450 hybrid_datadriven.cu:443] Iteration: 31 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:18.977912 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8334.84 nodes/ms
+I0226 18:03:18.978006 15450 hybrid_datadriven.cu:443] Iteration: 32 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:19.163866 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8309.32 nodes/ms
+I0226 18:03:19.163951 15450 hybrid_datadriven.cu:443] Iteration: 33 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:19.349133 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8339.79 nodes/ms
+I0226 18:03:19.349211 15450 hybrid_datadriven.cu:443] Iteration: 34 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:19.535097 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8307.71 nodes/ms
+I0226 18:03:19.535168 15450 hybrid_datadriven.cu:443] Iteration: 35 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:19.720437 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8335.42 nodes/ms
+I0226 18:03:19.720500 15450 hybrid_datadriven.cu:443] Iteration: 36 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:19.906322 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8310.52 nodes/ms
+I0226 18:03:19.906385 15450 hybrid_datadriven.cu:443] Iteration: 37 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:20.091684 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8333.98 nodes/ms
+I0226 18:03:20.091749 15450 hybrid_datadriven.cu:443] Iteration: 38 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:20.277609 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8308.82 nodes/ms
+I0226 18:03:20.277678 15450 hybrid_datadriven.cu:443] Iteration: 39 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:20.463019 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8332.14 nodes/ms
+I0226 18:03:20.463088 15450 hybrid_datadriven.cu:443] Iteration: 40 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:20.648941 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8309.14 nodes/ms
+I0226 18:03:20.649014 15450 hybrid_datadriven.cu:443] Iteration: 41 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:20.834300 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8335.47 nodes/ms
+I0226 18:03:20.834383 15450 hybrid_datadriven.cu:443] Iteration: 42 SYNC  INPUT: 1544087 OUTPUT: 1544087
+I0226 18:03:21.020269 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8308.02 nodes/ms
+I0226 18:03:21.020335 15450 hybrid_datadriven.cu:443] Iteration: 43 SYNC  INPUT: 1544087 OUTPUT: 1305792
+I0226 18:03:21.206181 15450 hybrid_datadriven.cu:425] THROUGHPUT: 7027.11 nodes/ms
+I0226 18:03:21.206254 15450 hybrid_datadriven.cu:443] Iteration: 44 SYNC  INPUT: 1305792 OUTPUT: 1305578
+I0226 18:03:21.393844 15450 hybrid_datadriven.cu:425] THROUGHPUT: 6961.34 nodes/ms
+I0226 18:03:21.393915 15450 hybrid_datadriven.cu:443] Iteration: 45 SYNC  INPUT: 1305578 OUTPUT: 1543659
+I0226 18:03:21.580392 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8279.03 nodes/ms
+I0226 18:03:21.580471 15450 hybrid_datadriven.cu:443] Iteration: 46 SYNC  INPUT: 1543659 OUTPUT: 1543872
+I0226 18:03:21.767549 15450 hybrid_datadriven.cu:425] THROUGHPUT: 8253.57 nodes/ms
+I0226 18:03:21.767611 15450 hybrid_datadriven.cu:443] Iteration: 47 SYNC  INPUT: 1543872 OUTPUT: 1306004
+I0226 18:03:21.953505 15450 hybrid_datadriven.cu:425] THROUGHPUT: 7026.44 nodes/ms
+I0226 18:03:21.953573 15450 hybrid_datadriven.cu:443] Iteration: 48 SYNC  INPUT: 1306004 OUTPUT: 1162379
+I0226 18:03:22.139961 15450 hybrid_datadriven.cu:425] THROUGHPUT: 6237.21 nodes/ms
+I0226 18:03:22.140028 15450 hybrid_datadriven.cu:443] Iteration: 49 SYNC  INPUT: 1162379 OUTPUT: 1161912
+I0226 18:03:22.326295 15450 hybrid_datadriven.cu:425] THROUGHPUT: 6238.72 nodes/ms
+I0226 18:03:22.326373 15450 hybrid_datadriven.cu:443] Iteration: 50 SYNC  INPUT: 1161912 OUTPUT: 1207572
+I0226 18:03:22.513262 15450 hybrid_datadriven.cu:425] THROUGHPUT: 6462.93 nodes/ms
+I0226 18:03:22.513365 15450 hybrid_datadriven.cu:443] Iteration: 51 SYNC  INPUT: 1207572 OUTPUT: 1445615
+I0226 18:03:22.700090 15450 hybrid_datadriven.cu:425] THROUGHPUT: 7743.27 nodes/ms
+I0226 18:03:22.700166 15450 hybrid_datadriven.cu:443] Iteration: 52 SYNC  INPUT: 1445615 OUTPUT: 1087409
+I0226 18:03:22.886636 15450 hybrid_datadriven.cu:425] THROUGHPUT: 5832.36 nodes/ms
+I0226 18:03:22.886734 15450 hybrid_datadriven.cu:443] Iteration: 53 SYNC  INPUT: 1087409 OUTPUT: 1021481
+I0226 18:03:23.069527 15450 hybrid_datadriven.cu:425] THROUGHPUT: 5588.98 nodes/ms
+I0226 18:03:23.069614 15450 hybrid_datadriven.cu:443] Iteration: 54 SYNC  INPUT: 1021481 OUTPUT: 1176653
+I0226 18:03:23.253618 15450 hybrid_datadriven.cu:425] THROUGHPUT: 6395.76 nodes/ms
+I0226 18:03:23.253706 15450 hybrid_datadriven.cu:443] Iteration: 55 SYNC  INPUT: 1176653 OUTPUT: 950639
+I0226 18:03:23.435204 15450 hybrid_datadriven.cu:425] THROUGHPUT: 5239.04 nodes/ms
+I0226 18:03:23.435350 15450 hybrid_datadriven.cu:443] Iteration: 56 SYNC  INPUT: 950639 OUTPUT: 1035792
+I0226 18:03:23.616981 15450 hybrid_datadriven.cu:425] THROUGHPUT: 5704.08 nodes/ms
+I0226 18:03:23.617069 15450 hybrid_datadriven.cu:443] Iteration: 57 SYNC  INPUT: 1035792 OUTPUT: 851295
+I0226 18:03:23.796190 15450 hybrid_datadriven.cu:425] THROUGHPUT: 4753.37 nodes/ms
+I0226 18:03:23.796277 15450 hybrid_datadriven.cu:443] Iteration: 58 SYNC  INPUT: 851295 OUTPUT: 896466
+I0226 18:03:23.975375 15450 hybrid_datadriven.cu:425] THROUGHPUT: 5006.12 nodes/ms
+I0226 18:03:23.975472 15450 hybrid_datadriven.cu:443] Iteration: 59 SYNC  INPUT: 896466 OUTPUT: 896531
+I0226 18:03:24.153504 15450 hybrid_datadriven.cu:425] THROUGHPUT: 5036.49 nodes/ms
+I0226 18:03:24.153586 15450 hybrid_datadriven.cu:443] Iteration: 60 SYNC  INPUT: 896531 OUTPUT: 776165
+I0226 18:03:24.333712 15450 hybrid_datadriven.cu:425] THROUGHPUT: 4309.66 nodes/ms
+I0226 18:03:24.333808 15450 hybrid_datadriven.cu:443] Iteration: 61 SYNC  INPUT: 776165 OUTPUT: 807691
+I0226 18:03:24.512122 15450 hybrid_datadriven.cu:425] THROUGHPUT: 4530.41 nodes/ms
+I0226 18:03:24.512208 15450 hybrid_datadriven.cu:443] Iteration: 62 SYNC  INPUT: 807691 OUTPUT: 618772
+I0226 18:03:24.686028 15450 hybrid_datadriven.cu:425] THROUGHPUT: 3560.62 nodes/ms
+I0226 18:03:24.686173 15450 hybrid_datadriven.cu:443] Iteration: 63 SYNC  INPUT: 618772 OUTPUT: 648716
+I0226 18:03:24.860642 15450 hybrid_datadriven.cu:425] THROUGHPUT: 3720.13 nodes/ms
+I0226 18:03:24.860735 15450 hybrid_datadriven.cu:443] Iteration: 64 SYNC  INPUT: 648716 OUTPUT: 658775
+I0226 18:03:25.034796 15450 hybrid_datadriven.cu:425] THROUGHPUT: 3786.15 nodes/ms
+I0226 18:03:25.034884 15450 hybrid_datadriven.cu:443] Iteration: 65 SYNC  INPUT: 658775 OUTPUT: 651409
+I0226 18:03:25.207876 15450 hybrid_datadriven.cu:425] THROUGHPUT: 3766.41 nodes/ms
+I0226 18:03:25.208025 15450 hybrid_datadriven.cu:443] Iteration: 66 SYNC  INPUT: 651409 OUTPUT: 554505
+I0226 18:03:25.381919 15450 hybrid_datadriven.cu:425] THROUGHPUT: 3189.67 nodes/ms
+I0226 18:03:25.382053 15450 hybrid_datadriven.cu:443] Iteration: 67 SYNC  INPUT: 554505 OUTPUT: 478269
+I0226 18:03:25.557703 15450 hybrid_datadriven.cu:425] THROUGHPUT: 2723.27 nodes/ms
+I0226 18:03:25.557793 15450 hybrid_datadriven.cu:443] Iteration: 68 SYNC  INPUT: 478269 OUTPUT: 418032
+I0226 18:03:25.722445 15450 hybrid_datadriven.cu:425] THROUGHPUT: 2539.27 nodes/ms
+I0226 18:03:25.722529 15450 hybrid_datadriven.cu:443] Iteration: 69 SYNC  INPUT: 418032 OUTPUT: 299476
+I0226 18:03:25.883533 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1860.34 nodes/ms
+I0226 18:03:25.883623 15450 hybrid_datadriven.cu:443] Iteration: 70 SYNC  INPUT: 299476 OUTPUT: 363854
+I0226 18:03:26.045439 15450 hybrid_datadriven.cu:425] THROUGHPUT: 2249.01 nodes/ms
+I0226 18:03:26.045526 15450 hybrid_datadriven.cu:443] Iteration: 71 SYNC  INPUT: 363854 OUTPUT: 461256
+I0226 18:03:26.212306 15450 hybrid_datadriven.cu:425] THROUGHPUT: 2766.09 nodes/ms
+I0226 18:03:26.212389 15450 hybrid_datadriven.cu:443] Iteration: 72 SYNC  INPUT: 461256 OUTPUT: 397925
+I0226 18:03:26.375919 15450 hybrid_datadriven.cu:425] THROUGHPUT: 2433.72 nodes/ms
+I0226 18:03:26.376006 15450 hybrid_datadriven.cu:443] Iteration: 73 SYNC  INPUT: 397925 OUTPUT: 303236
+I0226 18:03:26.537129 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1882.33 nodes/ms
+I0226 18:03:26.537212 15450 hybrid_datadriven.cu:443] Iteration: 74 SYNC  INPUT: 303236 OUTPUT: 253429
+I0226 18:03:26.690722 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1651.15 nodes/ms
+I0226 18:03:26.690814 15450 hybrid_datadriven.cu:443] Iteration: 75 SYNC  INPUT: 253429 OUTPUT: 171263
+I0226 18:03:26.832681 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1207.41 nodes/ms
+I0226 18:03:26.832746 15450 hybrid_datadriven.cu:443] Iteration: 76 SYNC  INPUT: 171263 OUTPUT: 151769
+I0226 18:03:26.965616 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1142.59 nodes/ms
+I0226 18:03:26.965687 15450 hybrid_datadriven.cu:443] Iteration: 77 SYNC  INPUT: 151769 OUTPUT: 218468
+I0226 18:03:27.116129 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1452.4 nodes/ms
+I0226 18:03:27.116214 15450 hybrid_datadriven.cu:443] Iteration: 78 SYNC  INPUT: 218468 OUTPUT: 229600
+I0226 18:03:27.273278 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1462.04 nodes/ms
+I0226 18:03:27.273344 15450 hybrid_datadriven.cu:443] Iteration: 79 SYNC  INPUT: 229600 OUTPUT: 191760
+I0226 18:03:27.415737 15450 hybrid_datadriven.cu:425] THROUGHPUT: 1346.91 nodes/ms
+I0226 18:03:27.415817 15450 hybrid_datadriven.cu:443] Iteration: 80 SYNC  INPUT: 191760 OUTPUT: 126560
+I0226 18:03:27.553462 15450 hybrid_datadriven.cu:425] THROUGHPUT: 919.627 nodes/ms
+I0226 18:03:27.553547 15450 hybrid_datadriven.cu:443] Iteration: 81 SYNC  INPUT: 126560 OUTPUT: 87303
+I0226 18:03:27.664433 15450 hybrid_datadriven.cu:425] THROUGHPUT: 787.564 nodes/ms
+I0226 18:03:27.664503 15450 hybrid_datadriven.cu:443] Iteration: 82 SYNC  INPUT: 87303 OUTPUT: 65849
+I0226 18:03:27.767841 15450 hybrid_datadriven.cu:425] THROUGHPUT: 637.361 nodes/ms
+I0226 18:03:27.767916 15450 hybrid_datadriven.cu:443] Iteration: 83 SYNC  INPUT: 65849 OUTPUT: 82875
+I0226 18:03:27.892371 15450 hybrid_datadriven.cu:425] THROUGHPUT: 666.123 nodes/ms
+I0226 18:03:27.892439 15450 hybrid_datadriven.cu:443] Iteration: 84 SYNC  INPUT: 82875 OUTPUT: 92279
+I0226 18:03:28.020156 15450 hybrid_datadriven.cu:425] THROUGHPUT: 722.669 nodes/ms
+I0226 18:03:28.020231 15450 hybrid_datadriven.cu:443] Iteration: 85 SYNC  INPUT: 92279 OUTPUT: 80475
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I0226 20:01:02.735877 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 5404.49 nodes/ms
+I0226 20:01:02.736593 19791 hybrid_topodriven.cu:402] Checking... SUM: 621293 Relative SUM: 0.296256
+I0226 20:01:02.736608 19791 hybrid_topodriven.cu:422] Iteration: 1
+I0226 20:01:02.911983 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959 nodes/ms
+I0226 20:01:02.912657 19791 hybrid_topodriven.cu:402] Checking... SUM: 884568 Relative SUM: 0.421795
+I0226 20:01:02.912674 19791 hybrid_topodriven.cu:407] X FACTOR: 1501.32
+I0226 20:01:02.912678 19791 hybrid_topodriven.cu:422] Iteration: 2
+I0226 20:01:03.088140 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11952.9 nodes/ms
+I0226 20:01:03.088829 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.08317e+06 Relative SUM: 0.516498
+I0226 20:01:03.088841 19791 hybrid_topodriven.cu:407] X FACTOR: 1131.97
+I0226 20:01:03.088846 19791 hybrid_topodriven.cu:422] Iteration: 3
+I0226 20:01:03.264283 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11954.7 nodes/ms
+I0226 20:01:03.264986 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.22908e+06 Relative SUM: 0.586071
+I0226 20:01:03.264999 19791 hybrid_topodriven.cu:407] X FACTOR: 831.722
+I0226 20:01:03.265013 19791 hybrid_topodriven.cu:422] Iteration: 4
+I0226 20:01:03.440518 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11950.8 nodes/ms
+I0226 20:01:03.441303 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.33586e+06 Relative SUM: 0.636986
+I0226 20:01:03.441315 19791 hybrid_topodriven.cu:407] X FACTOR: 608.485
+I0226 20:01:03.441329 19791 hybrid_topodriven.cu:422] Iteration: 5
+I0226 20:01:03.616770 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11954.4 nodes/ms
+I0226 20:01:03.617445 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.41398e+06 Relative SUM: 0.67424
+I0226 20:01:03.617457 19791 hybrid_topodriven.cu:407] X FACTOR: 445.341
+I0226 20:01:03.617462 19791 hybrid_topodriven.cu:422] Iteration: 6
+I0226 20:01:03.792865 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11957 nodes/ms
+I0226 20:01:03.793550 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.47115e+06 Relative SUM: 0.701498
+I0226 20:01:03.793562 19791 hybrid_topodriven.cu:407] X FACTOR: 325.924
+I0226 20:01:03.793567 19791 hybrid_topodriven.cu:422] Iteration: 7
+I0226 20:01:03.968935 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959.4 nodes/ms
+I0226 20:01:03.969621 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.51297e+06 Relative SUM: 0.721442
+I0226 20:01:03.969633 19791 hybrid_topodriven.cu:407] X FACTOR: 238.523
+I0226 20:01:03.969647 19791 hybrid_topodriven.cu:422] Iteration: 8
+I0226 20:01:04.145006 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11960 nodes/ms
+I0226 20:01:04.145696 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.54358e+06 Relative SUM: 0.736035
+I0226 20:01:04.145709 19791 hybrid_topodriven.cu:407] X FACTOR: 174.538
+I0226 20:01:04.145712 19791 hybrid_topodriven.cu:422] Iteration: 9
+I0226 20:01:04.321060 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11960.8 nodes/ms
+I0226 20:01:04.321765 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.56597e+06 Relative SUM: 0.746714
+I0226 20:01:04.321779 19791 hybrid_topodriven.cu:407] X FACTOR: 127.718
+I0226 20:01:04.321782 19791 hybrid_topodriven.cu:422] Iteration: 10
+I0226 20:01:04.497148 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959.6 nodes/ms
+I0226 20:01:04.498111 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.58236e+06 Relative SUM: 0.754527
+I0226 20:01:04.498133 19791 hybrid_topodriven.cu:407] X FACTOR: 93.4418
+I0226 20:01:04.498137 19791 hybrid_topodriven.cu:422] Iteration: 11
+I0226 20:01:04.673509 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959.2 nodes/ms
+I0226 20:01:04.674187 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.59435e+06 Relative SUM: 0.760244
+I0226 20:01:04.674199 19791 hybrid_topodriven.cu:407] X FACTOR: 68.3695
+I0226 20:01:04.674204 19791 hybrid_topodriven.cu:422] Iteration: 12
+I0226 20:01:04.849628 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11955.6 nodes/ms
+I0226 20:01:04.850345 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.60312e+06 Relative SUM: 0.764427
+I0226 20:01:04.850358 19791 hybrid_topodriven.cu:407] X FACTOR: 50.0098
+I0226 20:01:04.850371 19791 hybrid_topodriven.cu:422] Iteration: 13
+I0226 20:01:05.025801 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11955.2 nodes/ms
+I0226 20:01:05.026491 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.60954e+06 Relative SUM: 0.767487
+I0226 20:01:05.026504 19791 hybrid_topodriven.cu:407] X FACTOR: 36.5905
+I0226 20:01:05.026510 19791 hybrid_topodriven.cu:422] Iteration: 14
+I0226 20:01:05.201944 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11954.8 nodes/ms
+I0226 20:01:05.202638 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.61423e+06 Relative SUM: 0.769727
+I0226 20:01:05.202651 19791 hybrid_topodriven.cu:407] X FACTOR: 26.7733
+I0226 20:01:05.202654 19791 hybrid_topodriven.cu:422] Iteration: 15
+I0226 20:01:05.378005 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11960.6 nodes/ms
+I0226 20:01:05.378676 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.61767e+06 Relative SUM: 0.771365
+I0226 20:01:05.378688 19791 hybrid_topodriven.cu:407] X FACTOR: 19.6001
+I0226 20:01:05.378692 19791 hybrid_topodriven.cu:422] Iteration: 16
+I0226 20:01:05.553997 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11963.6 nodes/ms
+I0226 20:01:05.554693 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62019e+06 Relative SUM: 0.772564
+I0226 20:01:05.554707 19791 hybrid_topodriven.cu:407] X FACTOR: 14.3448
+I0226 20:01:05.554719 19791 hybrid_topodriven.cu:422] Iteration: 17
+I0226 20:01:05.730113 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11957.8 nodes/ms
+I0226 20:01:05.730794 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62203e+06 Relative SUM: 0.773442
+I0226 20:01:05.730806 19791 hybrid_topodriven.cu:407] X FACTOR: 10.4916
+I0226 20:01:05.730811 19791 hybrid_topodriven.cu:422] Iteration: 18
+I0226 20:01:05.906227 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11956.1 nodes/ms
+I0226 20:01:05.906901 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62337e+06 Relative SUM: 0.774084
+I0226 20:01:05.906913 19791 hybrid_topodriven.cu:407] X FACTOR: 7.67528
+I0226 20:01:05.906918 19791 hybrid_topodriven.cu:422] Iteration: 19
+I0226 20:01:06.082284 19791 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959.5 nodes/ms
+I0226 20:01:06.082962 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62436e+06 Relative SUM: 0.774554
+I0226 20:01:06.082975 19791 hybrid_topodriven.cu:407] X FACTOR: 5.61767
+I0226 20:01:06.082979 19791 hybrid_topodriven.cu:422] Iteration: 20
+I0226 20:01:06.257769 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11999.1 nodes/ms
+I0226 20:01:06.258478 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62476e+06 Relative SUM: 0.774746
+I0226 20:01:06.258491 19791 hybrid_topodriven.cu:407] X FACTOR: 2.30544
+I0226 20:01:06.258496 19791 hybrid_topodriven.cu:422] Iteration: 21
+I0226 20:01:06.433884 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11957.9 nodes/ms
+I0226 20:01:06.434543 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.6251e+06 Relative SUM: 0.774909
+I0226 20:01:06.434556 19791 hybrid_topodriven.cu:407] X FACTOR: 1.95343
+I0226 20:01:06.434561 19791 hybrid_topodriven.cu:422] Iteration: 22
+I0226 20:01:06.610277 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11935.6 nodes/ms
+I0226 20:01:06.611032 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62539e+06 Relative SUM: 0.775048
+I0226 20:01:06.611044 19791 hybrid_topodriven.cu:407] X FACTOR: 1.65682
+I0226 20:01:06.611057 19791 hybrid_topodriven.cu:422] Iteration: 23
+I0226 20:01:06.786442 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.3 nodes/ms
+I0226 20:01:06.787115 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62564e+06 Relative SUM: 0.775166
+I0226 20:01:06.787127 19791 hybrid_topodriven.cu:407] X FACTOR: 1.41108
+I0226 20:01:06.787132 19791 hybrid_topodriven.cu:422] Iteration: 24
+I0226 20:01:06.962828 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11936.9 nodes/ms
+I0226 20:01:06.963501 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62585e+06 Relative SUM: 0.775266
+I0226 20:01:06.963513 19791 hybrid_topodriven.cu:407] X FACTOR: 1.19712
+I0226 20:01:06.963517 19791 hybrid_topodriven.cu:422] Iteration: 25
+I0226 20:01:07.138861 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11961.1 nodes/ms
+I0226 20:01:07.139570 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62603e+06 Relative SUM: 0.775351
+I0226 20:01:07.139583 19791 hybrid_topodriven.cu:407] X FACTOR: 1.01948
+I0226 20:01:07.139587 19791 hybrid_topodriven.cu:422] Iteration: 26
+I0226 20:01:07.315276 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.5 nodes/ms
+I0226 20:01:07.315992 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62618e+06 Relative SUM: 0.775424
+I0226 20:01:07.316004 19791 hybrid_topodriven.cu:407] X FACTOR: 0.865026
+I0226 20:01:07.316009 19791 hybrid_topodriven.cu:422] Iteration: 27
+I0226 20:01:07.491392 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.3 nodes/ms
+I0226 20:01:07.492100 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62631e+06 Relative SUM: 0.775485
+I0226 20:01:07.492122 19791 hybrid_topodriven.cu:407] X FACTOR: 0.736421
+I0226 20:01:07.492127 19791 hybrid_topodriven.cu:422] Iteration: 28
+I0226 20:01:07.667821 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11938 nodes/ms
+I0226 20:01:07.668536 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62642e+06 Relative SUM: 0.775538
+I0226 20:01:07.668550 19791 hybrid_topodriven.cu:407] X FACTOR: 0.625182
+I0226 20:01:07.668563 19791 hybrid_topodriven.cu:422] Iteration: 29
+I0226 20:01:07.844018 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11953.5 nodes/ms
+I0226 20:01:07.844693 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62651e+06 Relative SUM: 0.775582
+I0226 20:01:07.844705 19791 hybrid_topodriven.cu:407] X FACTOR: 0.531726
+I0226 20:01:07.844709 19791 hybrid_topodriven.cu:422] Iteration: 30
+I0226 20:01:08.020376 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11939 nodes/ms
+I0226 20:01:08.021072 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62659e+06 Relative SUM: 0.77562
+I0226 20:01:08.021085 19791 hybrid_topodriven.cu:407] X FACTOR: 0.451871
+I0226 20:01:08.021088 19791 hybrid_topodriven.cu:422] Iteration: 31
+I0226 20:01:08.196455 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11959.5 nodes/ms
+I0226 20:01:08.197163 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62666e+06 Relative SUM: 0.775652
+I0226 20:01:08.197175 19791 hybrid_topodriven.cu:407] X FACTOR: 0.384574
+I0226 20:01:08.197180 19791 hybrid_topodriven.cu:422] Iteration: 32
+I0226 20:01:08.372876 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937 nodes/ms
+I0226 20:01:08.373553 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62672e+06 Relative SUM: 0.77568
+I0226 20:01:08.373565 19791 hybrid_topodriven.cu:407] X FACTOR: 0.326624
+I0226 20:01:08.373569 19791 hybrid_topodriven.cu:422] Iteration: 33
+I0226 20:01:08.548962 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11957.6 nodes/ms
+I0226 20:01:08.549635 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62677e+06 Relative SUM: 0.775703
+I0226 20:01:08.549648 19791 hybrid_topodriven.cu:407] X FACTOR: 0.277874
+I0226 20:01:08.549651 19791 hybrid_topodriven.cu:422] Iteration: 34
+I0226 20:01:08.725412 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11932.7 nodes/ms
+I0226 20:01:08.726161 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62681e+06 Relative SUM: 0.775723
+I0226 20:01:08.726172 19791 hybrid_topodriven.cu:407] X FACTOR: 0.235559
+I0226 20:01:08.726186 19791 hybrid_topodriven.cu:422] Iteration: 35
+I0226 20:01:08.901576 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11957.9 nodes/ms
+I0226 20:01:08.902293 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62684e+06 Relative SUM: 0.775739
+I0226 20:01:08.902307 19791 hybrid_topodriven.cu:407] X FACTOR: 0.200874
+I0226 20:01:08.902310 19791 hybrid_topodriven.cu:422] Iteration: 36
+I0226 20:01:09.078053 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11933.8 nodes/ms
+I0226 20:01:09.078742 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62687e+06 Relative SUM: 0.775754
+I0226 20:01:09.078754 19791 hybrid_topodriven.cu:407] X FACTOR: 0.170141
+I0226 20:01:09.078758 19791 hybrid_topodriven.cu:422] Iteration: 37
+I0226 20:01:09.254106 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11960.7 nodes/ms
+I0226 20:01:09.254770 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.6269e+06 Relative SUM: 0.775766
+I0226 20:01:09.254783 19791 hybrid_topodriven.cu:407] X FACTOR: 0.145188
+I0226 20:01:09.254792 19791 hybrid_topodriven.cu:422] Iteration: 38
+I0226 20:01:09.430434 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11940.9 nodes/ms
+I0226 20:01:09.431102 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62692e+06 Relative SUM: 0.775776
+I0226 20:01:09.431113 19791 hybrid_topodriven.cu:407] X FACTOR: 0.122858
+I0226 20:01:09.431118 19791 hybrid_topodriven.cu:422] Iteration: 39
+I0226 20:01:09.606425 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11963.5 nodes/ms
+I0226 20:01:09.607131 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62694e+06 Relative SUM: 0.775785
+I0226 20:01:09.607142 19791 hybrid_topodriven.cu:407] X FACTOR: 0.104564
+I0226 20:01:09.607146 19791 hybrid_topodriven.cu:422] Iteration: 40
+I0226 20:01:09.782881 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11934.4 nodes/ms
+I0226 20:01:09.783583 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62695e+06 Relative SUM: 0.775792
+I0226 20:01:09.783596 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0886442
+I0226 20:01:09.783608 19791 hybrid_topodriven.cu:422] Iteration: 41
+I0226 20:01:09.958966 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11960.1 nodes/ms
+I0226 20:01:09.959686 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62697e+06 Relative SUM: 0.775799
+I0226 20:01:09.959697 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0754471
+I0226 20:01:09.959712 19791 hybrid_topodriven.cu:422] Iteration: 42
+I0226 20:01:10.135412 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11936.7 nodes/ms
+I0226 20:01:10.136096 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62698e+06 Relative SUM: 0.775804
+I0226 20:01:10.136108 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0641102
+I0226 20:01:10.136112 19791 hybrid_topodriven.cu:422] Iteration: 43
+I0226 20:01:10.311424 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11963.2 nodes/ms
+I0226 20:01:10.312106 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62699e+06 Relative SUM: 0.775809
+I0226 20:01:10.312119 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0548058
+I0226 20:01:10.312122 19791 hybrid_topodriven.cu:422] Iteration: 44
+I0226 20:01:10.487777 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11939.8 nodes/ms
+I0226 20:01:10.488456 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.627e+06 Relative SUM: 0.775813
+I0226 20:01:10.488467 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0463275
+I0226 20:01:10.488471 19791 hybrid_topodriven.cu:422] Iteration: 45
+I0226 20:01:10.663853 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.4 nodes/ms
+I0226 20:01:10.664515 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.627e+06 Relative SUM: 0.775816
+I0226 20:01:10.664527 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0395975
+I0226 20:01:10.664531 19791 hybrid_topodriven.cu:422] Iteration: 46
+I0226 20:01:10.840170 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11940.9 nodes/ms
+I0226 20:01:10.840814 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62701e+06 Relative SUM: 0.775819
+I0226 20:01:10.840826 19791 hybrid_topodriven.cu:407] X FACTOR: 0.033225
+I0226 20:01:10.840831 19791 hybrid_topodriven.cu:422] Iteration: 47
+I0226 20:01:11.016194 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11960.1 nodes/ms
+I0226 20:01:11.017076 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62701e+06 Relative SUM: 0.775821
+I0226 20:01:11.017091 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0283398
+I0226 20:01:11.017094 19791 hybrid_topodriven.cu:422] Iteration: 48
+I0226 20:01:11.192798 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11936.5 nodes/ms
+I0226 20:01:11.193529 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62702e+06 Relative SUM: 0.775823
+I0226 20:01:11.193542 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0240588
+I0226 20:01:11.193547 19791 hybrid_topodriven.cu:422] Iteration: 49
+I0226 20:01:11.368885 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11961.4 nodes/ms
+I0226 20:01:11.369539 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62702e+06 Relative SUM: 0.775825
+I0226 20:01:11.369551 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0204916
+I0226 20:01:11.369555 19791 hybrid_topodriven.cu:422] Iteration: 50
+I0226 20:01:11.545245 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.4 nodes/ms
+I0226 20:01:11.545912 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775826
+I0226 20:01:11.545923 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0173135
+I0226 20:01:11.545928 19791 hybrid_topodriven.cu:422] Iteration: 51
+I0226 20:01:11.721295 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11959.4 nodes/ms
+I0226 20:01:11.721951 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775827
+I0226 20:01:11.721962 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0151536
+I0226 20:01:11.721966 19791 hybrid_topodriven.cu:422] Iteration: 52
+I0226 20:01:11.897563 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11943.8 nodes/ms
+I0226 20:01:11.898241 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775829
+I0226 20:01:11.898253 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0128433
+I0226 20:01:11.898257 19791 hybrid_topodriven.cu:422] Iteration: 53
+I0226 20:01:12.073599 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11961.2 nodes/ms
+I0226 20:01:12.074290 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775829
+I0226 20:01:12.074302 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0107958
+I0226 20:01:12.074306 19791 hybrid_topodriven.cu:422] Iteration: 54
+I0226 20:01:12.249933 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11941.8 nodes/ms
+I0226 20:01:12.250610 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.77583
+I0226 20:01:12.250622 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00924795
+I0226 20:01:12.250625 19791 hybrid_topodriven.cu:422] Iteration: 55
+I0226 20:01:12.426066 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11954.4 nodes/ms
+I0226 20:01:12.426743 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775831
+I0226 20:01:12.426754 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00779798
+I0226 20:01:12.426759 19791 hybrid_topodriven.cu:422] Iteration: 56
+I0226 20:01:12.602490 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11934.6 nodes/ms
+I0226 20:01:12.603163 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775831
+I0226 20:01:12.603175 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00653682
+I0226 20:01:12.603179 19791 hybrid_topodriven.cu:422] Iteration: 57
+I0226 20:01:12.778590 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11956.5 nodes/ms
+I0226 20:01:12.779271 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775832
+I0226 20:01:12.779283 19791 hybrid_topodriven.cu:407] X FACTOR: 0.0057473
+I0226 20:01:12.779296 19791 hybrid_topodriven.cu:422] Iteration: 58
+I0226 20:01:12.954991 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.2 nodes/ms
+I0226 20:01:12.955652 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775832
+I0226 20:01:12.955665 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00482386
+I0226 20:01:12.955670 19791 hybrid_topodriven.cu:422] Iteration: 59
+I0226 20:01:13.131078 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11956.8 nodes/ms
+I0226 20:01:13.131765 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:01:13.131778 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00392217
+I0226 20:01:13.131781 19791 hybrid_topodriven.cu:422] Iteration: 60
+I0226 20:01:13.307529 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11933.5 nodes/ms
+I0226 20:01:13.308217 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:01:13.308229 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00309358
+I0226 20:01:13.308233 19791 hybrid_topodriven.cu:422] Iteration: 61
+I0226 20:01:13.483552 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11962.7 nodes/ms
+I0226 20:01:13.484243 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:01:13.484256 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00322724
+I0226 20:01:13.484261 19791 hybrid_topodriven.cu:422] Iteration: 62
+I0226 20:01:13.659935 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11938.5 nodes/ms
+I0226 20:01:13.660590 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:01:13.660603 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00214888
+I0226 20:01:13.660607 19791 hybrid_topodriven.cu:422] Iteration: 63
+I0226 20:01:13.836022 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11956.1 nodes/ms
+I0226 20:01:13.836694 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:01:13.836706 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00215174
+I0226 20:01:13.836710 19791 hybrid_topodriven.cu:422] Iteration: 64
+I0226 20:01:14.012302 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11944.1 nodes/ms
+I0226 20:01:14.012964 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:01:14.012975 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00178689
+I0226 20:01:14.012979 19791 hybrid_topodriven.cu:422] Iteration: 65
+I0226 20:01:14.188366 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.1 nodes/ms
+I0226 20:01:14.189044 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:01:14.189056 19791 hybrid_topodriven.cu:407] X FACTOR: 0.001173
+I0226 20:01:14.189060 19791 hybrid_topodriven.cu:422] Iteration: 66
+I0226 20:01:14.364902 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11927.2 nodes/ms
+I0226 20:01:14.365576 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:01:14.365587 19791 hybrid_topodriven.cu:407] X FACTOR: 0.00111807
+I0226 20:01:14.365592 19791 hybrid_topodriven.cu:422] Iteration: 67
+I0226 20:01:14.540871 19791 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11965.3 nodes/ms
+I0226 20:01:14.541556 19791 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:01:14.541568 19791 hybrid_topodriven.cu:407] X FACTOR: 0.000773255
+I0226 20:01:14.541574 19791 hybrid_topodriven.cu:413] Threshold reached
+I0226 20:01:14.541607 19791 hybrid_topodriven.cu:427] PR terminated after 67 iterations (max: 200, sync: 48, async: 19)
+I0226 20:01:14.541615 19791 hybrid_topodriven.cu:430] PR: 12194.3 ms. <filter>
+I0226 20:01:14.541628 19791 hybrid_topodriven.cu:431] AVG SYNC: 175.501ms TOTAL ASYNC: 195.808 ms.
+W0226 20:01:14.563175 19791 hybrid_topodriven.cu:443] Result not checked
+I0226 20:01:14.564429 19791 context.h:173] Context status:
+I0226 20:01:14.564438 19791 context.h:351] 		Endpoint map (virtual endpoint, physical device): 
+I0226 20:01:14.564471 19791 context.h:353] 						 (-1, -1)
+I0226 20:01:14.564482 19791 context.h:353] 						 (0, 0)
+I0226 20:01:14.564497 19791 context.h:357] 		Memcpy lanes (endpoint, lane type): 
+I0226 20:01:14.564518 19791 context.h:362] 		Fragmentation: -1
+I0226 20:01:14.564522 19791 context.h:364] 		Event pools (device, events): 
+I0226 20:01:14.564530 19791 context.h:366] 						 (0, 0)
+I0226 20:01:14.577155 19791 app_skeleton.h:227] Overall: Test PASSED
+
+
+
+
+I0226 20:03:29.829643 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 5417.4 nodes/ms
+I0226 20:03:29.830353 19914 hybrid_topodriven.cu:402] Checking... SUM: 621302 Relative SUM: 0.29626
+I0226 20:03:29.830366 19914 hybrid_topodriven.cu:422] Iteration: 1
+I0226 20:03:30.005741 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959.5 nodes/ms
+I0226 20:03:30.006516 19914 hybrid_topodriven.cu:402] Checking... SUM: 884573 Relative SUM: 0.421797
+I0226 20:03:30.006528 19914 hybrid_topodriven.cu:407] X FACTOR: 1501.37
+I0226 20:03:30.006542 19914 hybrid_topodriven.cu:422] Iteration: 2
+I0226 20:03:30.181972 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11955.3 nodes/ms
+I0226 20:03:30.182684 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.08317e+06 Relative SUM: 0.516498
+I0226 20:03:30.182696 19914 hybrid_topodriven.cu:407] X FACTOR: 1132.18
+I0226 20:03:30.182710 19914 hybrid_topodriven.cu:422] Iteration: 3
+I0226 20:03:30.358100 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11958 nodes/ms
+I0226 20:03:30.358850 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.22908e+06 Relative SUM: 0.586072
+I0226 20:03:30.358861 19914 hybrid_topodriven.cu:407] X FACTOR: 831.965
+I0226 20:03:30.358875 19914 hybrid_topodriven.cu:422] Iteration: 4
+I0226 20:03:30.534274 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11957.4 nodes/ms
+I0226 20:03:30.535014 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.33586e+06 Relative SUM: 0.636988
+I0226 20:03:30.535027 19914 hybrid_topodriven.cu:407] X FACTOR: 608.814
+I0226 20:03:30.535040 19914 hybrid_topodriven.cu:422] Iteration: 5
+I0226 20:03:30.710491 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11953.8 nodes/ms
+I0226 20:03:30.711222 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.41398e+06 Relative SUM: 0.67424
+I0226 20:03:30.711233 19914 hybrid_topodriven.cu:407] X FACTOR: 445.311
+I0226 20:03:30.711238 19914 hybrid_topodriven.cu:422] Iteration: 6
+I0226 20:03:30.886646 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11956.9 nodes/ms
+I0226 20:03:30.887481 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.47115e+06 Relative SUM: 0.701498
+I0226 20:03:30.887500 19914 hybrid_topodriven.cu:407] X FACTOR: 325.919
+I0226 20:03:30.887511 19914 hybrid_topodriven.cu:422] Iteration: 7
+I0226 20:03:31.062942 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11955.4 nodes/ms
+I0226 20:03:31.063695 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.51298e+06 Relative SUM: 0.721443
+I0226 20:03:31.063706 19914 hybrid_topodriven.cu:407] X FACTOR: 238.446
+I0226 20:03:31.063720 19914 hybrid_topodriven.cu:422] Iteration: 8
+I0226 20:03:31.239110 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11958 nodes/ms
+I0226 20:03:31.239820 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.54358e+06 Relative SUM: 0.736036
+I0226 20:03:31.239831 19914 hybrid_topodriven.cu:407] X FACTOR: 174.508
+I0226 20:03:31.239845 19914 hybrid_topodriven.cu:422] Iteration: 9
+I0226 20:03:31.415328 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11951.6 nodes/ms
+I0226 20:03:31.416059 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.56597e+06 Relative SUM: 0.746714
+I0226 20:03:31.416071 19914 hybrid_topodriven.cu:407] X FACTOR: 127.616
+I0226 20:03:31.416086 19914 hybrid_topodriven.cu:422] Iteration: 10
+I0226 20:03:31.591502 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11956.2 nodes/ms
+I0226 20:03:31.592243 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.58236e+06 Relative SUM: 0.754527
+I0226 20:03:31.592257 19914 hybrid_topodriven.cu:407] X FACTOR: 93.4127
+I0226 20:03:31.592260 19914 hybrid_topodriven.cu:422] Iteration: 11
+I0226 20:03:31.767657 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11958.2 nodes/ms
+I0226 20:03:31.768375 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.59435e+06 Relative SUM: 0.760244
+I0226 20:03:31.768388 19914 hybrid_topodriven.cu:407] X FACTOR: 68.3631
+I0226 20:03:31.768393 19914 hybrid_topodriven.cu:422] Iteration: 12
+I0226 20:03:31.943775 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11959.1 nodes/ms
+I0226 20:03:31.944502 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.60312e+06 Relative SUM: 0.764427
+I0226 20:03:31.944514 19914 hybrid_topodriven.cu:407] X FACTOR: 50.0245
+I0226 20:03:31.944528 19914 hybrid_topodriven.cu:422] Iteration: 13
+I0226 20:03:32.119966 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11954.8 nodes/ms
+I0226 20:03:32.120653 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.60954e+06 Relative SUM: 0.767488
+I0226 20:03:32.120666 19914 hybrid_topodriven.cu:407] X FACTOR: 36.5899
+I0226 20:03:32.120679 19914 hybrid_topodriven.cu:422] Iteration: 14
+I0226 20:03:32.296110 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11955.1 nodes/ms
+I0226 20:03:32.296773 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.61423e+06 Relative SUM: 0.769727
+I0226 20:03:32.296785 19914 hybrid_topodriven.cu:407] X FACTOR: 26.7739
+I0226 20:03:32.296798 19914 hybrid_topodriven.cu:422] Iteration: 15
+I0226 20:03:32.472122 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11962.3 nodes/ms
+I0226 20:03:32.472784 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.61767e+06 Relative SUM: 0.771366
+I0226 20:03:32.472795 19914 hybrid_topodriven.cu:407] X FACTOR: 19.6027
+I0226 20:03:32.472800 19914 hybrid_topodriven.cu:422] Iteration: 16
+I0226 20:03:32.648197 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11957.3 nodes/ms
+I0226 20:03:32.648855 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62019e+06 Relative SUM: 0.772565
+I0226 20:03:32.648867 19914 hybrid_topodriven.cu:407] X FACTOR: 14.3368
+I0226 20:03:32.648871 19914 hybrid_topodriven.cu:422] Iteration: 17
+I0226 20:03:32.824280 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11956.5 nodes/ms
+I0226 20:03:32.824890 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62203e+06 Relative SUM: 0.773442
+I0226 20:03:32.824901 19914 hybrid_topodriven.cu:407] X FACTOR: 10.4895
+I0226 20:03:32.824906 19914 hybrid_topodriven.cu:422] Iteration: 18
+I0226 20:03:33.000285 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11958.6 nodes/ms
+I0226 20:03:33.000942 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62337e+06 Relative SUM: 0.774084
+I0226 20:03:33.000954 19914 hybrid_topodriven.cu:407] X FACTOR: 7.6764
+I0226 20:03:33.000958 19914 hybrid_topodriven.cu:422] Iteration: 19
+I0226 20:03:33.176357 19914 hybrid_topodriven.cu:379] ASYNC THROUGHPUT: 11957.1 nodes/ms
+I0226 20:03:33.176954 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62436e+06 Relative SUM: 0.774554
+I0226 20:03:33.176966 19914 hybrid_topodriven.cu:407] X FACTOR: 5.61668
+I0226 20:03:33.176970 19914 hybrid_topodriven.cu:422] Iteration: 20
+I0226 20:03:33.351791 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11996.9 nodes/ms
+I0226 20:03:33.352444 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62476e+06 Relative SUM: 0.774746
+I0226 20:03:33.352457 19914 hybrid_topodriven.cu:407] X FACTOR: 2.30509
+I0226 20:03:33.352460 19914 hybrid_topodriven.cu:422] Iteration: 21
+I0226 20:03:33.527796 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11961.6 nodes/ms
+I0226 20:03:33.528447 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.6251e+06 Relative SUM: 0.774909
+I0226 20:03:33.528460 19914 hybrid_topodriven.cu:407] X FACTOR: 1.95338
+I0226 20:03:33.528463 19914 hybrid_topodriven.cu:422] Iteration: 22
+I0226 20:03:33.704174 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11936 nodes/ms
+I0226 20:03:33.704830 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62539e+06 Relative SUM: 0.775048
+I0226 20:03:33.704841 19914 hybrid_topodriven.cu:407] X FACTOR: 1.6569
+I0226 20:03:33.704845 19914 hybrid_topodriven.cu:422] Iteration: 23
+I0226 20:03:33.880213 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11959.3 nodes/ms
+I0226 20:03:33.880803 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62564e+06 Relative SUM: 0.775166
+I0226 20:03:33.880815 19914 hybrid_topodriven.cu:407] X FACTOR: 1.41121
+I0226 20:03:33.880818 19914 hybrid_topodriven.cu:422] Iteration: 24
+I0226 20:03:34.056442 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11942 nodes/ms
+I0226 20:03:34.057114 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62585e+06 Relative SUM: 0.775266
+I0226 20:03:34.057127 19914 hybrid_topodriven.cu:407] X FACTOR: 1.19763
+I0226 20:03:34.057132 19914 hybrid_topodriven.cu:422] Iteration: 25
+I0226 20:03:34.232506 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.9 nodes/ms
+I0226 20:03:34.233176 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62603e+06 Relative SUM: 0.775352
+I0226 20:03:34.233187 19914 hybrid_topodriven.cu:407] X FACTOR: 1.01928
+I0226 20:03:34.233191 19914 hybrid_topodriven.cu:422] Iteration: 26
+I0226 20:03:34.408841 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11940.1 nodes/ms
+I0226 20:03:34.409540 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62618e+06 Relative SUM: 0.775424
+I0226 20:03:34.409552 19914 hybrid_topodriven.cu:407] X FACTOR: 0.865193
+I0226 20:03:34.409557 19914 hybrid_topodriven.cu:422] Iteration: 27
+I0226 20:03:34.584959 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11957.6 nodes/ms
+I0226 20:03:34.585636 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62631e+06 Relative SUM: 0.775486
+I0226 20:03:34.585647 19914 hybrid_topodriven.cu:407] X FACTOR: 0.736348
+I0226 20:03:34.585651 19914 hybrid_topodriven.cu:422] Iteration: 28
+I0226 20:03:34.761306 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11939.9 nodes/ms
+I0226 20:03:34.761973 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62642e+06 Relative SUM: 0.775538
+I0226 20:03:34.761986 19914 hybrid_topodriven.cu:407] X FACTOR: 0.625249
+I0226 20:03:34.761989 19914 hybrid_topodriven.cu:422] Iteration: 29
+I0226 20:03:34.937412 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11955.6 nodes/ms
+I0226 20:03:34.938057 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62651e+06 Relative SUM: 0.775583
+I0226 20:03:34.938068 19914 hybrid_topodriven.cu:407] X FACTOR: 0.531778
+I0226 20:03:34.938073 19914 hybrid_topodriven.cu:422] Iteration: 30
+I0226 20:03:35.113764 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.4 nodes/ms
+I0226 20:03:35.114435 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62659e+06 Relative SUM: 0.77562
+I0226 20:03:35.114447 19914 hybrid_topodriven.cu:407] X FACTOR: 0.451762
+I0226 20:03:35.114451 19914 hybrid_topodriven.cu:422] Iteration: 31
+I0226 20:03:35.289875 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11955.6 nodes/ms
+I0226 20:03:35.290544 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62666e+06 Relative SUM: 0.775652
+I0226 20:03:35.290555 19914 hybrid_topodriven.cu:407] X FACTOR: 0.3844
+I0226 20:03:35.290560 19914 hybrid_topodriven.cu:422] Iteration: 32
+I0226 20:03:35.466307 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11933.5 nodes/ms
+I0226 20:03:35.466996 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62672e+06 Relative SUM: 0.77568
+I0226 20:03:35.467008 19914 hybrid_topodriven.cu:407] X FACTOR: 0.326477
+I0226 20:03:35.467012 19914 hybrid_topodriven.cu:422] Iteration: 33
+I0226 20:03:35.642398 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.1 nodes/ms
+I0226 20:03:35.643056 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62677e+06 Relative SUM: 0.775703
+I0226 20:03:35.643067 19914 hybrid_topodriven.cu:407] X FACTOR: 0.27783
+I0226 20:03:35.643081 19914 hybrid_topodriven.cu:422] Iteration: 34
+I0226 20:03:35.818800 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11935.4 nodes/ms
+I0226 20:03:35.819465 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62681e+06 Relative SUM: 0.775723
+I0226 20:03:35.819478 19914 hybrid_topodriven.cu:407] X FACTOR: 0.235558
+I0226 20:03:35.819483 19914 hybrid_topodriven.cu:422] Iteration: 35
+I0226 20:03:35.994873 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.6 nodes/ms
+I0226 20:03:35.995518 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62684e+06 Relative SUM: 0.77574
+I0226 20:03:35.995532 19914 hybrid_topodriven.cu:407] X FACTOR: 0.200831
+I0226 20:03:35.995535 19914 hybrid_topodriven.cu:422] Iteration: 36
+I0226 20:03:36.171308 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11931.8 nodes/ms
+I0226 20:03:36.172029 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62687e+06 Relative SUM: 0.775754
+I0226 20:03:36.172041 19914 hybrid_topodriven.cu:407] X FACTOR: 0.170056
+I0226 20:03:36.172047 19914 hybrid_topodriven.cu:422] Iteration: 37
+I0226 20:03:36.347486 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11954.6 nodes/ms
+I0226 20:03:36.348114 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.6269e+06 Relative SUM: 0.775766
+I0226 20:03:36.348125 19914 hybrid_topodriven.cu:407] X FACTOR: 0.145057
+I0226 20:03:36.348129 19914 hybrid_topodriven.cu:422] Iteration: 38
+I0226 20:03:36.523818 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.5 nodes/ms
+I0226 20:03:36.524550 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62692e+06 Relative SUM: 0.775776
+I0226 20:03:36.524561 19914 hybrid_topodriven.cu:407] X FACTOR: 0.122766
+I0226 20:03:36.524565 19914 hybrid_topodriven.cu:422] Iteration: 39
+I0226 20:03:36.699896 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11961.8 nodes/ms
+I0226 20:03:36.700534 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62694e+06 Relative SUM: 0.775785
+I0226 20:03:36.700546 19914 hybrid_topodriven.cu:407] X FACTOR: 0.104492
+I0226 20:03:36.700558 19914 hybrid_topodriven.cu:422] Iteration: 40
+I0226 20:03:36.876207 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11940.3 nodes/ms
+I0226 20:03:36.876854 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62695e+06 Relative SUM: 0.775793
+I0226 20:03:36.876866 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0886305
+I0226 20:03:36.876870 19914 hybrid_topodriven.cu:422] Iteration: 41
+I0226 20:03:37.052181 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11963.2 nodes/ms
+I0226 20:03:37.052822 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62697e+06 Relative SUM: 0.775799
+I0226 20:03:37.052834 19914 hybrid_topodriven.cu:407] X FACTOR: 0.075409
+I0226 20:03:37.052839 19914 hybrid_topodriven.cu:422] Iteration: 42
+I0226 20:03:37.228533 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.1 nodes/ms
+I0226 20:03:37.229198 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62698e+06 Relative SUM: 0.775804
+I0226 20:03:37.229209 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0640551
+I0226 20:03:37.229213 19914 hybrid_topodriven.cu:422] Iteration: 43
+I0226 20:03:37.404654 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11954.3 nodes/ms
+I0226 20:03:37.405198 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62699e+06 Relative SUM: 0.775809
+I0226 20:03:37.405210 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0547075
+I0226 20:03:37.405213 19914 hybrid_topodriven.cu:422] Iteration: 44
+I0226 20:03:37.580904 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.5 nodes/ms
+I0226 20:03:37.581583 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.627e+06 Relative SUM: 0.775813
+I0226 20:03:37.581594 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0462612
+I0226 20:03:37.581598 19914 hybrid_topodriven.cu:422] Iteration: 45
+I0226 20:03:37.756904 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11963.5 nodes/ms
+I0226 20:03:37.757529 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.627e+06 Relative SUM: 0.775816
+I0226 20:03:37.757539 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0395569
+I0226 20:03:37.757544 19914 hybrid_topodriven.cu:422] Iteration: 46
+I0226 20:03:37.933168 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11942 nodes/ms
+I0226 20:03:37.933823 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62701e+06 Relative SUM: 0.775819
+I0226 20:03:37.933835 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0338825
+I0226 20:03:37.933840 19914 hybrid_topodriven.cu:422] Iteration: 47
+I0226 20:03:38.109205 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11959.5 nodes/ms
+I0226 20:03:38.109887 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62701e+06 Relative SUM: 0.775821
+I0226 20:03:38.109899 19914 hybrid_topodriven.cu:407] X FACTOR: 0.028281
+I0226 20:03:38.109903 19914 hybrid_topodriven.cu:422] Iteration: 48
+I0226 20:03:38.285578 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11938.4 nodes/ms
+I0226 20:03:38.286245 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62702e+06 Relative SUM: 0.775823
+I0226 20:03:38.286257 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0240051
+I0226 20:03:38.286262 19914 hybrid_topodriven.cu:422] Iteration: 49
+I0226 20:03:38.461704 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11954 nodes/ms
+I0226 20:03:38.462255 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62702e+06 Relative SUM: 0.775825
+I0226 20:03:38.462266 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0204215
+I0226 20:03:38.462271 19914 hybrid_topodriven.cu:422] Iteration: 50
+I0226 20:03:38.637966 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.1 nodes/ms
+I0226 20:03:38.638646 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775826
+I0226 20:03:38.638659 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0172558
+I0226 20:03:38.638662 19914 hybrid_topodriven.cu:422] Iteration: 51
+I0226 20:03:38.814049 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11958.2 nodes/ms
+I0226 20:03:38.814692 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775828
+I0226 20:03:38.814703 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0150946
+I0226 20:03:38.814708 19914 hybrid_topodriven.cu:422] Iteration: 52
+I0226 20:03:38.990381 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11938.5 nodes/ms
+I0226 20:03:38.991021 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.775829
+I0226 20:03:38.991032 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0127802
+I0226 20:03:38.991037 19914 hybrid_topodriven.cu:422] Iteration: 53
+I0226 20:03:39.166431 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11957.6 nodes/ms
+I0226 20:03:39.167170 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.77583
+I0226 20:03:39.167181 19914 hybrid_topodriven.cu:407] X FACTOR: 0.0107351
+I0226 20:03:39.167196 19914 hybrid_topodriven.cu:422] Iteration: 54
+I0226 20:03:39.342921 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11935 nodes/ms
+I0226 20:03:39.343569 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62703e+06 Relative SUM: 0.77583
+I0226 20:03:39.343581 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00918529
+I0226 20:03:39.343586 19914 hybrid_topodriven.cu:422] Iteration: 55
+I0226 20:03:39.519090 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11949.7 nodes/ms
+I0226 20:03:39.519616 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775831
+I0226 20:03:39.519628 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00773746
+I0226 20:03:39.519631 19914 hybrid_topodriven.cu:422] Iteration: 56
+I0226 20:03:39.695330 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11936.8 nodes/ms
+I0226 20:03:39.695994 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775832
+I0226 20:03:39.696007 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00648069
+I0226 20:03:39.696010 19914 hybrid_topodriven.cu:422] Iteration: 57
+I0226 20:03:39.871379 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11959.3 nodes/ms
+I0226 20:03:39.872026 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775832
+I0226 20:03:39.872037 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00569118
+I0226 20:03:39.872042 19914 hybrid_topodriven.cu:422] Iteration: 58
+I0226 20:03:40.047796 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11933.1 nodes/ms
+I0226 20:03:40.048496 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775832
+I0226 20:03:40.048509 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00476488
+I0226 20:03:40.048514 19914 hybrid_topodriven.cu:422] Iteration: 59
+I0226 20:03:40.223963 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11953.9 nodes/ms
+I0226 20:03:40.224649 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:03:40.224661 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00386378
+I0226 20:03:40.224665 19914 hybrid_topodriven.cu:422] Iteration: 60
+I0226 20:03:40.400352 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.7 nodes/ms
+I0226 20:03:40.401001 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:03:40.401013 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00374884
+I0226 20:03:40.401027 19914 hybrid_topodriven.cu:422] Iteration: 61
+I0226 20:03:40.576458 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11955.1 nodes/ms
+I0226 20:03:40.577096 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775833
+I0226 20:03:40.577107 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00316774
+I0226 20:03:40.577112 19914 hybrid_topodriven.cu:422] Iteration: 62
+I0226 20:03:40.752785 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11938.6 nodes/ms
+I0226 20:03:40.753448 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:03:40.753458 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00280314
+I0226 20:03:40.753463 19914 hybrid_topodriven.cu:422] Iteration: 63
+I0226 20:03:40.928899 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11954.7 nodes/ms
+I0226 20:03:40.929515 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:03:40.929527 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00209405
+I0226 20:03:40.929531 19914 hybrid_topodriven.cu:422] Iteration: 64
+I0226 20:03:41.105216 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11937.7 nodes/ms
+I0226 20:03:41.105875 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:03:41.105887 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00172858
+I0226 20:03:41.105891 19914 hybrid_topodriven.cu:422] Iteration: 65
+I0226 20:03:41.281253 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11959.8 nodes/ms
+I0226 20:03:41.281992 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:03:41.282006 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00182857
+I0226 20:03:41.282019 19914 hybrid_topodriven.cu:422] Iteration: 66
+I0226 20:03:41.457733 19914 hybrid_topodriven.cu:366] SYNC THROUGHPUT: 11935.8 nodes/ms
+I0226 20:03:41.458380 19914 hybrid_topodriven.cu:402] Checking... SUM: 1.62704e+06 Relative SUM: 0.775834
+I0226 20:03:41.458392 19914 hybrid_topodriven.cu:407] X FACTOR: 0.00106153
+I0226 20:03:41.458397 19914 hybrid_topodriven.cu:413] Threshold reached
+I0226 20:03:41.458421 19914 hybrid_topodriven.cu:427] PR terminated after 66 iterations (max: 200, sync: 47, async: 19)
+I0226 20:03:41.458428 19914 hybrid_topodriven.cu:430] PR: 12016.4 ms. <filter>
+I0226 20:03:41.458433 19914 hybrid_topodriven.cu:431] AVG SYNC: 175.516ms TOTAL ASYNC: 195.767 ms.
+W0226 20:03:41.481997 19914 hybrid_topodriven.cu:443] Result not checked
+I0226 20:03:41.483172 19914 context.h:173] Context status:
+I0226 20:03:41.483180 19914 context.h:351] 		Endpoint map (virtual endpoint, physical device): 
+I0226 20:03:41.483197 19914 context.h:353] 						 (-1, -1)
+I0226 20:03:41.483206 19914 context.h:353] 						 (0, 0)
+I0226 20:03:41.483211 19914 context.h:357] 		Memcpy lanes (endpoint, lane type): 
+I0226 20:03:41.483214 19914 context.h:362] 		Fragmentation: -1
+I0226 20:03:41.483218 19914 context.h:364] 		Event pools (device, events): 
+I0226 20:03:41.483227 19914 context.h:366] 						 (0, 0)
+I0226 20:03:41.495883 19914 app_skeleton.h:227] Overall: Test PASSED
+

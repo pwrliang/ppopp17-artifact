@@ -111,17 +111,138 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named gframe
+# Target rules for targets named exprs
 
 # Build rule for target.
-gframe: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 gframe
-.PHONY : gframe
+exprs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 exprs
+.PHONY : exprs
 
 # fast build rule for target.
-gframe/fast:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/build
-.PHONY : gframe/fast
+exprs/fast:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/build
+.PHONY : exprs/fast
+
+#=============================================================================
+# Target rules for targets named sssp_expr
+
+# Build rule for target.
+sssp_expr: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sssp_expr
+.PHONY : sssp_expr
+
+# fast build rule for target.
+sssp_expr/fast:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/build
+.PHONY : sssp_expr/fast
+
+samples/exprs/main.o: samples/exprs/main.cpp.o
+
+.PHONY : samples/exprs/main.o
+
+# target to build an object file
+samples/exprs/main.cpp.o:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/samples/exprs/main.cpp.o
+.PHONY : samples/exprs/main.cpp.o
+
+samples/exprs/main.i: samples/exprs/main.cpp.i
+
+.PHONY : samples/exprs/main.i
+
+# target to preprocess a source file
+samples/exprs/main.cpp.i:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/samples/exprs/main.cpp.i
+.PHONY : samples/exprs/main.cpp.i
+
+samples/exprs/main.s: samples/exprs/main.cpp.s
+
+.PHONY : samples/exprs/main.s
+
+# target to generate assembly for a file
+samples/exprs/main.cpp.s:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/samples/exprs/main.cpp.s
+.PHONY : samples/exprs/main.cpp.s
+
+samples/exprs/pr_host.o: samples/exprs/pr_host.cpp.o
+
+.PHONY : samples/exprs/pr_host.o
+
+# target to build an object file
+samples/exprs/pr_host.cpp.o:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/samples/exprs/pr_host.cpp.o
+.PHONY : samples/exprs/pr_host.cpp.o
+
+samples/exprs/pr_host.i: samples/exprs/pr_host.cpp.i
+
+.PHONY : samples/exprs/pr_host.i
+
+# target to preprocess a source file
+samples/exprs/pr_host.cpp.i:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/samples/exprs/pr_host.cpp.i
+.PHONY : samples/exprs/pr_host.cpp.i
+
+samples/exprs/pr_host.s: samples/exprs/pr_host.cpp.s
+
+.PHONY : samples/exprs/pr_host.s
+
+# target to generate assembly for a file
+samples/exprs/pr_host.cpp.s:
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/samples/exprs/pr_host.cpp.s
+.PHONY : samples/exprs/pr_host.cpp.s
+
+samples/sssp_hybrid/main.o: samples/sssp_hybrid/main.cpp.o
+
+.PHONY : samples/sssp_hybrid/main.o
+
+# target to build an object file
+samples/sssp_hybrid/main.cpp.o:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/samples/sssp_hybrid/main.cpp.o
+.PHONY : samples/sssp_hybrid/main.cpp.o
+
+samples/sssp_hybrid/main.i: samples/sssp_hybrid/main.cpp.i
+
+.PHONY : samples/sssp_hybrid/main.i
+
+# target to preprocess a source file
+samples/sssp_hybrid/main.cpp.i:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/samples/sssp_hybrid/main.cpp.i
+.PHONY : samples/sssp_hybrid/main.cpp.i
+
+samples/sssp_hybrid/main.s: samples/sssp_hybrid/main.cpp.s
+
+.PHONY : samples/sssp_hybrid/main.s
+
+# target to generate assembly for a file
+samples/sssp_hybrid/main.cpp.s:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/samples/sssp_hybrid/main.cpp.s
+.PHONY : samples/sssp_hybrid/main.cpp.s
+
+samples/sssp_hybrid/sssp_host.o: samples/sssp_hybrid/sssp_host.cpp.o
+
+.PHONY : samples/sssp_hybrid/sssp_host.o
+
+# target to build an object file
+samples/sssp_hybrid/sssp_host.cpp.o:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/samples/sssp_hybrid/sssp_host.cpp.o
+.PHONY : samples/sssp_hybrid/sssp_host.cpp.o
+
+samples/sssp_hybrid/sssp_host.i: samples/sssp_hybrid/sssp_host.cpp.i
+
+.PHONY : samples/sssp_hybrid/sssp_host.i
+
+# target to preprocess a source file
+samples/sssp_hybrid/sssp_host.cpp.i:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/samples/sssp_hybrid/sssp_host.cpp.i
+.PHONY : samples/sssp_hybrid/sssp_host.cpp.i
+
+samples/sssp_hybrid/sssp_host.s: samples/sssp_hybrid/sssp_host.cpp.s
+
+.PHONY : samples/sssp_hybrid/sssp_host.s
+
+# target to generate assembly for a file
+samples/sssp_hybrid/sssp_host.cpp.s:
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/samples/sssp_hybrid/sssp_host.cpp.s
+.PHONY : samples/sssp_hybrid/sssp_host.cpp.s
 
 src/groute/graphs/csr_graph.o: src/groute/graphs/csr_graph.cpp.o
 
@@ -129,7 +250,8 @@ src/groute/graphs/csr_graph.o: src/groute/graphs/csr_graph.cpp.o
 
 # target to build an object file
 src/groute/graphs/csr_graph.cpp.o:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/groute/graphs/csr_graph.cpp.o
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/groute/graphs/csr_graph.cpp.o
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/groute/graphs/csr_graph.cpp.o
 .PHONY : src/groute/graphs/csr_graph.cpp.o
 
 src/groute/graphs/csr_graph.i: src/groute/graphs/csr_graph.cpp.i
@@ -138,7 +260,8 @@ src/groute/graphs/csr_graph.i: src/groute/graphs/csr_graph.cpp.i
 
 # target to preprocess a source file
 src/groute/graphs/csr_graph.cpp.i:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/groute/graphs/csr_graph.cpp.i
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/groute/graphs/csr_graph.cpp.i
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/groute/graphs/csr_graph.cpp.i
 .PHONY : src/groute/graphs/csr_graph.cpp.i
 
 src/groute/graphs/csr_graph.s: src/groute/graphs/csr_graph.cpp.s
@@ -147,7 +270,8 @@ src/groute/graphs/csr_graph.s: src/groute/graphs/csr_graph.cpp.s
 
 # target to generate assembly for a file
 src/groute/graphs/csr_graph.cpp.s:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/groute/graphs/csr_graph.cpp.s
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/groute/graphs/csr_graph.cpp.s
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/groute/graphs/csr_graph.cpp.s
 .PHONY : src/groute/graphs/csr_graph.cpp.s
 
 src/utils/parser.o: src/utils/parser.cpp.o
@@ -156,7 +280,8 @@ src/utils/parser.o: src/utils/parser.cpp.o
 
 # target to build an object file
 src/utils/parser.cpp.o:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/parser.cpp.o
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/utils/parser.cpp.o
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/utils/parser.cpp.o
 .PHONY : src/utils/parser.cpp.o
 
 src/utils/parser.i: src/utils/parser.cpp.i
@@ -165,7 +290,8 @@ src/utils/parser.i: src/utils/parser.cpp.i
 
 # target to preprocess a source file
 src/utils/parser.cpp.i:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/parser.cpp.i
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/utils/parser.cpp.i
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/utils/parser.cpp.i
 .PHONY : src/utils/parser.cpp.i
 
 src/utils/parser.s: src/utils/parser.cpp.s
@@ -174,7 +300,8 @@ src/utils/parser.s: src/utils/parser.cpp.s
 
 # target to generate assembly for a file
 src/utils/parser.cpp.s:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/parser.cpp.s
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/utils/parser.cpp.s
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/utils/parser.cpp.s
 .PHONY : src/utils/parser.cpp.s
 
 src/utils/utils.o: src/utils/utils.cpp.o
@@ -183,7 +310,8 @@ src/utils/utils.o: src/utils/utils.cpp.o
 
 # target to build an object file
 src/utils/utils.cpp.o:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/utils.cpp.o
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/utils/utils.cpp.o
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/utils/utils.cpp.o
 .PHONY : src/utils/utils.cpp.o
 
 src/utils/utils.i: src/utils/utils.cpp.i
@@ -192,7 +320,8 @@ src/utils/utils.i: src/utils/utils.cpp.i
 
 # target to preprocess a source file
 src/utils/utils.cpp.i:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/utils.cpp.i
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/utils/utils.cpp.i
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/utils/utils.cpp.i
 .PHONY : src/utils/utils.cpp.i
 
 src/utils/utils.s: src/utils/utils.cpp.s
@@ -201,7 +330,8 @@ src/utils/utils.s: src/utils/utils.cpp.s
 
 # target to generate assembly for a file
 src/utils/utils.cpp.s:
-	$(MAKE) -f CMakeFiles/gframe.dir/build.make CMakeFiles/gframe.dir/src/utils/utils.cpp.s
+	$(MAKE) -f CMakeFiles/exprs.dir/build.make CMakeFiles/exprs.dir/src/utils/utils.cpp.s
+	$(MAKE) -f CMakeFiles/sssp_expr.dir/build.make CMakeFiles/sssp_expr.dir/src/utils/utils.cpp.s
 .PHONY : src/utils/utils.cpp.s
 
 # Help Target
@@ -212,7 +342,20 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... gframe"
+	@echo "... exprs"
+	@echo "... sssp_expr"
+	@echo "... samples/exprs/main.o"
+	@echo "... samples/exprs/main.i"
+	@echo "... samples/exprs/main.s"
+	@echo "... samples/exprs/pr_host.o"
+	@echo "... samples/exprs/pr_host.i"
+	@echo "... samples/exprs/pr_host.s"
+	@echo "... samples/sssp_hybrid/main.o"
+	@echo "... samples/sssp_hybrid/main.i"
+	@echo "... samples/sssp_hybrid/main.s"
+	@echo "... samples/sssp_hybrid/sssp_host.o"
+	@echo "... samples/sssp_hybrid/sssp_host.i"
+	@echo "... samples/sssp_hybrid/sssp_host.s"
 	@echo "... src/groute/graphs/csr_graph.o"
 	@echo "... src/groute/graphs/csr_graph.i"
 	@echo "... src/groute/graphs/csr_graph.s"

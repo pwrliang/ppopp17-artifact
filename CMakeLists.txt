@@ -94,10 +94,10 @@ set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 # Addresses a bug where code is not compiled as C++11 in non-CUDA code and older g++ versions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 
-include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${METIS_INCLUDE_DIRS})
-cuda_add_executable(cc src/utils/parser.cpp src/utils/utils.cpp
-                    samples/cc/cc_async.cu samples/cc/main.cpp)
-target_link_libraries(cc ${EXTRA_LIBS})
+#include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${METIS_INCLUDE_DIRS})
+#cuda_add_executable(cc src/utils/parser.cpp src/utils/utils.cpp
+#                    samples/cc/cc_async.cu samples/cc/main.cpp)
+#target_link_libraries(cc ${EXTRA_LIBS})
 
 #cuda_add_executable(bfs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
 #                    samples/bfs/bfs_async.cu
@@ -112,6 +112,13 @@ target_link_libraries(cc ${EXTRA_LIBS})
 #        samples/sssp/main.cpp)
 #target_link_libraries(sssp ${EXTRA_LIBS})
 
+cuda_add_executable(sssp_expr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+#        samples/sssp_hybrid/deltasssp.cu
+        samples/sssp_hybrid/sssp_async.cu
+        samples/sssp_hybrid/sssp_host.cpp
+        samples/sssp_hybrid/main.cpp)
+target_link_libraries(sssp_expr ${EXTRA_LIBS})
+
 #cuda_add_executable(pr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
 #        samples/pr/test.cu
 #        samples/pr/my_pr_async.cu
@@ -124,26 +131,29 @@ target_link_libraries(cc ${EXTRA_LIBS})
 #        samples/pr/main.cpp)
 #target_link_libraries(pr ${EXTRA_LIBS})
 
-cuda_add_executable(gframe_pr src/utils/parser.cpp
-                    src/utils/utils.cpp
-                    src/groute/graphs/csr_graph.cpp
-                    samples/framework/entry.cu
-                    samples/framework/pagerank.cu)
-target_link_libraries(gframe_pr ${EXTRA_LIBS})
+#cuda_add_executable(gframe_pr src/utils/parser.cpp
+#                    src/utils/utils.cpp
+#                    src/groute/graphs/csr_graph.cpp
+#                    samples/framework/entry.cu
+#                    samples/framework/pagerank.cu)
+#target_link_libraries(gframe_pr ${EXTRA_LIBS})
 
-cuda_add_executable(gframe_sssp src/utils/parser.cpp
-        src/utils/utils.cpp
-        src/groute/graphs/csr_graph.cpp
-        samples/framework/entry.cu
-        samples/framework/sssp.cu)
-target_link_libraries(gframe_sssp ${EXTRA_LIBS})
+#cuda_add_executable(gframe_sssp src/utils/parser.cpp
+#        src/utils/utils.cpp
+#        src/groute/graphs/csr_graph.cpp
+#        samples/framework/entry.cu
+#        samples/framework/sssp.cu)
+#target_link_libraries(gframe_sssp ${EXTRA_LIBS})
 
-cuda_add_executable(gframe_cc src/utils/parser.cpp
-        src/utils/utils.cpp
-        src/groute/graphs/csr_graph.cpp
-        samples/framework/entry.cu
-        samples/framework/cc.cu)
-target_link_libraries(gframe_cc ${EXTRA_LIBS})
+cuda_add_executable(exprs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
+        samples/exprs/pr_host.cpp
+        samples/exprs/data_driven_unopt_pr.cu
+        samples/exprs/topology_driven_unopt_pr.cu
+        samples/exprs/hybrid_topodriven.cu
+        samples/exprs/hybrid_datadriven.cu
+#        samples/exprs/dual.cu
+        samples/exprs/main.cpp)
+target_link_libraries(exprs ${EXTRA_LIBS})
 
 #cuda_add_executable(pr_exprs src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
 #        samples/pr_exprs/pr_host.cpp

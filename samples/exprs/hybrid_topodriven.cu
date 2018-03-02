@@ -248,6 +248,20 @@ namespace hybrid {
         }
     }
 
+//    template <typename WorkSource, template <typename > class ResidualDatum>
+//    __global__ void Variance(WorkSource work_source, ResidualDatum<rank_t> residual, rank_t avg_residual) {
+//        uint32_t tid = TID_1D;
+//        uint32_t nthreads = TOTAL_THREADS_1D;
+//
+//        uint32_t work_size = work_source.get_size();
+//
+//        for(uint32_t i = 0+tid;i<work_size;i+=nthreads){
+//            index_t node = work_source.get_work(i);
+//
+//            (residual[node] - avg_residual)*(residual[node] - avg_residual)
+//        }
+//    };
+
     struct Algo {
         static const char *NameLower() { return "pr"; }
 
@@ -391,17 +405,48 @@ bool HybridTopologyDriven() {
 
         rank_t *tmp = current_ranks.DeviceObject().data_ptr;
 
-        auto check_segment_sizes = [=]__device__(int idx) {
+        auto func_data_sum_func = [=]__device__(int idx) {
             return tmp[idx];
         };
 
 
-        mgpu::transform_scan<double>(check_segment_sizes, context.host_graph.nnodes,
+        mgpu::transform_scan<double>(func_data_sum_func, context.host_graph.nnodes,
                                      scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), mgpu_context);
 
         double pr_sum = mgpu::from_mem(checkSum)[0];
 
         VLOG(1) << "Checking... SUM: " << pr_sum << " Relative SUM: " << pr_sum / context.host_graph.nnodes;
+
+        rank_t *p_residual;
+        if (mode == 0) {
+            if (iteration % 2)
+                p_residual = last_residual.DeviceObject().data_ptr;
+            else
+                p_residual = residual.DeviceObject().data_ptr;
+        } else {
+            p_residual = residual.DeviceObject().data_ptr;
+        }
+
+
+        auto func_residual_sum = [=]__device__(index_t idx) {
+            return p_residual[idx];
+        };
+
+        mgpu::transform_scan<double>(func_residual_sum, context.host_graph.nnodes, scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), mgpu_context);
+
+        double residual_sum = mgpu::from_mem(checkSum)[0];
+
+        double avg_residual_sum = residual_sum / context.host_graph.nnodes;
+
+        auto func_variance_compute = [=]__device__(index_t idx) {
+            return (p_residual[idx] - avg_residual_sum) * (p_residual[idx] - avg_residual_sum);
+        };
+
+        mgpu::transform_scan<double>(func_variance_compute, context.host_graph.nnodes, scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), mgpu_context);
+
+        double residual_variance = mgpu::from_mem(checkSum)[0] / context.host_graph.nnodes;
+
+        VLOG(0) << "Residual Variance: " << residual_variance;
 
         if (last_sum > 0) {
             rank_t sum_delta = pr_sum - last_sum;
@@ -430,7 +475,7 @@ bool HybridTopologyDriven() {
     << boost::format("%s terminated after %d iterations (max: %d, sync: %d, async: %d)") % hybrid::Algo::Name() % totalIteration %
        FLAGS_max_pr_iterations % iteration % (totalIteration - iteration);
     VLOG(0) << hybrid::Algo::Name() << ": " << sw.ms() << " ms. <filter>";
-    VLOG(0) << "AVG SYNC: " << totalSync / iteration << "ms TOTAL ASYNC: " << totalAsync / (totalIteration - iteration) << " ms.";
+    VLOG(0) << "AVG SYNC: " << totalSync / iteration << "ms / ASYNC: " << totalAsync / (totalIteration - iteration) << " ms.";
 
     // Gather
     auto gathered_output = hybrid::Algo::Gather(dev_graph_allocator, residual, current_ranks);

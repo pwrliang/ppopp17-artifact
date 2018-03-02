@@ -27,59 +27,58 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 #include <cstdio>
-#include <limits>
 #include <cuda_runtime.h>
 #include <gflags/gflags.h>
+
+#include <iostream>
+
 #include <utils/utils.h>
+#include <utils/interactor.h>
 #include <utils/app_skeleton.h>
 
-DEFINE_bool(data_driven, true, "Data-Driven mode (default)");
-DEFINE_double(wl_alloc_factor, 0.2, "Local worklists will allocate '(nedges / ngpus)' times this factor");
-DEFINE_uint64(wl_alloc_abs, 0, "Absolute size for local worklists (if not zero, overrides --wl_alloc_factor");
-DEFINE_int32(max_pr_iterations, 200,
-             "The maximum number of PR iterations"); // used just for host and some single versions
-DEFINE_double(epsilon, 0.01, "EPSILON (default 0.01)");
-DEFINE_bool(outlining, false, "Enable outlining");
-DEFINE_double(threshold, std::numeric_limits<double>::max(), "PR sum as threshold");
-DEFINE_bool(append_warp, true, "Parallel append warp");
-DEFINE_int32(mode, 0, "0 sync 1 async 2 hybrid");
-DEFINE_int32(switch_threshold, -1, "using sync mode when iteration times below threshold otherwise async mode");
-DEFINE_bool(topology, true, "default topology");
+DEFINE_int32(mode, -1, "Sync 0 Async 1 Hybrid 2");
+DEFINE_int32(source_node, 0, "The source node for the SSSP traversal (clamped to [0, nnodes-1])");
 
-bool HybridDataDriven();
 
-bool HybridTopologyDriven();
+bool MyTestSSSPSingle();
 
-bool TestPageRankAsyncMulti();
+bool TestSSSPSingle();
 
-//void CleanupGraphs();
+bool TestSSSPAsyncMulti(int ngpus);
 
-namespace pr {
+bool TestSSSPAsyncMultiOptimized(int ngpus);
+
+bool SSSPExpr();
+
+
+void CleanupGraphs();
+
+
+namespace sssp {
     struct App {
-        static const char *Name() { return "page rank"; }
+        static const char *Name() { return "sssp"; }
 
-        static const char *NameUpper() { return "Page Rank"; }
+        static const char *NameUpper() { return "SSSP"; }
 
         static bool Single() {
-//            return TestPageRankAsyncMulti();
-//            return DualGPU();
-            if (FLAGS_topology)
-                HybridTopologyDriven();
-            else
-                HybridDataDriven();
+            return TestSSSPSingle();
+//            return SSSPExpr();
+//            return MyTestSSSPSingle();
+//            return TestSSSPSingle();
         }
 
         static bool AsyncMulti(int G) {
-            return false;
+//            return FLAGS_opt
+//                ? TestSSSPAsyncMultiOptimized(G)
+//                : TestSSSPAsyncMulti(G);
         }
 
         static void Cleanup() { CleanupGraphs(); }
     };
 }
 
-
 int main(int argc, char **argv) {
-    Skeleton<pr::App> app;
+    Skeleton<sssp::App> app;
     int exit = app(argc, argv);
 
     // cudaDeviceReset must be called before exiting in order for profiling and

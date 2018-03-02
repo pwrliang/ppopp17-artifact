@@ -216,6 +216,7 @@ namespace groute {
             GROUTE_CUDA_CHECK(cudaHostGetDevicePointer(&deferred_work_counter, (int*)m_work_counters[DEFERRED_COUNTER], 0));
 
             int prev_signal = m_work_signal.Peek();
+            int iterated_round = 1;
 
             while (distributed_worklist.HasWork())
             {
@@ -237,11 +238,11 @@ namespace groute {
                 {
                     Marker::MarkWorkitems(distributed_worklist.GetCurrentWorkCount(m_endpoint), KernelName());
                 }
-                
+
                 groute::FusedWorkKernel <StoppingCondition, TLocal, TRemote, TPrio, DWCallbacks, TWork, WorkArgs... >
 
                     <<< m_grid_dims, m_block_dims, 0, stream.cuda_stream >>> (
-
+                    iterated_round++,
                     immediate_worklist->DeviceObject(), deferred_worklist->DeviceObject(),
                     remote_input->DeviceObject(), remote_output->DeviceObject(),
                     distributed_worklist.configuration.fused_chunk_size, priority_threshold,

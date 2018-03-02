@@ -33,7 +33,7 @@ DECLARE_int32(grid_size);
 DECLARE_int32(block_size);
 DECLARE_int32(mode);
 DECLARE_int32(switch_threshold);
-#define EPSILON 0.000001
+#define EPSILON 0.01
 
 namespace hybrid_datadriven {
     template<typename WorkSource,
@@ -335,6 +335,7 @@ bool HybridDataDriven() {
     groute::graphs::single::NodeOutputDatum<rank_t> residual;
     groute::graphs::single::NodeOutputDatum<rank_t> last_residual;
 
+
     utils::traversal::Context<hybrid_datadriven::Algo> context(1);
 
     groute::graphs::single::CSRGraphAllocator
@@ -354,7 +355,6 @@ bool HybridDataDriven() {
     dim3 grid_dims, block_dims;
     KernelSizing(grid_dims, block_dims, context.host_graph.nnodes);
 
-
     hybrid_datadriven::PageRankInit__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> > (groute::dev::WorkSourceRange<index_t>(
             dev_graph_allocator.DeviceObject().owned_start_node(),
             dev_graph_allocator.DeviceObject().owned_nnodes()),
@@ -366,7 +366,8 @@ bool HybridDataDriven() {
     int syncIteration = 0;
 
     //mode = 0 means sync, mode = 1 means async
-    int mode = 0;
+    int mode = FLAGS_mode;
+    if (mode == 2 && FLAGS_switch_threshold > 0)mode = 0;
     int last_mode;
     srand(time(NULL));
     groute::graphs::single::NodeOutputDatum<rank_t> *available_residual = &residual;
@@ -399,15 +400,19 @@ bool HybridDataDriven() {
 
     Stopwatch sw(true);
 
+    int *scanned_offsets = deviceOffsets.data();
+
+    double last_variance = 9999999;
+
     while (work_seg.GetSegmentSize() > 0) {
-        if (FLAGS_mode == 2)
-            mode = rand() % 2;
-        else
-            mode = FLAGS_mode;
+//        if (FLAGS_mode == 2)
+//            mode = rand() % 2;
+//        else
+//            mode = FLAGS_mode;
         ++totalIteration;
-//        if (totalIteration <= FLAGS_switch_threshold)
-//            mode = 1;
-//        else mode = 0;
+//        if (totalIteration > FLAGS_switch_threshold && mode == 1) {
+//            mode = 0;
+//        }
 
         if (mode == 0) {
             last_mode = 0;
@@ -420,12 +425,16 @@ bool HybridDataDriven() {
                             current_ranks.DeviceObject(),
                             residual.DeviceObject(),
                             last_residual.DeviceObject());
+            if(syncIteration%2)
+                available_residual = &last_residual;
+            else
+                available_residual = &residual;
             stream.Sync();
             sw1.stop();
-            VLOG(1) << "THROUGHPUT: " << work_seg.GetSegmentSize() / sw1.ms() << " nodes/ms";
+            VLOG(1) << "THROUGHPUT: " << (work_seg.GetSegmentSize() + out_wl->GetCount(stream)) / sw1.ms() << " nodes/ms";
 
             totalSync += sw1.ms();
-        } else if (mode == 1) {
+        } else {
             last_mode = 1;
             Stopwatch sw2(true);
             hybrid_datadriven::PageRankAsyncKernelCTA__Single__ << < grid_dims, block_dims, 0, stream.cuda_stream >> > (
@@ -437,21 +446,63 @@ bool HybridDataDriven() {
             stream.Sync();
             sw2.stop();
             totalAsync += sw2.ms();
-            VLOG(1) << "THROUGHPUT: " << work_seg.GetSegmentSize() / sw2.ms() << " nodes/ms";
+            VLOG(1) << "THROUGHPUT: " << (work_seg.GetSegmentSize() + out_wl->GetCount(stream)) / sw2.ms() << " nodes/ms";
         }
 
+
+        rank_t *p_residual = current_ranks.DeviceObject().data_ptr;
+//        if (mode == 0) {
+//            if (syncIteration % 2)
+//                p_residual = last_residual.DeviceObject().data_ptr;
+//            else
+//                p_residual = residual.DeviceObject().data_ptr;
+//        } else {
+//            p_residual = available_residual->DeviceObject().data_ptr;
+//        }
+
+
+        auto func_residual_sum = [=]__device__(index_t idx) {
+            return p_residual[idx];
+        };
+
+        mgpu::transform_scan<double>(func_residual_sum, context.host_graph.nnodes, scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), mgpu_context);
+
+        double residual_sum = mgpu::from_mem(checkSum)[0];
+
+        double avg_residual_sum = residual_sum / context.host_graph.nnodes;
+
+        auto func_variance_compute = [=]__device__(index_t idx) {
+            return (p_residual[idx] - avg_residual_sum) * (p_residual[idx] - avg_residual_sum);
+        };
+
+        mgpu::transform_scan<double>(func_variance_compute, context.host_graph.nnodes, scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), mgpu_context);
+
+        double residual_variance = mgpu::from_mem(checkSum)[0] / context.host_graph.nnodes;
+
+//        if (last_variance - residual_variance < 0) {
+//            mode = 1;
+//            VLOG(0) << "SWITCH!!!";
+//        }
+
+        last_variance = residual_variance;
+
+
+        VLOG(0) << "Residual Variance: " << residual_variance;
+
+
         VLOG(0) << "Iteration: " << totalIteration << " " << (mode == 0 ? "SYNC" : "ASYNC") << "  INPUT: " << in_wl->GetCount(stream) << " OUTPUT: " << out_wl->GetCount(stream);
+
 
         in_wl->ResetAsync(stream);
         std::swap(in_wl, out_wl);
         work_seg = in_wl->GetSeg(stream);
 
-        if (last_mode == 0) {
-            if (syncIteration % 2 == 0)//last round is last_residual-->residual
-                available_residual = &residual;
-            else
-                available_residual = &last_residual;
-        }
+//        if (last_mode == 0) {
+//            if (syncIteration % 2 == 0)//last round is last_residual-->residual
+//                available_residual = &residual;
+//            else
+//                available_residual = &last_residual;
+//        }
 
 
     }

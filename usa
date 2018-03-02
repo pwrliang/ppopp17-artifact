@@ -1,0 +1,403 @@
+liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ ./exprs -noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr  -logtostderr=1 -v=1  -mode 0 -notopology -max_pr_iterations 80 -switch_threshold 99 -wl_alloc_factor 0.8
+I0228 00:37:05.542207 16449 app_skeleton.h:211] Testing single GPU Page Rank
+I0228 00:37:05.542325 16449 app_skeleton.h:212] --------------------
+I0228 00:37:05.542335 16449 hybrid_datadriven.cu:331] HybridDataDriven
+I0228 00:37:06.547098 16449 traversal.h:156] Loading graph /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr (1)
+I0228 00:37:06.557780 16449 parser.cpp:411] /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr has 23947347 nodes and 57708624 edges
+I0228 00:37:10.794917 16449 parser.cpp:450] read 57708624 edges
+I0228 00:37:13.140286 16449 parser.cpp:466] read data for 57708624 edges
+I0228 00:37:13.140333 16449 traversal.h:203] ----- Running PR -----
+I0228 00:37:13.140409 16449 traversal.h:205] The graph has 23947347 vertices, and 57708624 edges (average degree: 2.409813)
+GeForce GTX 1080 : 1733.500 Mhz   (Ordinal 0)
+20 SMs enabled. Compute Capability sm_61
+FreeMem:   7397MB   TotalMem:   8112MB   64-bit pointers.
+Mem Clock: 5005.000 Mhz x 256 bits   (320.3 GB/s)
+ECC Disabled
+
+
+I0228 00:37:13.376936 16449 hybrid_datadriven.cu:425] THROUGHPUT: 3.04615e+06 nodes/ms
+I0228 00:37:13.376984 16449 hybrid_datadriven.cu:443] Iteration: 1 SYNC  INPUT: 23947347 OUTPUT: 23947347
+I0228 00:37:13.413280 16449 hybrid_datadriven.cu:425] THROUGHPUT: 1.32145e+06 nodes/ms
+I0228 00:37:13.413324 16449 hybrid_datadriven.cu:443] Iteration: 2 SYNC  INPUT: 23947347 OUTPUT: 23947347
+I0228 00:37:13.459992 16449 hybrid_datadriven.cu:425] THROUGHPUT: 1.02739e+06 nodes/ms
+I0228 00:37:13.460034 16449 hybrid_datadriven.cu:443] Iteration: 3 SYNC  INPUT: 23947347 OUTPUT: 23947347
+I0228 00:37:13.517289 16449 hybrid_datadriven.cu:425] THROUGHPUT: 837364 nodes/ms
+I0228 00:37:13.517334 16449 hybrid_datadriven.cu:443] Iteration: 4 SYNC  INPUT: 23947347 OUTPUT: 23947347
+I0228 00:37:13.577563 16449 hybrid_datadriven.cu:425] THROUGHPUT: 795884 nodes/ms
+I0228 00:37:13.577625 16449 hybrid_datadriven.cu:443] Iteration: 5 SYNC  INPUT: 23947347 OUTPUT: 23947347
+I0228 00:37:13.640319 16449 hybrid_datadriven.cu:425] THROUGHPUT: 764651 nodes/ms
+I0228 00:37:13.640374 16449 hybrid_datadriven.cu:443] Iteration: 6 SYNC  INPUT: 23947347 OUTPUT: 23947336
+I0228 00:37:13.702785 16449 hybrid_datadriven.cu:425] THROUGHPUT: 768048 nodes/ms
+I0228 00:37:13.702827 16449 hybrid_datadriven.cu:443] Iteration: 7 SYNC  INPUT: 23947336 OUTPUT: 23947347
+I0228 00:37:13.765297 16449 hybrid_datadriven.cu:425] THROUGHPUT: 767191 nodes/ms
+I0228 00:37:13.765350 16449 hybrid_datadriven.cu:443] Iteration: 8 SYNC  INPUT: 23947347 OUTPUT: 23936092
+I0228 00:37:13.827006 16449 hybrid_datadriven.cu:425] THROUGHPUT: 776673 nodes/ms
+I0228 00:37:13.827049 16449 hybrid_datadriven.cu:443] Iteration: 9 SYNC  INPUT: 23936092 OUTPUT: 23903838
+I0228 00:37:13.888355 16449 hybrid_datadriven.cu:425] THROUGHPUT: 753580 nodes/ms
+I0228 00:37:13.888406 16449 hybrid_datadriven.cu:443] Iteration: 10 SYNC  INPUT: 23903838 OUTPUT: 22252177
+I0228 00:37:13.946758 16449 hybrid_datadriven.cu:425] THROUGHPUT: 752051 nodes/ms
+I0228 00:37:13.946820 16449 hybrid_datadriven.cu:443] Iteration: 11 SYNC  INPUT: 22252177 OUTPUT: 21592395
+I0228 00:37:14.004972 16449 hybrid_datadriven.cu:425] THROUGHPUT: 717312 nodes/ms
+I0228 00:37:14.005024 16449 hybrid_datadriven.cu:443] Iteration: 12 SYNC  INPUT: 21592395 OUTPUT: 20077718
+I0228 00:37:14.061190 16449 hybrid_datadriven.cu:425] THROUGHPUT: 710619 nodes/ms
+I0228 00:37:14.061242 16449 hybrid_datadriven.cu:443] Iteration: 13 SYNC  INPUT: 20077718 OUTPUT: 19798673
+I0228 00:37:14.117161 16449 hybrid_datadriven.cu:425] THROUGHPUT: 670240 nodes/ms
+I0228 00:37:14.117213 16449 hybrid_datadriven.cu:443] Iteration: 14 SYNC  INPUT: 19798673 OUTPUT: 17646296
+I0228 00:37:14.169154 16449 hybrid_datadriven.cu:425] THROUGHPUT: 562222 nodes/ms
+I0228 00:37:14.169209 16449 hybrid_datadriven.cu:443] Iteration: 15 SYNC  INPUT: 17646296 OUTPUT: 11526848
+I0228 00:37:14.206816 16449 hybrid_datadriven.cu:425] THROUGHPUT: 440718 nodes/ms
+I0228 00:37:14.206869 16449 hybrid_datadriven.cu:443] Iteration: 16 SYNC  INPUT: 11526848 OUTPUT: 5026096
+I0228 00:37:14.227730 16449 hybrid_datadriven.cu:425] THROUGHPUT: 362164 nodes/ms
+I0228 00:37:14.227782 16449 hybrid_datadriven.cu:443] Iteration: 17 SYNC  INPUT: 5026096 OUTPUT: 2511265
+I0228 00:37:14.241253 16449 hybrid_datadriven.cu:425] THROUGHPUT: 300670 nodes/ms
+I0228 00:37:14.241305 16449 hybrid_datadriven.cu:443] Iteration: 18 SYNC  INPUT: 2511265 OUTPUT: 1526431
+I0228 00:37:14.252174 16449 hybrid_datadriven.cu:425] THROUGHPUT: 219103 nodes/ms
+I0228 00:37:14.252224 16449 hybrid_datadriven.cu:443] Iteration: 19 SYNC  INPUT: 1526431 OUTPUT: 843383
+I0228 00:37:14.258679 16449 hybrid_datadriven.cu:425] THROUGHPUT: 195777 nodes/ms
+I0228 00:37:14.258702 16449 hybrid_datadriven.cu:443] Iteration: 20 SYNC  INPUT: 843383 OUTPUT: 416050
+I0228 00:37:14.262588 16449 hybrid_datadriven.cu:425] THROUGHPUT: 155023 nodes/ms
+I0228 00:37:14.262620 16449 hybrid_datadriven.cu:443] Iteration: 21 SYNC  INPUT: 416050 OUTPUT: 183270
+I0228 00:37:14.264577 16449 hybrid_datadriven.cu:425] THROUGHPUT: 141586 nodes/ms
+I0228 00:37:14.264611 16449 hybrid_datadriven.cu:443] Iteration: 22 SYNC  INPUT: 183270 OUTPUT: 90275
+I0228 00:37:14.265805 16449 hybrid_datadriven.cu:425] THROUGHPUT: 107464 nodes/ms
+I0228 00:37:14.265826 16449 hybrid_datadriven.cu:443] Iteration: 23 SYNC  INPUT: 90275 OUTPUT: 34706
+I0228 00:37:14.266433 16449 hybrid_datadriven.cu:425] THROUGHPUT: 88114.1 nodes/ms
+I0228 00:37:14.266454 16449 hybrid_datadriven.cu:443] Iteration: 24 SYNC  INPUT: 34706 OUTPUT: 17017
+I0228 00:37:14.266829 16449 hybrid_datadriven.cu:425] THROUGHPUT: 67682.6 nodes/ms
+I0228 00:37:14.266860 16449 hybrid_datadriven.cu:443] Iteration: 25 SYNC  INPUT: 17017 OUTPUT: 7078
+I0228 00:37:14.267158 16449 hybrid_datadriven.cu:425] THROUGHPUT: 39371.8 nodes/ms
+I0228 00:37:14.267179 16449 hybrid_datadriven.cu:443] Iteration: 26 SYNC  INPUT: 7078 OUTPUT: 3828
+I0228 00:37:14.267477 16449 hybrid_datadriven.cu:425] THROUGHPUT: 19724 nodes/ms
+I0228 00:37:14.267498 16449 hybrid_datadriven.cu:443] Iteration: 27 SYNC  INPUT: 3828 OUTPUT: 1675
+I0228 00:37:14.267798 16449 hybrid_datadriven.cu:425] THROUGHPUT: 10200.7 nodes/ms
+I0228 00:37:14.267819 16449 hybrid_datadriven.cu:443] Iteration: 28 SYNC  INPUT: 1675 OUTPUT: 1069
+I0228 00:37:14.268115 16449 hybrid_datadriven.cu:425] THROUGHPUT: 5525.18 nodes/ms
+I0228 00:37:14.268137 16449 hybrid_datadriven.cu:443] Iteration: 29 SYNC  INPUT: 1069 OUTPUT: 467
+I0228 00:37:14.268434 16449 hybrid_datadriven.cu:425] THROUGHPUT: 2898.92 nodes/ms
+I0228 00:37:14.268455 16449 hybrid_datadriven.cu:443] Iteration: 30 SYNC  INPUT: 467 OUTPUT: 336
+I0228 00:37:14.268749 16449 hybrid_datadriven.cu:425] THROUGHPUT: 1747.29 nodes/ms
+I0228 00:37:14.268771 16449 hybrid_datadriven.cu:443] Iteration: 31 SYNC  INPUT: 336 OUTPUT: 148
+I0228 00:37:14.269068 16449 hybrid_datadriven.cu:425] THROUGHPUT: 1057.55 nodes/ms
+I0228 00:37:14.269088 16449 hybrid_datadriven.cu:443] Iteration: 32 SYNC  INPUT: 148 OUTPUT: 146
+I0228 00:37:14.269385 16449 hybrid_datadriven.cu:425] THROUGHPUT: 772.388 nodes/ms
+I0228 00:37:14.269407 16449 hybrid_datadriven.cu:443] Iteration: 33 SYNC  INPUT: 146 OUTPUT: 61
+I0228 00:37:14.269695 16449 hybrid_datadriven.cu:425] THROUGHPUT: 466.418 nodes/ms
+I0228 00:37:14.269716 16449 hybrid_datadriven.cu:443] Iteration: 34 SYNC  INPUT: 61 OUTPUT: 64
+I0228 00:37:14.270002 16449 hybrid_datadriven.cu:425] THROUGHPUT: 376.866 nodes/ms
+I0228 00:37:14.270023 16449 hybrid_datadriven.cu:443] Iteration: 35 SYNC  INPUT: 64 OUTPUT: 37
+I0228 00:37:14.270313 16449 hybrid_datadriven.cu:425] THROUGHPUT: 283.582 nodes/ms
+I0228 00:37:14.270334 16449 hybrid_datadriven.cu:443] Iteration: 36 SYNC  INPUT: 37 OUTPUT: 39
+I0228 00:37:14.270622 16449 hybrid_datadriven.cu:425] THROUGHPUT: 205.224 nodes/ms
+I0228 00:37:14.270643 16449 hybrid_datadriven.cu:443] Iteration: 37 SYNC  INPUT: 39 OUTPUT: 16
+I0228 00:37:14.270931 16449 hybrid_datadriven.cu:425] THROUGHPUT: 123.134 nodes/ms
+I0228 00:37:14.270952 16449 hybrid_datadriven.cu:443] Iteration: 38 SYNC  INPUT: 16 OUTPUT: 17
+I0228 00:37:14.271240 16449 hybrid_datadriven.cu:425] THROUGHPUT: 108.209 nodes/ms
+I0228 00:37:14.271261 16449 hybrid_datadriven.cu:443] Iteration: 39 SYNC  INPUT: 17 OUTPUT: 12
+I0228 00:37:14.271550 16449 hybrid_datadriven.cu:425] THROUGHPUT: 85.8209 nodes/ms
+I0228 00:37:14.271572 16449 hybrid_datadriven.cu:443] Iteration: 40 SYNC  INPUT: 12 OUTPUT: 11
+I0228 00:37:14.271860 16449 hybrid_datadriven.cu:425] THROUGHPUT: 63.4328 nodes/ms
+I0228 00:37:14.271883 16449 hybrid_datadriven.cu:443] Iteration: 41 SYNC  INPUT: 11 OUTPUT: 6
+I0228 00:37:14.272171 16449 hybrid_datadriven.cu:425] THROUGHPUT: 44.7761 nodes/ms
+I0228 00:37:14.272192 16449 hybrid_datadriven.cu:443] Iteration: 42 SYNC  INPUT: 6 OUTPUT: 6
+I0228 00:37:14.272480 16449 hybrid_datadriven.cu:425] THROUGHPUT: 41.0448 nodes/ms
+I0228 00:37:14.272501 16449 hybrid_datadriven.cu:443] Iteration: 43 SYNC  INPUT: 6 OUTPUT: 5
+I0228 00:37:14.272790 16449 hybrid_datadriven.cu:425] THROUGHPUT: 41.0448 nodes/ms
+I0228 00:37:14.272810 16449 hybrid_datadriven.cu:443] Iteration: 44 SYNC  INPUT: 5 OUTPUT: 6
+I0228 00:37:14.273098 16449 hybrid_datadriven.cu:425] THROUGHPUT: 33.5821 nodes/ms
+I0228 00:37:14.273120 16449 hybrid_datadriven.cu:443] Iteration: 45 SYNC  INPUT: 6 OUTPUT: 3
+I0228 00:37:14.273408 16449 hybrid_datadriven.cu:425] THROUGHPUT: 29.8507 nodes/ms
+I0228 00:37:14.273429 16449 hybrid_datadriven.cu:443] Iteration: 46 SYNC  INPUT: 3 OUTPUT: 5
+I0228 00:37:14.273717 16449 hybrid_datadriven.cu:425] THROUGHPUT: 29.8507 nodes/ms
+I0228 00:37:14.273738 16449 hybrid_datadriven.cu:443] Iteration: 47 SYNC  INPUT: 5 OUTPUT: 3
+I0228 00:37:14.274029 16449 hybrid_datadriven.cu:425] THROUGHPUT: 22.3048 nodes/ms
+I0228 00:37:14.274053 16449 hybrid_datadriven.cu:443] Iteration: 48 SYNC  INPUT: 3 OUTPUT: 3
+I0228 00:37:14.274344 16449 hybrid_datadriven.cu:425] THROUGHPUT: 18.5185 nodes/ms
+I0228 00:37:14.274366 16449 hybrid_datadriven.cu:443] Iteration: 49 SYNC  INPUT: 3 OUTPUT: 2
+I0228 00:37:14.274657 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.8699 nodes/ms
+I0228 00:37:14.274686 16449 hybrid_datadriven.cu:443] Iteration: 50 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.274974 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.274996 16449 hybrid_datadriven.cu:443] Iteration: 51 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.275292 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.3885 nodes/ms
+I0228 00:37:14.275323 16449 hybrid_datadriven.cu:443] Iteration: 52 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.275620 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.275645 16449 hybrid_datadriven.cu:443] Iteration: 53 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.275934 16449 hybrid_datadriven.cu:425] THROUGHPUT: 18.5874 nodes/ms
+I0228 00:37:14.275957 16449 hybrid_datadriven.cu:443] Iteration: 54 SYNC  INPUT: 2 OUTPUT: 3
+I0228 00:37:14.276249 16449 hybrid_datadriven.cu:425] THROUGHPUT: 18.5185 nodes/ms
+I0228 00:37:14.276271 16449 hybrid_datadriven.cu:443] Iteration: 55 SYNC  INPUT: 3 OUTPUT: 2
+I0228 00:37:14.276572 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.7059 nodes/ms
+I0228 00:37:14.276603 16449 hybrid_datadriven.cu:443] Iteration: 56 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.276901 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.276922 16449 hybrid_datadriven.cu:443] Iteration: 57 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.277210 16449 hybrid_datadriven.cu:425] THROUGHPUT: 18.6567 nodes/ms
+I0228 00:37:14.277241 16449 hybrid_datadriven.cu:443] Iteration: 58 SYNC  INPUT: 2 OUTPUT: 3
+I0228 00:37:14.277529 16449 hybrid_datadriven.cu:425] THROUGHPUT: 18.6567 nodes/ms
+I0228 00:37:14.277551 16449 hybrid_datadriven.cu:443] Iteration: 59 SYNC  INPUT: 3 OUTPUT: 2
+I0228 00:37:14.277839 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.277860 16449 hybrid_datadriven.cu:443] Iteration: 60 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.278148 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.278169 16449 hybrid_datadriven.cu:443] Iteration: 61 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.278457 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.278478 16449 hybrid_datadriven.cu:443] Iteration: 62 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.278766 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.278787 16449 hybrid_datadriven.cu:443] Iteration: 63 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.279081 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.279103 16449 hybrid_datadriven.cu:443] Iteration: 64 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.279393 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9813 nodes/ms
+I0228 00:37:14.279415 16449 hybrid_datadriven.cu:443] Iteration: 65 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.279703 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.279726 16449 hybrid_datadriven.cu:443] Iteration: 66 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.280014 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.280035 16449 hybrid_datadriven.cu:443] Iteration: 67 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.280323 16449 hybrid_datadriven.cu:425] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:37:14.280344 16449 hybrid_datadriven.cu:443] Iteration: 68 SYNC  INPUT: 2 OUTPUT: 2
+I0228 00:37:14.280632 16449 hybrid_datadriven.cu:425] THROUGHPUT: 11.194 nodes/ms
+I0228 00:37:14.280654 16449 hybrid_datadriven.cu:443] Iteration: 69 SYNC  INPUT: 2 OUTPUT: 1
+I0228 00:37:14.280953 16449 hybrid_datadriven.cu:425] THROUGHPUT: 11.1524 nodes/ms
+I0228 00:37:14.280987 16449 hybrid_datadriven.cu:443] Iteration: 70 SYNC  INPUT: 1 OUTPUT: 2
+I0228 00:37:14.281282 16449 hybrid_datadriven.cu:425] THROUGHPUT: 10.9489 nodes/ms
+I0228 00:37:14.281304 16449 hybrid_datadriven.cu:443] Iteration: 71 SYNC  INPUT: 2 OUTPUT: 1
+I0228 00:37:14.281594 16449 hybrid_datadriven.cu:425] THROUGHPUT: 7.46269 nodes/ms
+I0228 00:37:14.281613 16449 hybrid_datadriven.cu:443] Iteration: 72 SYNC  INPUT: 1 OUTPUT: 1
+I0228 00:37:14.281901 16449 hybrid_datadriven.cu:425] THROUGHPUT: 7.46269 nodes/ms
+I0228 00:37:14.281922 16449 hybrid_datadriven.cu:443] Iteration: 73 SYNC  INPUT: 1 OUTPUT: 1
+I0228 00:37:14.282210 16449 hybrid_datadriven.cu:425] THROUGHPUT: 3.73134 nodes/ms
+I0228 00:37:14.282232 16449 hybrid_datadriven.cu:443] Iteration: 74 SYNC  INPUT: 1 OUTPUT: 0
+I0228 00:37:14.282271 16449 hybrid_datadriven.cu:461] PR terminated after 74 iterations (max: 80, sync: 74, async: 0)
+I0228 00:37:14.282279 16449 hybrid_datadriven.cu:464] PR: 921.053 ms. <filter>
+I0228 00:37:14.282284 16449 hybrid_datadriven.cu:465] AVG SYNC: 12.3871ms TOTAL ASYNC: -nan ms.
+W0228 00:37:14.367496 16449 hybrid_datadriven.cu:477] Result not checked
+I0228 00:37:14.383564 16449 context.h:173] Context status:
+I0228 00:37:14.383584 16449 context.h:351] 		Endpoint map (virtual endpoint, physical device): 
+I0228 00:37:14.383620 16449 context.h:353] 						 (-1, -1)
+I0228 00:37:14.383651 16449 context.h:353] 						 (0, 0)
+I0228 00:37:14.383661 16449 context.h:357] 		Memcpy lanes (endpoint, lane type): 
+I0228 00:37:14.383671 16449 context.h:362] 		Fragmentation: -1
+I0228 00:37:14.383679 16449 context.h:364] 		Event pools (device, events): 
+I0228 00:37:14.383700 16449 context.h:366] 						 (0, 0)
+I0228 00:37:14.394088 16449 app_skeleton.h:227] Overall: Test PASSED
+
+
+
+
+
+liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ 
+liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ ./exprs -noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr  -logtostderr=1 -v=1  -mode 1 -notopology -max_pr_iterations 80 -switch_threshold 99 -wl_alloc_factor 0.8
+I0228 00:38:13.578152 16506 app_skeleton.h:211] Testing single GPU Page Rank
+I0228 00:38:13.578261 16506 app_skeleton.h:212] --------------------
+I0228 00:38:13.578271 16506 hybrid_datadriven.cu:331] HybridDataDriven
+I0228 00:38:14.584157 16506 traversal.h:156] Loading graph /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr (1)
+I0228 00:38:14.584230 16506 parser.cpp:411] /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr has 23947347 nodes and 57708624 edges
+I0228 00:38:15.211127 16506 parser.cpp:450] read 57708624 edges
+I0228 00:38:15.251654 16506 parser.cpp:466] read data for 57708624 edges
+I0228 00:38:15.251709 16506 traversal.h:203] ----- Running PR -----
+I0228 00:38:15.251767 16506 traversal.h:205] The graph has 23947347 vertices, and 57708624 edges (average degree: 2.409813)
+GeForce GTX 1080 : 1733.500 Mhz   (Ordinal 0)
+20 SMs enabled. Compute Capability sm_61
+FreeMem:   7397MB   TotalMem:   8112MB   64-bit pointers.
+Mem Clock: 5005.000 Mhz x 256 bits   (320.3 GB/s)
+ECC Disabled
+
+
+I0228 00:38:15.448597 16506 hybrid_datadriven.cu:440] THROUGHPUT: 2.99324e+06 nodes/ms
+I0228 00:38:15.448662 16506 hybrid_datadriven.cu:443] Iteration: 1 ASYNC  INPUT: 23947347 OUTPUT: 19801802
+I0228 00:38:15.469899 16506 hybrid_datadriven.cu:440] THROUGHPUT: 1.95422e+06 nodes/ms
+I0228 00:38:15.469954 16506 hybrid_datadriven.cu:443] Iteration: 2 ASYNC  INPUT: 19801802 OUTPUT: 21586560
+I0228 00:38:15.501219 16506 hybrid_datadriven.cu:440] THROUGHPUT: 1.40401e+06 nodes/ms
+I0228 00:38:15.501283 16506 hybrid_datadriven.cu:443] Iteration: 3 ASYNC  INPUT: 21586560 OUTPUT: 22214223
+I0228 00:38:15.540725 16506 hybrid_datadriven.cu:440] THROUGHPUT: 1.14061e+06 nodes/ms
+I0228 00:38:15.540781 16506 hybrid_datadriven.cu:443] Iteration: 4 ASYNC  INPUT: 22214223 OUTPUT: 22704329
+I0228 00:38:15.586097 16506 hybrid_datadriven.cu:440] THROUGHPUT: 1.00324e+06 nodes/ms
+I0228 00:38:15.586158 16506 hybrid_datadriven.cu:443] Iteration: 5 ASYNC  INPUT: 22704329 OUTPUT: 22707270
+I0228 00:38:15.636620 16506 hybrid_datadriven.cu:440] THROUGHPUT: 902584 nodes/ms
+I0228 00:38:15.636664 16506 hybrid_datadriven.cu:443] Iteration: 6 ASYNC  INPUT: 22707270 OUTPUT: 22777565
+I0228 00:38:15.691767 16506 hybrid_datadriven.cu:440] THROUGHPUT: 821931 nodes/ms
+I0228 00:38:15.691812 16506 hybrid_datadriven.cu:443] Iteration: 7 ASYNC  INPUT: 22777565 OUTPUT: 22464789
+I0228 00:38:15.750718 16506 hybrid_datadriven.cu:440] THROUGHPUT: 752469 nodes/ms
+I0228 00:38:15.750772 16506 hybrid_datadriven.cu:443] Iteration: 8 ASYNC  INPUT: 22464789 OUTPUT: 21818739
+I0228 00:38:15.812315 16506 hybrid_datadriven.cu:440] THROUGHPUT: 683182 nodes/ms
+I0228 00:38:15.812357 16506 hybrid_datadriven.cu:443] Iteration: 9 ASYNC  INPUT: 21818739 OUTPUT: 20192879
+I0228 00:38:15.874436 16506 hybrid_datadriven.cu:440] THROUGHPUT: 612511 nodes/ms
+I0228 00:38:15.874480 16506 hybrid_datadriven.cu:443] Iteration: 10 ASYNC  INPUT: 20192879 OUTPUT: 17796865
+I0228 00:38:15.934960 16506 hybrid_datadriven.cu:440] THROUGHPUT: 552416 nodes/ms
+I0228 00:38:15.935008 16506 hybrid_datadriven.cu:443] Iteration: 11 ASYNC  INPUT: 17796865 OUTPUT: 15580084
+I0228 00:38:15.992841 16506 hybrid_datadriven.cu:440] THROUGHPUT: 506445 nodes/ms
+I0228 00:38:15.992900 16506 hybrid_datadriven.cu:443] Iteration: 12 ASYNC  INPUT: 15580084 OUTPUT: 13673698
+I0228 00:38:16.048089 16506 hybrid_datadriven.cu:440] THROUGHPUT: 464907 nodes/ms
+I0228 00:38:16.048132 16506 hybrid_datadriven.cu:443] Iteration: 13 ASYNC  INPUT: 13673698 OUTPUT: 11958022
+I0228 00:38:16.101266 16506 hybrid_datadriven.cu:440] THROUGHPUT: 427142 nodes/ms
+I0228 00:38:16.101310 16506 hybrid_datadriven.cu:443] Iteration: 14 ASYNC  INPUT: 11958022 OUTPUT: 10713379
+I0228 00:38:16.153292 16506 hybrid_datadriven.cu:440] THROUGHPUT: 394106 nodes/ms
+I0228 00:38:16.153345 16506 hybrid_datadriven.cu:443] Iteration: 15 ASYNC  INPUT: 10713379 OUTPUT: 9750205
+I0228 00:38:16.204458 16506 hybrid_datadriven.cu:440] THROUGHPUT: 361007 nodes/ms
+I0228 00:38:16.204501 16506 hybrid_datadriven.cu:443] Iteration: 16 ASYNC  INPUT: 9750205 OUTPUT: 8677022
+I0228 00:38:16.252940 16506 hybrid_datadriven.cu:440] THROUGHPUT: 318813 nodes/ms
+I0228 00:38:16.252995 16506 hybrid_datadriven.cu:443] Iteration: 17 ASYNC  INPUT: 8677022 OUTPUT: 6747449
+I0228 00:38:16.293639 16506 hybrid_datadriven.cu:440] THROUGHPUT: 268979 nodes/ms
+I0228 00:38:16.293684 16506 hybrid_datadriven.cu:443] Iteration: 18 ASYNC  INPUT: 6747449 OUTPUT: 4171504
+I0228 00:38:16.321923 16506 hybrid_datadriven.cu:440] THROUGHPUT: 229513 nodes/ms
+I0228 00:38:16.321975 16506 hybrid_datadriven.cu:443] Iteration: 19 ASYNC  INPUT: 4171504 OUTPUT: 2296869
+I0228 00:38:16.339730 16506 hybrid_datadriven.cu:440] THROUGHPUT: 203829 nodes/ms
+I0228 00:38:16.339756 16506 hybrid_datadriven.cu:443] Iteration: 20 ASYNC  INPUT: 2296869 OUTPUT: 1314571
+I0228 00:38:16.351135 16506 hybrid_datadriven.cu:440] THROUGHPUT: 180540 nodes/ms
+I0228 00:38:16.351176 16506 hybrid_datadriven.cu:443] Iteration: 21 ASYNC  INPUT: 1314571 OUTPUT: 733835
+I0228 00:38:16.358079 16506 hybrid_datadriven.cu:440] THROUGHPUT: 163692 nodes/ms
+I0228 00:38:16.358119 16506 hybrid_datadriven.cu:443] Iteration: 22 ASYNC  INPUT: 733835 OUTPUT: 391057
+I0228 00:38:16.362079 16506 hybrid_datadriven.cu:440] THROUGHPUT: 149292 nodes/ms
+I0228 00:38:16.362124 16506 hybrid_datadriven.cu:443] Iteration: 23 ASYNC  INPUT: 391057 OUTPUT: 194616
+I0228 00:38:16.364267 16506 hybrid_datadriven.cu:440] THROUGHPUT: 136174 nodes/ms
+I0228 00:38:16.364300 16506 hybrid_datadriven.cu:443] Iteration: 24 ASYNC  INPUT: 194616 OUTPUT: 94073
+I0228 00:38:16.365526 16506 hybrid_datadriven.cu:440] THROUGHPUT: 117173 nodes/ms
+I0228 00:38:16.365548 16506 hybrid_datadriven.cu:443] Iteration: 25 ASYNC  INPUT: 94073 OUTPUT: 45011
+I0228 00:38:16.366210 16506 hybrid_datadriven.cu:440] THROUGHPUT: 103138 nodes/ms
+I0228 00:38:16.366232 16506 hybrid_datadriven.cu:443] Iteration: 26 ASYNC  INPUT: 45011 OUTPUT: 21307
+I0228 00:38:16.366658 16506 hybrid_datadriven.cu:440] THROUGHPUT: 77898.8 nodes/ms
+I0228 00:38:16.366681 16506 hybrid_datadriven.cu:443] Iteration: 27 ASYNC  INPUT: 21307 OUTPUT: 10242
+I0228 00:38:16.367002 16506 hybrid_datadriven.cu:440] THROUGHPUT: 50730 nodes/ms
+I0228 00:38:16.367022 16506 hybrid_datadriven.cu:443] Iteration: 28 ASYNC  INPUT: 10242 OUTPUT: 4977
+I0228 00:38:16.367313 16506 hybrid_datadriven.cu:440] THROUGHPUT: 26882.4 nodes/ms
+I0228 00:38:16.367336 16506 hybrid_datadriven.cu:443] Iteration: 29 ASYNC  INPUT: 4977 OUTPUT: 2335
+I0228 00:38:16.367624 16506 hybrid_datadriven.cu:440] THROUGHPUT: 12925.7 nodes/ms
+I0228 00:38:16.367648 16506 hybrid_datadriven.cu:443] Iteration: 30 ASYNC  INPUT: 2335 OUTPUT: 1142
+I0228 00:38:16.367938 16506 hybrid_datadriven.cu:440] THROUGHPUT: 6379.18 nodes/ms
+I0228 00:38:16.367959 16506 hybrid_datadriven.cu:443] Iteration: 31 ASYNC  INPUT: 1142 OUTPUT: 574
+I0228 00:38:16.368248 16506 hybrid_datadriven.cu:440] THROUGHPUT: 3171 nodes/ms
+I0228 00:38:16.368269 16506 hybrid_datadriven.cu:443] Iteration: 32 ASYNC  INPUT: 574 OUTPUT: 279
+I0228 00:38:16.368567 16506 hybrid_datadriven.cu:440] THROUGHPUT: 1646.84 nodes/ms
+I0228 00:38:16.368588 16506 hybrid_datadriven.cu:443] Iteration: 33 ASYNC  INPUT: 279 OUTPUT: 164
+I0228 00:38:16.368877 16506 hybrid_datadriven.cu:440] THROUGHPUT: 884.328 nodes/ms
+I0228 00:38:16.368898 16506 hybrid_datadriven.cu:443] Iteration: 34 ASYNC  INPUT: 164 OUTPUT: 73
+I0228 00:38:16.369186 16506 hybrid_datadriven.cu:440] THROUGHPUT: 414.179 nodes/ms
+I0228 00:38:16.369207 16506 hybrid_datadriven.cu:443] Iteration: 35 ASYNC  INPUT: 73 OUTPUT: 38
+I0228 00:38:16.369495 16506 hybrid_datadriven.cu:440] THROUGHPUT: 205.224 nodes/ms
+I0228 00:38:16.369516 16506 hybrid_datadriven.cu:443] Iteration: 36 ASYNC  INPUT: 38 OUTPUT: 17
+I0228 00:38:16.369804 16506 hybrid_datadriven.cu:440] THROUGHPUT: 93.2836 nodes/ms
+I0228 00:38:16.369825 16506 hybrid_datadriven.cu:443] Iteration: 37 ASYNC  INPUT: 17 OUTPUT: 8
+I0228 00:38:16.370123 16506 hybrid_datadriven.cu:440] THROUGHPUT: 43.3213 nodes/ms
+I0228 00:38:16.370144 16506 hybrid_datadriven.cu:443] Iteration: 38 ASYNC  INPUT: 8 OUTPUT: 4
+I0228 00:38:16.370432 16506 hybrid_datadriven.cu:440] THROUGHPUT: 22.3881 nodes/ms
+I0228 00:38:16.370453 16506 hybrid_datadriven.cu:443] Iteration: 39 ASYNC  INPUT: 4 OUTPUT: 2
+I0228 00:38:16.370740 16506 hybrid_datadriven.cu:440] THROUGHPUT: 14.9254 nodes/ms
+I0228 00:38:16.370761 16506 hybrid_datadriven.cu:443] Iteration: 40 ASYNC  INPUT: 2 OUTPUT: 2
+I0228 00:38:16.371048 16506 hybrid_datadriven.cu:440] THROUGHPUT: 11.194 nodes/ms
+I0228 00:38:16.371070 16506 hybrid_datadriven.cu:443] Iteration: 41 ASYNC  INPUT: 2 OUTPUT: 1
+I0228 00:38:16.371357 16506 hybrid_datadriven.cu:440] THROUGHPUT: 3.73134 nodes/ms
+I0228 00:38:16.371377 16506 hybrid_datadriven.cu:443] Iteration: 42 ASYNC  INPUT: 1 OUTPUT: 0
+I0228 00:38:16.371415 16506 hybrid_datadriven.cu:461] PR terminated after 42 iterations (max: 80, sync: 0, async: 42)
+I0228 00:38:16.371423 16506 hybrid_datadriven.cu:464] PR: 937.43 ms. <filter>
+I0228 00:38:16.371428 16506 hybrid_datadriven.cu:465] AVG SYNC: -nanms TOTAL ASYNC: 22.244 ms.
+W0228 00:38:16.456727 16506 hybrid_datadriven.cu:477] Result not checked
+I0228 00:38:16.471290 16506 context.h:173] Context status:
+I0228 00:38:16.471303 16506 context.h:351] 		Endpoint map (virtual endpoint, physical device): 
+I0228 00:38:16.471323 16506 context.h:353] 						 (-1, -1)
+I0228 00:38:16.471344 16506 context.h:353] 						 (0, 0)
+I0228 00:38:16.471359 16506 context.h:357] 		Memcpy lanes (endpoint, lane type): 
+I0228 00:38:16.471371 16506 context.h:362] 		Fragmentation: -1
+I0228 00:38:16.471375 16506 context.h:364] 		Event pools (device, events): 
+I0228 00:38:16.471385 16506 context.h:366] 						 (0, 0)
+I0228 00:38:16.481462 16506 app_skeleton.h:227] Overall: Test PASSED
+liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ 
+
+
+
+liang@CSE-Cnc093936D:~/groute-dev/cmake-build-debug$ ./exprs -noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr  -logtostderr=1 -v=1  -mode 1 -notopology -max_pr_iterations 80 -switch_threshold 11 -wl_alloc_factor 0.8
+I0228 00:47:51.233918 16940 app_skeleton.h:211] Testing single GPU Page Rank
+I0228 00:47:51.234024 16940 app_skeleton.h:212] --------------------
+I0228 00:47:51.234033 16940 hybrid_datadriven.cu:331] HybridDataDriven
+I0228 00:47:52.233121 16940 traversal.h:156] Loading graph /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr (1)
+I0228 00:47:52.233183 16940 parser.cpp:411] /mnt/sda2/liang/ppopp17-artifact/USA/USA-road-d.USA.gr has 23947347 nodes and 57708624 edges
+I0228 00:47:52.813973 16940 parser.cpp:450] read 57708624 edges
+I0228 00:47:52.851336 16940 parser.cpp:466] read data for 57708624 edges
+I0228 00:47:52.851364 16940 traversal.h:203] ----- Running PR -----
+I0228 00:47:52.851411 16940 traversal.h:205] The graph has 23947347 vertices, and 57708624 edges (average degree: 2.409813)
+GeForce GTX 1080 : 1733.500 Mhz   (Ordinal 0)
+20 SMs enabled. Compute Capability sm_61
+FreeMem:   7397MB   TotalMem:   8112MB   64-bit pointers.
+Mem Clock: 5005.000 Mhz x 256 bits   (320.3 GB/s)
+ECC Disabled
+
+
+I0228 00:47:53.041508 16940 hybrid_datadriven.cu:440] THROUGHPUT: 3.01076e+06 nodes/ms
+I0228 00:47:53.041546 16940 hybrid_datadriven.cu:443] Iteration: 1 ASYNC  INPUT: 23947347 OUTPUT: 19808040
+I0228 00:47:53.063081 16940 hybrid_datadriven.cu:440] THROUGHPUT: 1.93031e+06 nodes/ms
+I0228 00:47:53.063124 16940 hybrid_datadriven.cu:443] Iteration: 2 ASYNC  INPUT: 19808040 OUTPUT: 21658864
+I0228 00:47:53.094499 16940 hybrid_datadriven.cu:440] THROUGHPUT: 1.40084e+06 nodes/ms
+I0228 00:47:53.094539 16940 hybrid_datadriven.cu:443] Iteration: 3 ASYNC  INPUT: 21658864 OUTPUT: 22225363
+I0228 00:47:53.133879 16940 hybrid_datadriven.cu:440] THROUGHPUT: 1.14346e+06 nodes/ms
+I0228 00:47:53.133922 16940 hybrid_datadriven.cu:443] Iteration: 4 ASYNC  INPUT: 22225363 OUTPUT: 22702220
+I0228 00:47:53.179219 16940 hybrid_datadriven.cu:440] THROUGHPUT: 1.00358e+06 nodes/ms
+I0228 00:47:53.179263 16940 hybrid_datadriven.cu:443] Iteration: 5 ASYNC  INPUT: 22702220 OUTPUT: 22710883
+I0228 00:47:53.229794 16940 hybrid_datadriven.cu:440] THROUGHPUT: 901331 nodes/ms
+I0228 00:47:53.229836 16940 hybrid_datadriven.cu:443] Iteration: 6 ASYNC  INPUT: 22710883 OUTPUT: 22789203
+I0228 00:47:53.285089 16940 hybrid_datadriven.cu:440] THROUGHPUT: 819791 nodes/ms
+I0228 00:47:53.285128 16940 hybrid_datadriven.cu:443] Iteration: 7 ASYNC  INPUT: 22789203 OUTPUT: 22468169
+I0228 00:47:53.343591 16940 hybrid_datadriven.cu:440] THROUGHPUT: 758186 nodes/ms
+I0228 00:47:53.343633 16940 hybrid_datadriven.cu:443] Iteration: 8 ASYNC  INPUT: 22468169 OUTPUT: 21822771
+I0228 00:47:53.404737 16940 hybrid_datadriven.cu:440] THROUGHPUT: 688472 nodes/ms
+I0228 00:47:53.404777 16940 hybrid_datadriven.cu:443] Iteration: 9 ASYNC  INPUT: 21822771 OUTPUT: 20211897
+I0228 00:47:53.466626 16940 hybrid_datadriven.cu:440] THROUGHPUT: 615304 nodes/ms
+I0228 00:47:53.466678 16940 hybrid_datadriven.cu:443] Iteration: 10 ASYNC  INPUT: 20211897 OUTPUT: 17815123
+I0228 00:47:53.526880 16940 hybrid_datadriven.cu:440] THROUGHPUT: 555483 nodes/ms
+I0228 00:47:53.526922 16940 hybrid_datadriven.cu:443] Iteration: 11 ASYNC  INPUT: 17815123 OUTPUT: 15593303
+I0228 00:47:53.602787 16940 hybrid_datadriven.cu:425] THROUGHPUT: 376710 nodes/ms
+I0228 00:47:53.602828 16940 hybrid_datadriven.cu:443] Iteration: 12 SYNC  INPUT: 15593303 OUTPUT: 12959793
+I0228 00:47:53.673168 16940 hybrid_datadriven.cu:425] THROUGHPUT: 346641 nodes/ms
+I0228 00:47:53.673220 16940 hybrid_datadriven.cu:443] Iteration: 13 SYNC  INPUT: 12959793 OUTPUT: 11403148
+I0228 00:47:53.738572 16940 hybrid_datadriven.cu:425] THROUGHPUT: 296620 nodes/ms
+I0228 00:47:53.738615 16940 hybrid_datadriven.cu:443] Iteration: 14 SYNC  INPUT: 11403148 OUTPUT: 7964370
+I0228 00:47:53.788094 16940 hybrid_datadriven.cu:425] THROUGHPUT: 257024 nodes/ms
+I0228 00:47:53.788146 16940 hybrid_datadriven.cu:443] Iteration: 15 SYNC  INPUT: 7964370 OUTPUT: 4741085
+I0228 00:47:53.819869 16940 hybrid_datadriven.cu:425] THROUGHPUT: 227935 nodes/ms
+I0228 00:47:53.819919 16940 hybrid_datadriven.cu:443] Iteration: 16 SYNC  INPUT: 4741085 OUTPUT: 2476250
+I0228 00:47:53.839088 16940 hybrid_datadriven.cu:425] THROUGHPUT: 201412 nodes/ms
+I0228 00:47:53.839120 16940 hybrid_datadriven.cu:443] Iteration: 17 SYNC  INPUT: 2476250 OUTPUT: 1379985
+I0228 00:47:53.850822 16940 hybrid_datadriven.cu:425] THROUGHPUT: 179812 nodes/ms
+I0228 00:47:53.850870 16940 hybrid_datadriven.cu:443] Iteration: 18 SYNC  INPUT: 1379985 OUTPUT: 715726
+I0228 00:47:53.857688 16940 hybrid_datadriven.cu:425] THROUGHPUT: 158739 nodes/ms
+I0228 00:47:53.857709 16940 hybrid_datadriven.cu:443] Iteration: 19 SYNC  INPUT: 715726 OUTPUT: 363067
+I0228 00:47:53.861348 16940 hybrid_datadriven.cu:425] THROUGHPUT: 146758 nodes/ms
+I0228 00:47:53.861371 16940 hybrid_datadriven.cu:443] Iteration: 20 SYNC  INPUT: 363067 OUTPUT: 168196
+I0228 00:47:53.863224 16940 hybrid_datadriven.cu:425] THROUGHPUT: 134397 nodes/ms
+I0228 00:47:53.863243 16940 hybrid_datadriven.cu:443] Iteration: 21 SYNC  INPUT: 168196 OUTPUT: 78288
+I0228 00:47:53.864238 16940 hybrid_datadriven.cu:425] THROUGHPUT: 116954 nodes/ms
+I0228 00:47:53.864279 16940 hybrid_datadriven.cu:443] Iteration: 22 SYNC  INPUT: 78288 OUTPUT: 34807
+I0228 00:47:53.864892 16940 hybrid_datadriven.cu:425] THROUGHPUT: 86701.5 nodes/ms
+I0228 00:47:53.864913 16940 hybrid_datadriven.cu:443] Iteration: 23 SYNC  INPUT: 34807 OUTPUT: 15740
+I0228 00:47:53.865263 16940 hybrid_datadriven.cu:425] THROUGHPUT: 68655.6 nodes/ms
+I0228 00:47:53.865284 16940 hybrid_datadriven.cu:443] Iteration: 24 SYNC  INPUT: 15740 OUTPUT: 6985
+I0228 00:47:53.865581 16940 hybrid_datadriven.cu:425] THROUGHPUT: 36945.8 nodes/ms
+I0228 00:47:53.865602 16940 hybrid_datadriven.cu:443] Iteration: 25 SYNC  INPUT: 6985 OUTPUT: 3249
+I0228 00:47:53.865890 16940 hybrid_datadriven.cu:425] THROUGHPUT: 17244.4 nodes/ms
+I0228 00:47:53.865911 16940 hybrid_datadriven.cu:443] Iteration: 26 SYNC  INPUT: 3249 OUTPUT: 1407
+I0228 00:47:53.866209 16940 hybrid_datadriven.cu:425] THROUGHPUT: 7251.8 nodes/ms
+I0228 00:47:53.866230 16940 hybrid_datadriven.cu:443] Iteration: 27 SYNC  INPUT: 1407 OUTPUT: 609
+I0228 00:47:53.866518 16940 hybrid_datadriven.cu:425] THROUGHPUT: 3275.09 nodes/ms
+I0228 00:47:53.866538 16940 hybrid_datadriven.cu:443] Iteration: 28 SYNC  INPUT: 609 OUTPUT: 272
+I0228 00:47:53.866824 16940 hybrid_datadriven.cu:425] THROUGHPUT: 1518.66 nodes/ms
+I0228 00:47:53.866845 16940 hybrid_datadriven.cu:443] Iteration: 29 SYNC  INPUT: 272 OUTPUT: 135
+I0228 00:47:53.867132 16940 hybrid_datadriven.cu:425] THROUGHPUT: 716.418 nodes/ms
+I0228 00:47:53.867154 16940 hybrid_datadriven.cu:443] Iteration: 30 SYNC  INPUT: 135 OUTPUT: 57
+I0228 00:47:53.867441 16940 hybrid_datadriven.cu:425] THROUGHPUT: 324.627 nodes/ms
+I0228 00:47:53.867461 16940 hybrid_datadriven.cu:443] Iteration: 31 SYNC  INPUT: 57 OUTPUT: 30
+I0228 00:47:53.867750 16940 hybrid_datadriven.cu:425] THROUGHPUT: 160.448 nodes/ms
+I0228 00:47:53.867771 16940 hybrid_datadriven.cu:443] Iteration: 32 SYNC  INPUT: 30 OUTPUT: 13
+I0228 00:47:53.868060 16940 hybrid_datadriven.cu:425] THROUGHPUT: 55.9701 nodes/ms
+I0228 00:47:53.868082 16940 hybrid_datadriven.cu:443] Iteration: 33 SYNC  INPUT: 13 OUTPUT: 2
+I0228 00:47:53.868369 16940 hybrid_datadriven.cu:425] THROUGHPUT: 11.194 nodes/ms
+I0228 00:47:53.868391 16940 hybrid_datadriven.cu:443] Iteration: 34 SYNC  INPUT: 2 OUTPUT: 1
+I0228 00:47:53.868679 16940 hybrid_datadriven.cu:425] THROUGHPUT: 3.73134 nodes/ms
+I0228 00:47:53.868700 16940 hybrid_datadriven.cu:443] Iteration: 35 SYNC  INPUT: 1 OUTPUT: 0
+I0228 00:47:53.868736 16940 hybrid_datadriven.cu:461] PR terminated after 35 iterations (max: 80, sync: 24, async: 11)
+I0228 00:47:53.868744 16940 hybrid_datadriven.cu:464] PR: 841.755 ms. <filter>
+I0228 00:47:53.868751 16940 hybrid_datadriven.cu:465] AVG SYNC: 14.1822ms TOTAL ASYNC: 45.3625 ms.
+W0228 00:47:53.952973 16940 hybrid_datadriven.cu:477] Result not checked
+I0228 00:47:53.967648 16940 context.h:173] Context status:
+I0228 00:47:53.967659 16940 context.h:351] 		Endpoint map (virtual endpoint, physical device): 
+I0228 00:47:53.967707 16940 context.h:353] 						 (-1, -1)
+I0228 00:47:53.967727 16940 context.h:353] 						 (0, 0)
+I0228 00:47:53.967741 16940 context.h:357] 		Memcpy lanes (endpoint, lane type): 
+I0228 00:47:53.967746 16940 context.h:362] 		Fragmentation: -1
+I0228 00:47:53.967749 16940 context.h:364] 		Event pools (device, events): 
+I0228 00:47:53.967759 16940 context.h:366] 						 (0, 0)
+I0228 00:47:53.977849 16940 app_skeleton.h:227] Overall: Test PASSED
+
