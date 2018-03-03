@@ -267,21 +267,45 @@ namespace utils {
                         context.SetDevice(i);
                         groute::Stream stream = context.CreateStream(i);
 
-                        // Perform algorithm specific device memsets nedded before Algo::HostInit (excluded from timing) 
+                        // Perform algorithm specific device memsets nedded before Algo::HostInit (excluded from timing)
                         Algo::DeviceMemset(stream, dev_graph_allocator.GetDeviceObjects()[i],
                                            args.GetDeviceObjects()[i]...);
 
                         stream.Sync();
-
                         barrier.Sync(); // Signal to host
-                        barrier.Sync(); // Receive signal from host
 
-                        // Perform algorithm specific initialization (included in timing) 
+
+                        // Perform algorithm specific initialization (included in timing)
                         Algo::DeviceInit(
                                 i, stream, distributed_worklist, distributed_worklist.GetPeer(i),
                                 dev_graph_allocator.GetDeviceObjects()[i], args.GetDeviceObjects()[i]...);
 
-                        // Loop over the work until convergence  
+                        barrier.Sync(); // Receive signal from host
+
+                    };
+                    workers.push_back(std::thread(dev_func, ii));
+                }
+
+                barrier.Sync(); // Wait for devices to init
+
+                barrier.Sync(); // Signal completion to host
+                Algo::HostInit(context, dev_graph_allocator, distributed_worklist); // Init from host
+
+                for (int i = 0; i < ngpus; ++i) {
+                    // Join workers
+                    workers[i].join();
+                }
+
+                workers.clear();
+
+                for (int ii = 0; ii < ngpus; ++ii) {
+                    auto dev_func = [&](size_t i) {
+                        context.SetDevice(i);
+                        groute::Stream stream = context.CreateStream(i);
+
+                        barrier.Sync(); // Signal to host
+
+                        // Loop over the work until convergence
                         distributed_worklist.Work(i, stream, dev_graph_allocator.GetDeviceObjects()[i],
                                                   args.GetDeviceObjects()[i]...);
 
@@ -291,15 +315,12 @@ namespace utils {
                     workers.push_back(std::thread(dev_func, ii));
                 }
 
-                barrier.Sync(); // Wait for devices to init 
-
-                Algo::HostInit(context, dev_graph_allocator, distributed_worklist); // Init from host
+                barrier.Sync(); // Wait for devices to init
 
                 Stopwatch sw(true); // All threads are running, start timing
 
                 IntervalRangeMarker range_marker(context.nedges, "work");
 
-                barrier.Sync(); // Signal to devices  
 
                 barrier.Sync(); // Wait for devices to end  
 
