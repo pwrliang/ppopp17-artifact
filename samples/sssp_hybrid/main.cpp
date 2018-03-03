@@ -61,8 +61,8 @@ namespace sssp {
         static const char *NameUpper() { return "SSSP"; }
 
         static bool Single() {
-            return TestSSSPSingle();
-//            return SSSPExpr();
+//            return TestSSSPSingle();
+            return SSSPExpr();
 //            return MyTestSSSPSingle();
 //            return TestSSSPSingle();
         }

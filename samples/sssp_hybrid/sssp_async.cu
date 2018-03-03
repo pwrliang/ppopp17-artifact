@@ -50,21 +50,38 @@ const distance_t INF = UINT_MAX;
 
 namespace sssp {
 
+    struct LocalData {
+        index_t m_node;
+        uint32_t m_iterated_round;
+
+        __device__ __host__
+
+        __forceinline__ LocalData(uint32_t iterated_round, index_t node) : m_iterated_round(iterated_round),
+                                                                           m_node(node) {
+
+        }
+    };
+
     struct DistanceData {
         index_t node;
         distance_t distance;
+        uint32_t iterated_round;
+        uint32_t padding;
 
         __device__ __host__
 
-        __forceinline__ DistanceData(index_t node, distance_t distance) : node(node),
-                                                                          distance(distance) {}
+        __forceinline__ DistanceData(uint32_t iterated_round, index_t node, distance_t distance) :
+                iterated_round(iterated_round),
+                node(node), distance(distance) {}
 
         __device__ __host__
 
-        __forceinline__ DistanceData() : node(INF), distance(INF) {}
+        __forceinline__ DistanceData() : iterated_round(0), node(INF), distance(INF) {
+            printf("call DistanceData default constructor\n");
+        }
     };
 
-    typedef index_t local_work_t;
+    typedef LocalData local_work_t;
     typedef DistanceData remote_work_t;
 
     __global__ void
@@ -76,10 +93,10 @@ namespace sssp {
             delta[tid] = INF;
             last_delta[tid] = INF;
 
-            if (tid == source_node) {
-                delta[tid] = 0;
-                last_delta[tid] = 0;
-            }
+//            if (tid == source_node) {
+//                delta[tid] = 0;
+//                last_delta[tid] = 0;
+//            }
         }
     }
 
@@ -90,13 +107,12 @@ namespace sssp {
                 typename WorkSource, typename WorkTarget,
                 typename TGraph, typename TWeightDatum, typename TDistanceDatum>
         __device__ static void work(
-                const int iterated_round,
+                const uint32_t iterated_round,
                 const WorkSource &work_source, WorkTarget &work_target,
                 const TGraph &graph, TWeightDatum &edge_weights,
                 TDistanceDatum &node_distances,
                 TDistanceDatum &node_delta,
-                TDistanceDatum &node_last_delta
-        ) {
+                TDistanceDatum &node_last_delta) {
             uint32_t tid = TID_1D;
             uint32_t nthreads = TOTAL_THREADS_1D;
 
@@ -108,17 +124,28 @@ namespace sssp {
                 groute::dev::np_local<distance_t> np_local = {0, 0, 0};
 
                 if (i < work_size) {
-                    index_t node = work_source.get_work(i);
+                    index_t node = work_source.get_work(i).m_node;
 
                     distance_t old_value = node_distances[node];
+                    printf("abc: iter:%u %u %u %u\n", iterated_round, node_distances[node], node_delta[node],
+                           node_last_delta[node]);
+
+
                     distance_t old_delta;
                     if (iterated_round % 2)
                         old_delta = atomicExch(node_delta.get_item_ptr(node), INF);
                     else
                         old_delta = atomicExch(node_last_delta.get_item_ptr(node), INF);
+
+
                     distance_t new_value = min(old_value, old_delta);
 
+                    printf("iter:%d node %d old_delta %d\n", iterated_round, node, old_delta);
+                    printf("old value:%d new value:%d\n", old_value, new_value);
+
                     if (new_value != old_value) {
+                        printf("node: %d old_delta:%d\n", node, old_delta);
+
                         node_distances[node] = new_value;
                         np_local.start = graph.begin_edge(node);
                         np_local.size = graph.end_edge(node) - np_local.start;
@@ -128,19 +155,20 @@ namespace sssp {
 
                 groute::dev::CTAWorkScheduler<distance_t>::template schedule(
                         np_local,
-                        [&iterated_round, &work_target, &graph, &edge_weights, &node_distances](index_t edge,
-                                                                                                index_t size,
-                                                                                                distance_t old_delta) {
+                        [&iterated_round, &work_target, &graph, &edge_weights, &node_last_delta, &node_delta](
+                                index_t edge,
+                                index_t size,
+                                distance_t old_delta) {
                             index_t dest = graph.edge_dest(edge);
                             distance_t weight = edge_weights.get_item(edge);
                             distance_t new_delta = old_delta + weight;
 
                             if (iterated_round % 2) {
                                 if (new_delta < atomicMin(node_last_delta.get_item_ptr(dest), new_delta))
-                                    work_target.append_work(DistanceData(dest, new_delta));
+                                    work_target.append_work(DistanceData(iterated_round, dest, new_delta));
                             } else {
                                 if (new_delta < atomicMin(node_delta.get_item_ptr(dest), new_delta))
-                                    work_target.append_work(DistanceData(dest, new_delta));
+                                    work_target.append_work(DistanceData(iterated_round, dest, new_delta));
                             }
                         }
                 );
@@ -155,7 +183,7 @@ namespace sssp {
                 typename WorkSource, typename WorkTarget,
                 typename TGraph, typename TWeightDatum, typename TDistanceDatum>
         __device__ static void work(
-                const int iterated_round,
+                const uint32_t iterated_round,
                 const WorkSource &work_source, WorkTarget &work_target,
                 const TGraph &graph, TWeightDatum &edge_weights,
                 TDistanceDatum &node_distances,
@@ -168,7 +196,7 @@ namespace sssp {
             uint32_t work_size = work_source.get_size();
 
             for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
-                index_t node = work_source.get_work(i);
+                index_t node = work_source.get_work(i).m_node;
                 distance_t old_value = node_distances.get_item(node);
                 distance_t old_delta;
 
@@ -187,11 +215,11 @@ namespace sssp {
 
                         if (iterated_round % 2) {
                             if (new_delta < atomicMin(node_last_delta.get_item_ptr(node), new_delta)) {
-                                work_target.append_work(DistanceData(dest, new_delta));
+                                work_target.append_work(DistanceData(iterated_round, dest, new_delta));
                             }
                         } else {
                             if (new_delta < atomicMin(node_delta.get_item_ptr(node), new_delta)) {
-                                work_target.append_work(DistanceData(dest, new_delta));
+                                work_target.append_work(DistanceData(iterated_round, dest, new_delta));
                             }
                         }
                     }
@@ -205,6 +233,8 @@ namespace sssp {
     private:
         groute::graphs::dev::CSRGraphSeg m_graph_seg;
         groute::graphs::dev::GraphDatum<distance_t> m_distances_datum;
+        groute::graphs::dev::GraphDatum<distance_t> m_delta_datum;
+        groute::graphs::dev::GraphDatum<distance_t> m_last_delta_datum;
 
     public:
         template<typename...UnusedData>
@@ -215,28 +245,29 @@ namespace sssp {
                 const groute::graphs::dev::GraphDatum<distance_t> &delta_datum,
                 const groute::graphs::dev::GraphDatum<distance_t> &last_datum,
                 UnusedData &... data)
-                : m_graph_seg(graph_seg), m_distances_datum(distances_datum) {
+                : m_graph_seg(graph_seg),
+                  m_distances_datum(distances_datum),
+                  m_delta_datum(delta_datum),
+                  m_last_delta_datum(last_datum) {
         }
 
         DWCallbacks() {}
 
-        int current_round;
-
-        __device__ __forceinline__
-
-        void report_round(int iterated_round) {
-
-            current_round = iterated_round;
-        }
-
         __device__ __forceinline__
 
         groute::SplitFlags on_receive(const remote_work_t &work) {
-
+            printf("call on_receive %d,%d,%d\n", work.iterated_round, work.node, work.distance);
             if (m_graph_seg.owns(work.node)) {
-                return (work.distance < atomicMin(m_distances_datum.get_item_ptr(work.node), work.distance))
-                       ? groute::SF_Take
-                       : groute::SF_None; // Filter
+//                return groute::SF_Take;
+                if (work.iterated_round % 2) {
+                    return (work.distance < atomicMin(m_delta_datum.get_item_ptr(work.node), work.distance))
+                           ? groute::SF_Take
+                           : groute::SF_None; // Filter
+                } else {
+                    return (work.distance < atomicMin(m_last_delta_datum.get_item_ptr(work.node), work.distance))
+                           ? groute::SF_Take
+                           : groute::SF_None; // Filter
+                }
             }
 
             return groute::SF_Pass;
@@ -245,14 +276,22 @@ namespace sssp {
         __device__ __forceinline__
 
         bool should_defer(const local_work_t &work, const distance_t &global_threshold) {
-            if (current_round % 2)
-                return m_distances_datum[work] > global_threshold;
+            printf("iter:%u delta:%u\n", work.m_iterated_round, work.m_node);
+            bool defer;
+            if (work.m_iterated_round % 2)
+                defer = m_delta_datum[work.m_node] > global_threshold;
+            else
+                defer = m_last_delta_datum[work.m_node] > global_threshold;
+            if (defer)
+                printf("defer\n");
+            return defer;
         }
 
         __device__ __forceinline__
 
         groute::SplitFlags on_send(local_work_t work) {
-            return (m_graph_seg.owns(work))
+            printf("call on_send\n");
+            return (m_graph_seg.owns(work.m_node))
                    ? groute::SF_Take
                    : groute::SF_Pass;
         }
@@ -260,14 +299,14 @@ namespace sssp {
         __device__ __forceinline__
 
         remote_work_t pack(local_work_t work) {
-            printf("iterated round:%d\n", current_round);
-            return DistanceData(work, m_distances_datum.get_item(work));
+            printf("iterated round:%d\n", work.m_iterated_round);
+            return DistanceData(work.m_iterated_round, work.m_node, m_distances_datum.get_item(work.m_node));
         }
 
         __device__ __forceinline__
 
         local_work_t unpack(const remote_work_t &work) {
-            return work.node;
+            return LocalData(work.iterated_round, work.node);
         }
     };
 
@@ -295,10 +334,11 @@ namespace sssp {
             distributed_worklist.ReportInitialWork(1, host);
 
             std::vector<remote_work_t> initial_work;
-            initial_work.push_back(remote_work_t(source_node, 0));
+            initial_work.push_back(remote_work_t(1, source_node, 0));
             distributed_worklist
                     .GetLink(host)
                     .Send(groute::Segment<remote_work_t>(&initial_work[0], 1), groute::Event());
+            printf("Host Init finished\n");
         }
 
         template<typename TGraph, typename TWeightDatum, typename TDistanceDatum, typename...UnusedData>
@@ -343,7 +383,10 @@ namespace sssp {
                TDistanceDatum &delta_datum,
                TDistanceDatum &last_delta_datum,
                UnusedData &... data) {
-            graph_allocator.GatherDatum(distances_datum);
+            //graph_allocator.GatherDatum(distances_datum);
+            //graph_allocator.GatherDatum(delta_datum);
+
+
             return distances_datum.GetHostData();
         }
 
@@ -397,8 +440,11 @@ bool TestSSSPAsyncMultiTemplate(int ngpus) {
     sssp::NodeDistanceDatumType node_delta;
     sssp::NodeDistanceDatumType node_last_delta;
 
+    printf("%u %u %u\n", node_distances, node_delta, node_last_delta);
 
-    return runner(ngpus, FLAGS_prio_delta, edge_weights, node_distances, node_delta, node_last_delta);
+    bool res = runner(ngpus, FLAGS_prio_delta, edge_weights, node_distances, node_delta, node_last_delta);
+
+    return res;
 }
 
 //bool TestSSSPAsyncMultiOptimized(int ngpus) {
@@ -418,5 +464,5 @@ bool TestSSSPAsyncMultiTemplate(int ngpus) {
 //}
 
 bool TestSSSPSingle() {
-    return TestSSSPAsyncMultiTemplate<sssp::FusedWorkerType<true, true>>(2);
+    return TestSSSPAsyncMultiTemplate<sssp::FusedWorkerType<true, true>>(1);
 }

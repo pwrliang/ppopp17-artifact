@@ -108,7 +108,7 @@ namespace groute {
     template<
             typename StoppingCondition, typename TLocal, typename TRemote, typename TPrio,
             typename DWCallbacks, typename Work, typename... WorkArgs>
-    __global__ void FusedWorkKernel(int iterated_round,
+    __global__ void FusedWorkKernel(uint32_t iterated_round,
                                     dev::Queue<TLocal> immediate_worklist,
                                     dev::Queue<TLocal> deferred_worklist,
                                     dev::PCQueue<TLocal> remote_input,
@@ -134,20 +134,19 @@ namespace groute {
         if (TID_1D == 0) {
             prev_deferred_work = deferred_worklist.count();
             prev_immediate_work = immediate_worklist.count();
-            callbacks.report_round(iterated_round);
         }
-
-        int inner = 0;
 
         while (!cond.stop()) {
             if (TID_1D == 0) {
-                *grid_work_size = remote_input.count(); // we must decide on work size globally  
+                *grid_work_size = remote_input.count(); // we must decide on work size globally
+                printf("inner iter:%d work size:%d\n", iterated_round, remote_input.count());
             }
 
             grid_barrier.Sync();
 
             uint32_t work_size = *grid_work_size; //  broadcast to all threads   
-            SplitDeferredWork<TLocal, DWCallbacks>(callbacks, priority_threshold, remote_input, work_size, immediate_worklist, deferred_worklist);
+            SplitDeferredWork<TLocal, DWCallbacks>(callbacks, priority_threshold, remote_input, work_size,
+                                                   immediate_worklist, deferred_worklist);
 
             grid_barrier.Sync();
 
@@ -157,6 +156,7 @@ namespace groute {
 
                 remote_input.pop(work_size);
                 prev_start = remote_input.get_start();
+                printf("new_immediate_work:%d deferred_worklist:%d\n", new_immediate_work, deferred_worklist.count());
             }
 
             if (immediate_worklist.count() == 0)
@@ -170,7 +170,8 @@ namespace groute {
                 int cur_chunk = min(immediate_worklist.count() - chunk, chunk_size);
 
                 // The work target for Work::work
-                dev::WorkTargetSplitSend<TLocal, TRemote, DWCallbacks> work_target(remote_input, remote_output, callbacks);
+                dev::WorkTargetSplitSend<TLocal, TRemote, DWCallbacks> work_target(remote_input, remote_output,
+                                                                                   callbacks);
                 Work::work(
                         iterated_round,
                         dev::WorkSourceArray<TLocal>(immediate_worklist.data_ptr() + chunk, cur_chunk),

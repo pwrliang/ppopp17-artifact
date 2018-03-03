@@ -114,8 +114,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DNDEBUG")
 #target_link_libraries(sssp ${EXTRA_LIBS})
 
 cuda_add_executable(sssp_expr src/utils/parser.cpp src/utils/utils.cpp src/groute/graphs/csr_graph.cpp
-#        samples/sssp_hybrid/deltasssp.cu
-        samples/sssp_hybrid/sssp_async.cu
+        samples/sssp_hybrid/deltasssp.cu
+#        samples/sssp_hybrid/sssp_async.cu
         samples/sssp_hybrid/sssp_host.cpp
         samples/sssp_hybrid/main.cpp)
 target_link_libraries(sssp_expr ${EXTRA_LIBS})

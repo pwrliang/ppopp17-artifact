@@ -102,50 +102,48 @@ namespace groute {
     * @brief An optimized DWL worker, with complete kernel fusion and soft-priority scheduling   
     */
     template<bool IterationFusion, typename TLocal, typename TRemote, typename TPrio, typename DWCallbacks, typename TWork, typename... WorkArgs>
-    class FusedWorker
-    {
+    class FusedWorker {
     public:
         static const int num_local_queues = 2; // Part of the contract used by the DistributedWorklist    
         static const bool soft_prio = true;  //
 
         typedef typename std::conditional<IterationFusion, NeverStop, RunNTimes<1>>::type StoppingCondition;
-        
+
     private:
-        enum
-        {
+        enum {
             IMMEDIATE_COUNTER = 0,
             DEFERRED_COUNTER = 1
         };
-        static const char* WorkerName() { return "FusedWorker"; }
-        static const char* KernelName() { return "FusedWorkKernel"; }
 
-        Context& m_context;
+        static const char *WorkerName() { return "FusedWorker"; }
+
+        static const char *KernelName() { return "FusedWorkKernel"; }
+
+        Context &m_context;
         Endpoint m_endpoint;
-        
+
         dim3 m_grid_dims, m_block_dims;
         cub::GridBarrierLifetime m_barrier_lifetime;
 
         // For reporting immediate/deferred work from fused kernel
-        volatile int* m_work_counters[2];    
+        volatile int *m_work_counters[2];
 
         // Used for globally deciding on work within the fused kernel  
-        uint32_t *m_device_counter;  
+        uint32_t *m_device_counter;
 
         // Used for signaling remote work was pushed into the circular-queue and can be sent to peers through the router
-        Signal m_work_signal;   
+        Signal m_work_signal;
 
         std::vector<int> m_work_counts; // Trace work for each iteration  
 
         /// Used to report fused kernel has exited  
-        static void CUDART_CB ReportExit(cudaStream_t stream, cudaError_t status, void *userData)
-        {
-            volatile bool* exit = (volatile bool*)userData;
+        static void CUDART_CB ReportExit(cudaStream_t stream, cudaError_t status, void *userData) {
+            volatile bool *exit = (volatile bool *) userData;
             *exit = true;
         }
 
     public:
-        FusedWorker(Context& context, Endpoint endpoint) : m_context(context), m_endpoint(endpoint)
-        {
+        FusedWorker(Context &context, Endpoint endpoint) : m_context(context), m_endpoint(endpoint) {
             GROUTE_CUDA_CHECK(cudaMallocHost(&m_work_counters[IMMEDIATE_COUNTER], sizeof(int)));
             GROUTE_CUDA_CHECK(cudaMallocHost(&m_work_counters[DEFERRED_COUNTER], sizeof(int)));
 
@@ -163,16 +161,16 @@ namespace groute {
 
             int occupancy_per_MP = 0;
             cudaOccupancyMaxActiveBlocksPerMultiprocessor(&occupancy_per_MP,
-                groute::FusedWorkKernel <StoppingCondition, TLocal, TRemote, TPrio, DWCallbacks, TWork, WorkArgs... >, GROUTE_BLOCK_THREADS, 0);
+                                                          groute::FusedWorkKernel<StoppingCondition, TLocal, TRemote, TPrio, DWCallbacks, TWork, WorkArgs...>,
+                                                          GROUTE_BLOCK_THREADS, 0);
 
-            size_t fused_work_blocks 
-                = (props.multiProcessorCount - 1) * occupancy_per_MP; // -1 for split-receive  
+            size_t fused_work_blocks
+                    = (props.multiProcessorCount - 1) * occupancy_per_MP; // -1 for split-receive
 
-            if (context.configuration.trace)
-            {
+            if (context.configuration.trace) {
                 printf(
-                    "%d - fused kernel, multi processor count: %d, occupancy: %d, blocks: %llu [(mp-1)*occupancy]\n", 
-                    dev, props.multiProcessorCount, occupancy_per_MP, fused_work_blocks);
+                        "%d - fused kernel, multi processor count: %d, occupancy: %d, blocks: %llu [(mp-1)*occupancy]\n",
+                        dev, props.multiProcessorCount, occupancy_per_MP, fused_work_blocks);
             }
 
             // Setup the fused block/grid dimensions 
@@ -183,78 +181,75 @@ namespace groute {
             m_barrier_lifetime.Setup(fused_work_blocks);
         }
 
-        ~FusedWorker()
-        {
-            if (m_context.configuration.verbose)
-            {
-                for (size_t i = 0; i < m_work_counts.size(); i++)
-                {
-                    printf("%d, %llu, %d\n", (Endpoint::identity_type)m_endpoint, i, m_work_counts[i]);
+        ~FusedWorker() {
+            if (m_context.configuration.verbose) {
+                for (size_t i = 0; i < m_work_counts.size(); i++) {
+                    printf("%d, %llu, %d\n", (Endpoint::identity_type) m_endpoint, i, m_work_counts[i]);
                 }
             }
 
-            GROUTE_CUDA_CHECK(cudaFreeHost((void*)m_work_counters[IMMEDIATE_COUNTER]));
-            GROUTE_CUDA_CHECK(cudaFreeHost((void*)m_work_counters[DEFERRED_COUNTER]));
-            GROUTE_CUDA_CHECK(cudaFree((void*)m_device_counter));
+            GROUTE_CUDA_CHECK(cudaFreeHost((void *) m_work_counters[IMMEDIATE_COUNTER]));
+            GROUTE_CUDA_CHECK(cudaFreeHost((void *) m_work_counters[DEFERRED_COUNTER]));
+            GROUTE_CUDA_CHECK(cudaFree((void *) m_device_counter));
         }
 
         void Work(
-            IDistributedWorklist <TLocal, TRemote>& distributed_worklist,
-            IDistributedWorklistPeer <TLocal, TRemote, DWCallbacks>* peer, Stream& stream, const WorkArgs&... args)
-        {
-            Queue<TLocal>* immediate_worklist = &peer->GetLocalQueue(0);
-            Queue<TLocal>* deferred_worklist = &peer->GetLocalQueue(1);
+                IDistributedWorklist<TLocal, TRemote> &distributed_worklist,
+                IDistributedWorklistPeer<TLocal, TRemote, DWCallbacks> *peer, Stream &stream,
+                const WorkArgs &... args) {
+            Queue<TLocal> *immediate_worklist = &peer->GetLocalQueue(0);
+            Queue<TLocal> *deferred_worklist = &peer->GetLocalQueue(1);
 
-            PCQueue<TRemote>*  remote_output = &peer->GetRemoteOutputQueue();
-            PCQueue<TLocal>*  remote_input = &peer->GetRemoteInputQueue();
+            PCQueue<TRemote> *remote_output = &peer->GetRemoteOutputQueue();
+            PCQueue<TLocal> *remote_input = &peer->GetRemoteInputQueue();
 
             DWCallbacks callbacks = peer->GetDeviceCallbacks();
 
             volatile int *immediate_work_counter, *deferred_work_counter;
 
-            GROUTE_CUDA_CHECK(cudaHostGetDevicePointer(&immediate_work_counter, (int*)m_work_counters[IMMEDIATE_COUNTER], 0));
-            GROUTE_CUDA_CHECK(cudaHostGetDevicePointer(&deferred_work_counter, (int*)m_work_counters[DEFERRED_COUNTER], 0));
+            GROUTE_CUDA_CHECK(
+                    cudaHostGetDevicePointer(&immediate_work_counter, (int *) m_work_counters[IMMEDIATE_COUNTER], 0));
+            GROUTE_CUDA_CHECK(
+                    cudaHostGetDevicePointer(&deferred_work_counter, (int *) m_work_counters[DEFERRED_COUNTER], 0));
 
             int prev_signal = m_work_signal.Peek();
             int iterated_round = 1;
 
-            while (distributed_worklist.HasWork())
-            {
+            while (distributed_worklist.HasWork()) {
                 int priority_threshold = distributed_worklist.GetPriorityThreshold();
 
-                if (m_context.configuration.trace)
-                {
+                if (m_context.configuration.trace) {
                     uint32_t immediate_in = immediate_worklist->GetCount(stream);
                     uint32_t deferred_in = deferred_worklist->GetCount(stream);
                     uint32_t remote_in = remote_input->GetCount(stream);
                     uint32_t remote_out = remote_output->GetCount(stream);
 
                     printf(
-                        "%d - start kernel, prio %d, LH: %d, LL: %d, RI: %d, RO: %d\n", 
-                        (Endpoint::identity_type)m_endpoint, priority_threshold, immediate_in, deferred_in, remote_in, remote_out);
+                            "%d - start kernel, prio %d, LH: %d, LL: %d, RI: %d, RO: %d\n",
+                            (Endpoint::identity_type) m_endpoint, priority_threshold, immediate_in, deferred_in,
+                            remote_in, remote_out);
                 }
 
-                if (distributed_worklist.configuration.count_work)
-                {
+                if (distributed_worklist.configuration.count_work) {
                     Marker::MarkWorkitems(distributed_worklist.GetCurrentWorkCount(m_endpoint), KernelName());
                 }
 
-                groute::FusedWorkKernel <StoppingCondition, TLocal, TRemote, TPrio, DWCallbacks, TWork, WorkArgs... >
-
-                    <<< m_grid_dims, m_block_dims, 0, stream.cuda_stream >>> (
-                    iterated_round++,
-                    immediate_worklist->DeviceObject(), deferred_worklist->DeviceObject(),
-                    remote_input->DeviceObject(), remote_output->DeviceObject(),
-                    distributed_worklist.configuration.fused_chunk_size, priority_threshold,
-                    immediate_work_counter, deferred_work_counter,
-                    m_device_counter, m_work_signal.DevicePtr(),
-                    m_barrier_lifetime,                       
-                    callbacks,
-                    args...
-                    );
+                groute::FusedWorkKernel<StoppingCondition, TLocal, TRemote, TPrio, DWCallbacks, TWork, WorkArgs...>
+                        << < m_grid_dims, m_block_dims, 0, stream.cuda_stream >> > (
+                        iterated_round++,
+                                immediate_worklist->DeviceObject(), deferred_worklist->DeviceObject(),
+                                remote_input->DeviceObject(), remote_output->DeviceObject(),
+                                distributed_worklist.configuration.fused_chunk_size, priority_threshold,
+                                immediate_work_counter, deferred_work_counter,
+                                m_device_counter, m_work_signal.DevicePtr(),
+                                m_barrier_lifetime,
+                                callbacks,
+                                args...
+                );
 
                 volatile bool exit = false;
-                GROUTE_CUDA_CHECK(cudaStreamAddCallback(stream.cuda_stream, ReportExit, (void*)&exit, 0)); // Schedule an exit report  
+                GROUTE_CUDA_CHECK(cudaStreamAddCallback(stream.cuda_stream, ReportExit, (void *) &exit,
+                                                        0)); // Schedule an exit report
 
                 while (true) // Loop on remote work signals from fused kernel
                 {
@@ -262,7 +257,8 @@ namespace groute {
                     if (signal == prev_signal) break; // Exit was signaled  
 
                     int work = signal - prev_signal;
-                    distributed_worklist.ReportWork(work, 0, m_endpoint); // Remote work is always considered non-deferred by the sender
+                    distributed_worklist.ReportWork(work, 0,
+                                                    m_endpoint); // Remote work is always considered non-deferred by the sender
 
                     prev_signal = signal; // Update
                     peer->SendRemoteWork(Event()); // Trigger work sending to router
@@ -274,31 +270,30 @@ namespace groute {
                 distributed_worklist.ReportDeferredWork(*m_work_counters[DEFERRED_COUNTER], 0, m_endpoint);
                 distributed_worklist.ReportWork(*m_work_counters[IMMEDIATE_COUNTER], 0, m_endpoint);
 
-                if (m_context.configuration.trace)
-                {
+                if (m_context.configuration.trace) {
                     printf(
-                        "%d - done kernel, LWC: %d, HWC: %d\n", 
-                        (Endpoint::identity_type)m_endpoint, *m_work_counters[DEFERRED_COUNTER], *m_work_counters[IMMEDIATE_COUNTER]);
+                            "%d - done kernel, LWC: %d, HWC: %d\n",
+                            (Endpoint::identity_type) m_endpoint, *m_work_counters[DEFERRED_COUNTER],
+                            *m_work_counters[IMMEDIATE_COUNTER]);
                 }
 
-                if (distributed_worklist.configuration.count_work)
-                {
-                    m_work_counts.push_back((int)(*m_work_counters[DEFERRED_COUNTER]) + (int)(*m_work_counters[IMMEDIATE_COUNTER]));
+                if (distributed_worklist.configuration.count_work) {
+                    m_work_counts.push_back(
+                            (int) (*m_work_counters[DEFERRED_COUNTER]) + (int) (*m_work_counters[IMMEDIATE_COUNTER]));
                 }
 
                 auto segs = peer->WaitForInputWork(stream, priority_threshold);
 
-                if (m_context.configuration.trace)
-                {
+                if (m_context.configuration.trace) {
                     int segs_size = 0;
-                    for (auto& seg : segs)
-                    {
+                    for (auto &seg : segs) {
                         segs_size += seg.GetSegmentSize();
                     }
 
                     printf(
-                        "%d - after wait, segs_total: %d, prev prio: %d, curr prio: %d\n", 
-                        (Endpoint::identity_type)m_endpoint, segs_size, priority_threshold, distributed_worklist.GetPriorityThreshold());
+                            "%d - after wait, segs_total: %d, prev prio: %d, curr prio: %d\n",
+                            (Endpoint::identity_type) m_endpoint, segs_size, priority_threshold,
+                            distributed_worklist.GetPriorityThreshold());
                 }
 
                 if (priority_threshold < distributed_worklist.GetPriorityThreshold()) // priority is up
@@ -315,74 +310,71 @@ namespace groute {
     * @brief A simple unoptimized DWL worker 
     */
     template<typename TLocal, typename TRemote, typename DWCallbacks, typename TWork, typename... WorkArgs>
-    class Worker
-    {
+    class Worker {
         Endpoint m_endpoint;
 
-        void KernelSizing(dim3& grid_dims, dim3& block_dims, uint32_t work_size) const
-        {
+        void KernelSizing(dim3 &grid_dims, dim3 &block_dims, uint32_t work_size) const {
             dim3 bd(GROUTE_BLOCK_THREADS, 1, 1);
             dim3 gd(round_up(work_size, bd.x), 1, 1);
-        
+
             grid_dims = gd;
             block_dims = bd;
         }
 
-        static const char* WorkerName() { return "UnoptimizedWorker"; }
-        static const char* KernelName() { return "WorkKernel"; }
-        
+        static const char *WorkerName() { return "UnoptimizedWorker"; }
+
+        static const char *KernelName() { return "WorkKernel"; }
+
     public:
-        static const int num_local_queues = 1;    
+        static const int num_local_queues = 1;
         static const bool soft_prio = false;
 
-        Worker(Context& context, Endpoint endpoint) : m_endpoint(endpoint) { }
-                
+        Worker(Context &context, Endpoint endpoint) : m_endpoint(endpoint) {}
+
         void Work(
-            IDistributedWorklist <TLocal, TRemote>& distributed_worklist,
-            IDistributedWorklistPeer <TLocal, TRemote, DWCallbacks>* peer, Stream& stream, const WorkArgs&... args)
-        {
-                auto& input_worklist = peer->GetRemoteInputQueue();
-                auto& workspace = peer->GetLocalQueue(0); 
-                DWCallbacks callbacks = peer->GetDeviceCallbacks();
+                IDistributedWorklist<TLocal, TRemote> &distributed_worklist,
+                IDistributedWorklistPeer<TLocal, TRemote, DWCallbacks> *peer, Stream &stream,
+                const WorkArgs &... args) {
+            auto &input_worklist = peer->GetRemoteInputQueue();
+            auto &workspace = peer->GetLocalQueue(0);
+            DWCallbacks callbacks = peer->GetDeviceCallbacks();
 
-                while (distributed_worklist.HasWork())
-                {
-                    auto input_segs = peer->WaitForInputWork(stream);
-                    size_t new_work = 0, performed_work = 0;
+            while (distributed_worklist.HasWork()) {
+                auto input_segs = peer->WaitForInputWork(stream);
+                size_t new_work = 0, performed_work = 0;
 
-                    if (input_segs.empty()) continue;
+                if (input_segs.empty()) continue;
 
-                    // If circular queue passed the end, 2 buffers will be given: [s,capacity) and [0,e)
-                    for (auto subseg : input_segs)
-                    {
-                        dim3 grid_dims, block_dims;
-                        KernelSizing(grid_dims, block_dims, subseg.GetSegmentSize());
+                // If circular queue passed the end, 2 buffers will be given: [s,capacity) and [0,e)
+                for (auto subseg : input_segs) {
+                    dim3 grid_dims, block_dims;
+                    KernelSizing(grid_dims, block_dims, subseg.GetSegmentSize());
 
-                        Marker::MarkWorkitems(subseg.GetSegmentSize(), KernelName());
-                        WorkKernel <dev::WorkSourceArray<TLocal>, TLocal, TRemote, DWCallbacks, TWork, WorkArgs...>
+                    Marker::MarkWorkitems(subseg.GetSegmentSize(), KernelName());
+                    WorkKernel<dev::WorkSourceArray<TLocal>, TLocal, TRemote, DWCallbacks, TWork, WorkArgs...>
 
-                            <<< grid_dims, block_dims, 0, stream.cuda_stream >>> (
+                            << < grid_dims, block_dims, 0, stream.cuda_stream >> > (
 
-                                dev::WorkSourceArray<TLocal>(subseg.GetSegmentPtr(), subseg.GetSegmentSize()),
-                                workspace.DeviceObject(),
-                                callbacks,
-                                args...
-                                );
+                            dev::WorkSourceArray<TLocal>(subseg.GetSegmentPtr(), subseg.GetSegmentSize()),
+                                    workspace.DeviceObject(),
+                                    callbacks,
+                                    args...
+                    );
 
-                        input_worklist.PopAsync(subseg.GetSegmentSize(), stream.cuda_stream);
-                        performed_work += subseg.GetSegmentSize();
-                    }
-
-                    auto output_seg = workspace.GetSeg(stream);
-                    new_work += output_seg.GetSegmentSize(); // Add the new work 
-                    peer->SplitSend(output_seg, stream); // Call split-send
-
-                    workspace.ResetAsync(stream.cuda_stream); // Reset the local workspace  
-
-                    // Report work
-                    distributed_worklist.ReportWork((int)new_work, (int)performed_work, m_endpoint);
+                    input_worklist.PopAsync(subseg.GetSegmentSize(), stream.cuda_stream);
+                    performed_work += subseg.GetSegmentSize();
                 }
+
+                auto output_seg = workspace.GetSeg(stream);
+                new_work += output_seg.GetSegmentSize(); // Add the new work
+                peer->SplitSend(output_seg, stream); // Call split-send
+
+                workspace.ResetAsync(stream.cuda_stream); // Reset the local workspace
+
+                // Report work
+                distributed_worklist.ReportWork((int) new_work, (int) performed_work, m_endpoint);
             }
+        }
     };
 }
 
