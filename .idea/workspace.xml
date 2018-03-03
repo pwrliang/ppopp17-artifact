@@ -2,56 +2,72 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
     <generated>
-      <config projectName="groute" targetName="gflags_nothreads_static" />
-      <config projectName="groute" targetName="gflags_static" />
-      <config projectName="groute" targetName="gtest_main" />
       <config projectName="groute" targetName="exprs" />
-      <config projectName="groute" targetName="gtest" />
       <config projectName="groute" targetName="sssp_expr" />
     </generated>
   </component>
-  <component name="CMakeSettings" AUTO_RELOAD="true">
+  <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" BUILD_OPTIONS="-j 16" />
-      <configuration PROFILE_NAME="Release" CONFIG_NAME="Release" />
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0245142e-90ac-4fba-b7a1-69c23b76114c" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/FastestPR.tar.gz" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/groute-dev.tar.gz" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/kron" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/livej" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/osm" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/main.cpp" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/sssp.vcxproj" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/sssp.vcxproj.filters" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/sssp_async.cu" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/sssp_common.h" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/sssp_host.cpp" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/usa" />
+    <list default="true" id="d1dbebb8-7a3f-4882-a6bf-3d5660e12fac" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/ppopp17-artifact.iml" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/groute-dev.iml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeCache.txt" afterPath="$PROJECT_DIR$/cmake-build-release/CMakeCache.txt" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/CMakeRuleHashes.txt" afterPath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/CMakeRuleHashes.txt" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/Makefile.cmake" afterPath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/Makefile.cmake" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/Makefile2" afterPath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/Makefile2" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/TargetDirectories.txt" afterPath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/TargetDirectories.txt" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/progress.marks" afterPath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/progress.marks" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/Makefile" afterPath="$PROJECT_DIR$/cmake-build-release/Makefile" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-release/groute.cbp" afterPath="$PROJECT_DIR$/cmake-build-release/groute.cbp" />
-      <change beforePath="$PROJECT_DIR$/experiments.txt" afterPath="$PROJECT_DIR$/experiments.txt" />
-      <change beforePath="$PROJECT_DIR$/include/groute/dwl/work_kernels.cuh" afterPath="$PROJECT_DIR$/include/groute/dwl/work_kernels.cuh" />
-      <change beforePath="$PROJECT_DIR$/include/groute/dwl/workers.cuh" afterPath="$PROJECT_DIR$/include/groute/dwl/workers.cuh" />
-      <change beforePath="$PROJECT_DIR$/include/utils/app_skeleton.h" afterPath="$PROJECT_DIR$/include/utils/app_skeleton.h" />
-      <change beforePath="$PROJECT_DIR$/samples/exprs/dual.cu" afterPath="$PROJECT_DIR$/samples/exprs/dual.cu" />
-      <change beforePath="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu" afterPath="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu" />
-      <change beforePath="$PROJECT_DIR$/samples/exprs/hybrid_topodriven.cu" afterPath="$PROJECT_DIR$/samples/exprs/hybrid_topodriven.cu" />
-      <change beforePath="$PROJECT_DIR$/samples/exprs/main.cpp" afterPath="$PROJECT_DIR$/samples/exprs/main.cpp" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeCache.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CMakeCCompiler.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CMakeCXXCompiler.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CMakeDetermineCompilerABI_C.bin" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CMakeDetermineCompilerABI_CXX.bin" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CMakeSystem.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CompilerIdC/CMakeCCompilerId.c" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CompilerIdC/a.out" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/3.9.6/CompilerIdCXX/a.out" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/CMakeDirectoryInformation.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/CMakeRuleHashes.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/Makefile.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/Makefile2" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/TargetDirectories.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/clion-environment.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/clion-log.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/cmake.check_cache" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/feature_tests.bin" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/feature_tests.c" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/feature_tests.cxx" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/DependInfo.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/build.make" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/cmake_clean.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/depend.make" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/flags.make" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/link.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/progress.make" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o.Release.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o.cmake.pre-gen" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_deltapr.cu.o.depend" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o.Release.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o.cmake.pre-gen" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_my_pr_async.cu.o.depend" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o.Release.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o.cmake.pre-gen" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_outlined_pr_async.cu.o.depend" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o.Release.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o.cmake.pre-gen" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_persist_pr_async.cu.o.depend" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o.Release.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o.cmake.pre-gen" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/pr.dir/samples/pr/pr_generated_pr_async.cu.o.depend" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/CMakeFiles/progress.marks" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/Makefile" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/cmake_install.cmake" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-release/groute.cbp" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
-    <ignored path="$PROJECT_DIR$/cmake-build-release/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,37 +77,20 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.49789253">
+    <splitter split-orientation="horizontal" split-proportion="0.4573235">
       <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="workers.cuh" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/include/groute/dwl/workers.cuh">
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="525">
+          <file leaf-file-name="deltasssp.cu" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="4080">
-                  <caret line="240" column="0" lean-forward="false" selection-start-line="240" selection-start-column="0" selection-end-line="240" selection-end-column="0" />
+                <state relative-caret-position="-26">
+                  <caret line="317" column="32" lean-forward="false" selection-start-line="317" selection-start-column="32" selection-end-line="317" selection-end-column="32" />
                   <folding>
-                    <element signature="e#12877#12972#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="sssp_async.cu" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/sssp_async.cu">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="88">
-                  <caret line="115" column="14" lean-forward="false" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="14" />
-                  <folding>
-                    <element signature="e#1660#1677#0" expanded="true" />
-                    <element signature="e#2657#2684#0" expanded="true" />
-                    <element signature="e#2782#4787#1" expanded="false" />
-                    <element signature="e#2816#2956#0" expanded="true" />
-                    <element signature="e#4802#4804#0" expanded="true" />
-                    <element signature="e#4847#6254#1" expanded="false" />
-                    <element signature="e#11926#11982#0" expanded="true" />
-                    <element signature="e#12355#12382#0" expanded="true" />
-                    <element signature="e#12723#12741#0" expanded="true" />
-                    <element signature="e#12974#12992#0" expanded="true" />
+                    <element signature="e#4578#4778#0" expanded="true" />
+                    <element signature="e#4587#4597#0" expanded="true" />
+                    <element signature="e#4688#4698#0" expanded="true" />
+                    <element signature="e#4741#4751#0" expanded="true" />
+                    <element signature="e#9459#11974#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -100,39 +99,30 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="traversal.h" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/include/utils/graphs/traversal.h">
+        <leaf>
+          <file leaf-file-name="aligned_outlined_pr_async.cu" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="4352">
-                  <caret line="256" column="37" lean-forward="false" selection-start-line="256" selection-start-column="37" selection-end-line="256" selection-end-column="37" />
-                  <folding>
-                    <element signature="e#8301#8415#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="-4405">
+                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                  <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="work_kernels.cuh" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/include/groute/dwl/work_kernels.cuh">
+          <file leaf-file-name="deltasssp.cu" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="163">
-                  <caret line="139" column="0" lean-forward="false" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
+                <state relative-caret-position="-5959">
+                  <caret line="158" column="13" lean-forward="false" selection-start-line="158" selection-start-column="13" selection-end-line="158" selection-end-column="13" />
                   <folding>
-                    <element signature="e#4361#4524#0" expanded="true" />
-                    <element signature="e#8501#8641#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="distributed_worklist.cuh" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/include/groute/dwl/distributed_worklist.cuh">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="9928">
-                  <caret line="584" column="45" lean-forward="false" selection-start-line="584" selection-start-column="45" selection-end-line="584" selection-end-column="45" />
-                  <folding>
-                    <element signature="e#19665#19740#0" expanded="true" />
+                    <element signature="e#4578#4778#0" expanded="true" />
+                    <element signature="e#4587#4597#0" expanded="true" />
+                    <element signature="e#4688#4698#0" expanded="true" />
+                    <element signature="e#4741#4751#0" expanded="true" />
+                    <marker date="1520098076814" expanded="false" signature="2574:2592" ph="&lt;&gt;" />
+                    <marker date="1520098076814" expanded="false" signature="2677:2695" ph="&lt;&gt;" />
+                    <marker date="1520098076814" expanded="false" signature="2732:2750" ph="&lt;&gt;" />
                   </folding>
                 </state>
               </provider>
@@ -144,69 +134,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>INF</find>
-      <find>AdvancePriorityThreshold</find>
-      <find>deferred_in</find>
-      <find>should_defer</find>
-      <find>prev_deferred_work</find>
-      <find>priority_threshold</find>
-      <find>distance_t</find>
-      <find>prio_delta</find>
-      <find>GetPriorityThreshold</find>
-      <find>m_current_threshold</find>
-      <find>deferred_worklist</find>
-      <find>SSSPWork</find>
-      <find>source_node</find>
-      <find>nosource_node</find>
-      <find>TWork</find>
-      <find>StoppingCondition</find>
-      <find>NeverStop</find>
-      <find>RunFor</find>
-      <find>cond</find>
-      <find>WorkerType</find>
-      <find>FusedWorker</find>
-      <find>TWorker</find>
-      <find>distributed_worklist</find>
-      <find>m_workers</find>
-      <find>FusedWorkKernel</find>
-      <find>Run(</find>
-      <find>iterated_round</find>
-      <find>FusedWorkerType</find>
-      <find>callbacks</find>
-      <find>InvokeSplitReceive</find>
+      <find>lane_id</find>
+      <find>async_multi</find>
+      <find>SSSPAsync</find>
     </findStrings>
-    <replaceStrings>
-      <replace>hybrid_unopt_pr</replace>
-      <replace>Min</replace>
-      <replace>m_pp_graph_api_base</replace>
-      <replace>gframe</replace>
-      <replace>delta_datum</replace>
-      <replace>GFrameEngine</replace>
-      <replace>TDelta</replace>
-      <replace>DeltaReducer</replace>
-      <replace>partial_value</replace>
-      <replace>graph_api.</replace>
-      <replace>m_value_datum</replace>
-      <replace>SSSPImpl</replace>
-      <replace>PageRankImpl</replace>
-      <replace>smem_size</replace>
-      <replace>partial_delta</replace>
-      <replace>uint32_t</replace>
-      <replace>IdentityElementForValueReducer</replace>
-      <replace>dist_t</replace>
-      <replace>IdentityElementForDeltaReducer</replace>
-      <replace>CCImpl</replace>
-      <replace>IsTerminated</replace>
-      <replace>MyAtomicMax</replace>
-      <replace>int</replace>
-      <replace>hybrid</replace>
-      <replace>exprs</replace>
-      <replace>last_residual</replace>
-      <replace>EPSILON</replace>
-      <replace>muti_pr</replace>
-      <replace>hybrid_datadriven</replace>
-      <replace>sssp_expr</replace>
-    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -214,92 +145,15 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/samples/pr/pr_common.h" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/pr_common.h" />
-        <option value="$PROJECT_DIR$/include/groute/groute.h" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/data_driven_worklist.cu" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/data_driven_outlining_pr.cu" />
-        <option value="$PROJECT_DIR$/samples/pr/outlined_pr_async.cu" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/data_driven_append_warp.cu" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/data_driven_ctanp_pr.cu" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/topology_driven_unopt_pr.cu" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/main.cpp" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/hybrid_driven.cu" />
-        <option value="$PROJECT_DIR$/include/cub/util_ptx.cuh" />
-        <option value="$PROJECT_DIR$/include/groute/device/counter.cuh" />
-        <option value="$PROJECT_DIR$/include/groute/graphs/csr_graph.h" />
-        <option value="$PROJECT_DIR$/include/groute/common.h" />
-        <option value="$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu" />
-        <option value="$PROJECT_DIR$/samples/framework/kernelbase.h" />
-        <option value="$PROJECT_DIR$/include/groute/graphs/common.h" />
-        <option value="$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh" />
-        <option value="$PROJECT_DIR$/include/groute/context.h" />
-        <option value="$PROJECT_DIR$/include/utils/graphs/traversal.h" />
-        <option value="$PROJECT_DIR$/samples/framework/myatomics.h" />
-        <option value="$PROJECT_DIR$/include/groute/device/queue.cuh" />
-        <option value="$PROJECT_DIR$/samples/framework/graph_api.h" />
-        <option value="$PROJECT_DIR$/samples/framework/work_kernel.h" />
-        <option value="$PROJECT_DIR$/src/utils/parser.cpp" />
-        <option value="$PROJECT_DIR$/samples/sssp/deltasssp.cu" />
-        <option value="$PROJECT_DIR$/samples/sssp/sssp_async.cu" />
-        <option value="$PROJECT_DIR$/samples/framework/resultsaver.h" />
-        <option value="$PROJECT_DIR$/samples/framework/cc.cu" />
-        <option value="$PROJECT_DIR$/samples/framework/graph_common.h" />
-        <option value="$PROJECT_DIR$/samples/framework/gframe.h" />
-        <option value="$PROJECT_DIR$/samples/framework/kernel.h" />
-        <option value="$PROJECT_DIR$/samples/framework/sssp.cu" />
-        <option value="$PROJECT_DIR$/samples/framework/entry.cu" />
-        <option value="$PROJECT_DIR$/samples/framework/pagerank.cu" />
-        <option value="$PROJECT_DIR$/samples/pr/deltapr.cu" />
-        <option value="$PROJECT_DIR$/samples/exprs/hybrid.cu" />
-        <option value="$PROJECT_DIR$/samples/pr/pr_async.cu" />
-        <option value="$PROJECT_DIR$/samples/exprs/dual.cu" />
-        <option value="$PROJECT_DIR$/include/utils/app_skeleton.h" />
-        <option value="$PROJECT_DIR$/include/groute/dwl/distributed_worklist.cuh" />
-        <option value="$PROJECT_DIR$/samples/exprs/hybrid_topodriven.cu" />
-        <option value="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu" />
-        <option value="$PROJECT_DIR$/samples/exprs/main.cpp" />
         <option value="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/samples/sssp_hybrid/main.cpp" />
-        <option value="$PROJECT_DIR$/include/groute/dwl/work_kernels.cuh" />
-        <option value="$PROJECT_DIR$/include/groute/dwl/workers.cuh" />
-        <option value="$PROJECT_DIR$/samples/sssp_hybrid/sssp_async.cu" />
       </list>
     </option>
   </component>
-  <component name="OCFindUsagesOptions" text="false" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="882" />
-    <option name="y" value="75" />
-    <option name="width" value="1874" />
-    <option name="height" value="1109" />
-  </component>
-  <component name="ProjectInspectionProfilesVisibleTreeState">
-    <entry key="Project Default">
-      <profile-state>
-        <expanded-state>
-          <State>
-            <id />
-          </State>
-          <State>
-            <id>C/C++</id>
-          </State>
-          <State>
-            <id>General</id>
-          </State>
-          <State>
-            <id>GeneralC/C++</id>
-          </State>
-          <State>
-            <id>Python</id>
-          </State>
-        </expanded-state>
-      </profile-state>
-    </entry>
-  </component>
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
+    <option name="x" value="640" />
+    <option name="y" value="102" />
+    <option name="width" value="1870" />
+    <option name="height" value="1111" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -321,52 +175,28 @@
           <expand>
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="groute" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="groute" type="462c0819:PsiDirectoryNode" />
-              <item name="graphs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
               <item name="samples" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
               <item name="samples" type="462c0819:PsiDirectoryNode" />
               <item name="exprs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
               <item name="samples" type="462c0819:PsiDirectoryNode" />
-              <item name="pr_exprs" type="462c0819:PsiDirectoryNode" />
+              <item name="pr" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
-              <item name="samples" type="462c0819:PsiDirectoryNode" />
-              <item name="sssp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="groute-dev" type="462c0819:PsiDirectoryNode" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
               <item name="samples" type="462c0819:PsiDirectoryNode" />
               <item name="sssp_hybrid" type="462c0819:PsiDirectoryNode" />
             </path>
@@ -378,20 +208,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/groute" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/samples" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/samples/sssp_hybrid" />
-      <recent name="$PROJECT_DIR$/include/groute/dwl" />
-      <recent name="$PROJECT_DIR$/samples/exprs" />
-      <recent name="$PROJECT_DIR$/samples/framework" />
-      <recent name="$PROJECT_DIR$/include/groute/device" />
-    </key>
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="last_opened_file_path" value="$USER_HOME$/sda2/ppopp17-artifact/code/groute" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -406,633 +224,154 @@
     </option>
   </component>
   <component name="RunManager" selected="Application.sssp_expr">
-    <configuration name="cc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-num_gpus 1 -startwith 1 -undirected=false -graphfile /mnt/sda2/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -verbose" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="cc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="cc">
+    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <envs />
     </configuration>
-    <configuration name="cusha" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-num_gpus 1 -startwith 1 -single -graphfile $PROJECT_DIR$/../google.gr" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="cusha" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
+    <configuration name="exprs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="exprs" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="exprs">
       <envs />
     </configuration>
-    <configuration name="exprs" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/kron21.sym/kron_g500-simple-logn21-weighted-random.sym.gr -notopology -max_pr_iterations 100 -mode 2 -switch_threshold 999" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="exprs" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="exprs">
+    <configuration name="sssp_expr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -graphfile $USER_HOME$/sda2/ppopp17-artifact/OSM-eur-k/osm-eur-karlsruhe.gr -prio_delta=10000" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="sssp_expr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="sssp_expr">
       <envs />
     </configuration>
-    <configuration name="gframe" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -logtostderr=1 -v=1 -output=$PROJECT_DIR$/../pr_test.txt -top_values -1" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="gframe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="gframe">
-      <envs />
-    </configuration>
-    <configuration name="gframe_cc" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -logtostderr=1 -v=1 -max_iterations 999 -wl_alloc_factor 0.5" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="gframe_cc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="gframe_cc">
-      <envs />
-    </configuration>
-    <configuration name="gframe_pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -logtostderr=1 -v=1 -max_iterations 999 -wl_alloc_factor 0.5 -grid_size 20 -block_size 512" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="gframe_pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="gframe_pr">
-      <envs />
-    </configuration>
-    <configuration name="gframe_sssp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -graphfile /mnt/sda2/liang/ppopp17-artifact/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -logtostderr=1 -v=1 -max_iterations 99999 -wl_alloc_factor 0.5 -grid_size 20 -block_size 512" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="gframe_sssp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="gframe_sssp">
-      <envs />
-    </configuration>
-    <configuration name="pr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -ggr -outline  -cta_np -threshold 3916821" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr">
-      <envs />
-    </configuration>
-    <configuration name="pr_exprs" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -top_ranks -1 -print_ranks -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -output /mnt/sda2/liang/livej_output.txt -epsilon 0.1 -data_driven -nooutlining -noappend_warp" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="pr_exprs" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="pr_exprs">
-      <envs />
-    </configuration>
-    <configuration name="sssp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-single -noasync_multi -num_gpus 1 -startwith 1  --prio_delta=100000 -graphfile /mnt/sda2/liang/dataset/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -verbose -nopersist -wl_alloc_factor_local 0.8" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="sssp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="sssp">
-      <envs />
-    </configuration>
-    <configuration name="sssp_expr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -alsologtostderr=1 -log_dir . -graphfile /mnt/sda2/liang/ppopp17-artifact/OSM-eur-k/osm-eur-karlsruhe.gr -mode 1 -source_node 0 -prio_delta 10000 -nopn" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="sssp_expr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="sssp_expr">
-      <envs />
-    </configuration>
-    <list size="11">
-      <item index="0" class="java.lang.String" itemvalue="Application.cusha" />
-      <item index="1" class="java.lang.String" itemvalue="Application.pr" />
-      <item index="2" class="java.lang.String" itemvalue="Application.sssp" />
-      <item index="3" class="java.lang.String" itemvalue="Application.pr_exprs" />
-      <item index="4" class="java.lang.String" itemvalue="Application.gframe" />
-      <item index="5" class="java.lang.String" itemvalue="Application.cc" />
-      <item index="6" class="java.lang.String" itemvalue="Application.gframe_cc" />
-      <item index="7" class="java.lang.String" itemvalue="Application.gframe_pr" />
-      <item index="8" class="java.lang.String" itemvalue="Application.gframe_sssp" />
-      <item index="9" class="java.lang.String" itemvalue="Application.exprs" />
-      <item index="10" class="java.lang.String" itemvalue="Application.sssp_expr" />
+    <list size="3">
+      <item index="0" class="java.lang.String" itemvalue="Application.Build All" />
+      <item index="1" class="java.lang.String" itemvalue="Application.exprs" />
+      <item index="2" class="java.lang.String" itemvalue="Application.sssp_expr" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
   </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d1dbebb8-7a3f-4882-a6bf-3d5660e12fac" name="Default" comment="" />
+      <created>1520062103656</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1520062103656</updated>
+      <workItem from="1520062106669" duration="59000" />
+      <workItem from="1520062210029" duration="602000" />
+      <workItem from="1520062911964" duration="357000" />
+      <workItem from="1520063373360" duration="318000" />
+      <workItem from="1520064291386" duration="654000" />
+      <workItem from="1520090314537" duration="7912000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="9902000" />
+  </component>
   <component name="ToolWindowManager">
-    <frame x="-3" y="31" width="1926" height="1003" extended-state="6" />
+    <frame x="882" y="75" width="1926" height="1003" extended-state="6" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13909379" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32508835" sideWeight="0.49785176" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32744405" sideWeight="0.5021075" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26030624" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18387777" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286219" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32896462" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31684333" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286219" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28857478" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2909305" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2909305" sideWeight="0.49789253" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32508835" sideWeight="0.49785176" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32744405" sideWeight="0.5021075" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26030624" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286219" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13909379" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979977" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28857478" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Commit Idea Project Files" />
-    <MESSAGE value="try cusha" />
-    <MESSAGE value="minor changes" />
-    <MESSAGE value="implemented align access" />
-    <MESSAGE value="implemented 8 Bytes align" />
-    <MESSAGE value="implemented vectorize-cta" />
-    <MESSAGE value="update cmake" />
-    <MESSAGE value="hybrid method tested" />
-    <MESSAGE value="basically finish the framework" />
-    <MESSAGE value="using functor instead of functional pointer" />
-    <MESSAGE value="temp save, implemented outlining-cta-data/topo driven" />
-    <MESSAGE value="topology&amp;cta works" />
-    <MESSAGE value="outlining tested" />
-    <MESSAGE value="change filename" />
-    <MESSAGE value="refine code" />
-    <MESSAGE value="add sssp, need debug" />
-    <MESSAGE value="temp save" />
-    <MESSAGE value="all mode for sssp tested" />
-    <MESSAGE value="sssp tested" />
-    <MESSAGE value="add cc need debug" />
-    <MESSAGE value="little progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="little progress" />
-  </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/cusha/cusha.cu</url>
-          <line>118</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/cusha/cusha.cu</url>
-          <line>173</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/pr/outlined_pr_async.cu</url>
-          <line>247</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/pr/test.cu</url>
-          <line>65</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu</url>
-          <line>423</line>
-          <option name="timeStamp" value="58" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu</url>
-          <line>179</line>
-          <option name="timeStamp" value="65" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/framework/pagerank.cu</url>
-          <line>62</line>
-          <option name="timeStamp" value="86" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/framework/sssp.cu</url>
-          <line>77</line>
-          <option name="timeStamp" value="90" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/sssp/deltasssp.cu</url>
-          <line>385</line>
-          <option name="timeStamp" value="95" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/framework/gframe.h</url>
-          <line>320</line>
-          <option name="timeStamp" value="97" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/cc/main.cpp</url>
-          <line>122</line>
-          <option name="timeStamp" value="99" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/cc/cc_async.cu</url>
-          <line>77</line>
-          <option name="timeStamp" value="100" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/framework/gframe.h</url>
-          <line>395</line>
-          <option name="timeStamp" value="101" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/exprs/hybrid_topodriven.cu</url>
-          <line>450</line>
-          <option name="timeStamp" value="106" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/exprs/dual.cu</url>
-          <line>301</line>
-          <option name="timeStamp" value="107" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu</url>
-          <line>481</line>
-          <option name="timeStamp" value="108" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu</url>
-          <line>404</line>
-          <option name="timeStamp" value="109" />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="111" />
-    </breakpoint-manager>
+    <breakpoint-manager />
     <watches-manager />
   </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="breakpointLogExpression">
-      <expression>
-        <expression-string>EFINE_int32(mode, 0, &quot;0 sync 1 async 2 hybrid&quot;);
-DEFINE_int32(switch_threshold, 20, &quot;using sync mode when iteration times below threshold otherwise async mode&quot;);</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
-  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/include/groute/graphs/coo_graph.h">
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="964">
-          <caret line="92" column="32" lean-forward="false" selection-start-line="92" selection-start-column="32" selection-end-line="92" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/cc/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
-          <caret line="163" column="0" lean-forward="false" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/stdint.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="167" column="17" lean-forward="false" selection-start-line="167" selection-start-column="17" selection-end-line="167" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/graphs/common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="34" column="9" lean-forward="false" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/deps/googletest/googlemock/make/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="101" column="0" lean-forward="false" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/graph_common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/kernel.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5780">
-          <caret line="360" column="50" lean-forward="false" selection-start-line="360" selection-start-column="50" selection-end-line="360" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/gframe.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3961">
-          <caret line="256" column="13" lean-forward="false" selection-start-line="256" selection-start-column="13" selection-end-line="256" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/cc.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1173">
-          <caret line="74" column="12" lean-forward="false" selection-start-line="74" selection-start-column="12" selection-end-line="74" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/sssp.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="772">
-          <caret line="78" column="18" lean-forward="false" selection-start-line="78" selection-start-column="18" selection-end-line="78" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/entry.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="31" column="28" lean-forward="false" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/framework/pagerank.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="21" column="5" lean-forward="true" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/utils.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="49" column="5" lean-forward="false" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/cuda/include/device_launch_parameters.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="73" column="36" lean-forward="false" selection-start-line="73" selection-start-column="36" selection-end-line="73" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/deltapr.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="468" column="0" lean-forward="false" selection-start-line="468" selection-start-column="0" selection-end-line="471" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="36" column="33" lean-forward="false" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/data_driven_ctanp_pr.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="236" column="0" lean-forward="true" selection-start-line="236" selection-start-column="0" selection-end-line="239" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/gflags/gflags.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="506" column="8" lean-forward="false" selection-start-line="506" selection-start-column="8" selection-end-line="506" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/graphs/csr_graph.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="952" column="42" lean-forward="false" selection-start-line="952" selection-start-column="42" selection-end-line="952" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/cuda/include/curand_mtgp32_kernel.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1075">
+        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/device/cta_scheduler.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="173" column="0" lean-forward="false" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/device/queue.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="49" column="8" lean-forward="false" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/context.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="57" column="22" lean-forward="false" selection-start-line="57" selection-start-column="22" selection-end-line="57" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/dwl/distributed_worklist.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="206" column="27" lean-forward="false" selection-start-line="206" selection-start-column="12" selection-end-line="206" selection-end-column="27" />
-          <folding>
-            <element signature="e#19665#19740#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/dwl/split_kernels.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="95" column="20" lean-forward="false" selection-start-line="95" selection-start-column="20" selection-end-line="95" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/utils/app_skeleton.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="104" column="38" lean-forward="false" selection-start-line="104" selection-start-column="38" selection-end-line="104" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/exprs/dual.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="306" column="0" lean-forward="false" selection-start-line="306" selection-start-column="0" selection-end-line="306" selection-end-column="0" />
-          <folding>
-            <element signature="e#5616#5639#0" expanded="false" />
-            <element signature="e#8585#8669#0" expanded="false" />
-            <element signature="e#12428#12446#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/exprs/topology_driven_unopt_pr.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="148" column="68" lean-forward="false" selection-start-line="148" selection-start-column="53" selection-end-line="148" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/exprs/pr_common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="37" column="13" lean-forward="false" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/experiments.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="24" column="301" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="301" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_topodriven.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="349" column="0" lean-forward="false" selection-start-line="349" selection-start-column="0" selection-end-line="350" selection-end-column="48" />
-          <folding>
-            <element signature="e#919#1069#0" expanded="false" />
-            <element signature="e#7195#7346#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp/deltasssp.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="76" column="3" lean-forward="true" selection-start-line="76" selection-start-column="3" selection-end-line="114" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/exprs/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp/sssp_host.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1989">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/data_driven_unopt_pr.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="157" column="22" lean-forward="false" selection-start-line="157" selection-start-column="22" selection-end-line="157" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr_exprs/data_driven_append_warp.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1683">
-          <caret line="188" column="12" lean-forward="false" selection-start-line="188" selection-start-column="12" selection-end-line="188" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/sssp_common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="39" column="23" lean-forward="false" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp/sssp_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="266" column="37" lean-forward="false" selection-start-line="266" selection-start-column="37" selection-end-line="266" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/sssp_host.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="35" column="54" lean-forward="false" selection-start-line="35" selection-start-column="54" selection-end-line="35" selection-end-column="54" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="116" column="41" lean-forward="false" selection-start-line="116" selection-start-column="41" selection-end-line="116" selection-end-column="41" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/main.cpp">
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="63" column="36" lean-forward="false" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/utils/app_skeleton.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="228" column="0" lean-forward="false" selection-start-line="228" selection-start-column="0" selection-end-line="228" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/groute/context.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="132" column="0" lean-forward="false" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4405">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="322" column="43" lean-forward="false" selection-start-line="322" selection-start-column="43" selection-end-line="322" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/5/type_traits">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="2123" column="0" lean-forward="true" selection-start-line="2123" selection-start-column="0" selection-end-line="2123" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/pr_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="435" column="47" lean-forward="false" selection-start-line="435" selection-start-column="36" selection-end-line="435" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="156" column="34" lean-forward="false" selection-start-line="156" selection-start-column="34" selection-end-line="156" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/dwl/workers.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4080">
-          <caret line="240" column="0" lean-forward="false" selection-start-line="240" selection-start-column="0" selection-end-line="240" selection-end-column="0" />
+        <state relative-caret-position="-26">
+          <caret line="317" column="32" lean-forward="false" selection-start-line="317" selection-start-column="32" selection-end-line="317" selection-end-column="32" />
           <folding>
-            <element signature="e#12877#12972#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/sssp_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="115" column="14" lean-forward="false" selection-start-line="115" selection-start-column="14" selection-end-line="115" selection-end-column="14" />
-          <folding>
-            <element signature="e#1660#1677#0" expanded="true" />
-            <element signature="e#2657#2684#0" expanded="true" />
-            <element signature="e#2782#4787#1" expanded="false" />
-            <element signature="e#2816#2956#0" expanded="true" />
-            <element signature="e#4802#4804#0" expanded="true" />
-            <element signature="e#4847#6254#1" expanded="false" />
-            <element signature="e#11926#11982#0" expanded="true" />
-            <element signature="e#12355#12382#0" expanded="true" />
-            <element signature="e#12723#12741#0" expanded="true" />
-            <element signature="e#12974#12992#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/utils/graphs/traversal.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4352">
-          <caret line="256" column="37" lean-forward="false" selection-start-line="256" selection-start-column="37" selection-end-line="256" selection-end-column="37" />
-          <folding>
-            <element signature="e#8301#8415#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/dwl/distributed_worklist.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9928">
-          <caret line="584" column="45" lean-forward="false" selection-start-line="584" selection-start-column="45" selection-end-line="584" selection-end-column="45" />
-          <folding>
-            <element signature="e#19665#19740#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/groute/dwl/work_kernels.cuh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="139" column="0" lean-forward="false" selection-start-line="139" selection-start-column="0" selection-end-line="139" selection-end-column="0" />
-          <folding>
-            <element signature="e#4361#4524#0" expanded="true" />
-            <element signature="e#8501#8641#0" expanded="true" />
+            <element signature="e#4578#4778#0" expanded="true" />
+            <element signature="e#4587#4597#0" expanded="true" />
+            <element signature="e#4688#4698#0" expanded="true" />
+            <element signature="e#4741#4751#0" expanded="true" />
+            <element signature="e#9459#11974#0" expanded="false" />
           </folding>
         </state>
       </provider>

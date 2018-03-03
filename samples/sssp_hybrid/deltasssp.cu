@@ -60,20 +60,122 @@ namespace sssp_expr {
         static const char *Name() { return "SSSP"; }
     };
 
+
+//    template<
+//            template<typename> class WorkList,
+//            typename TGraph, typename TWeightDatum,
+//            template<typename> class TDistanceDatum,
+//            template<typename> class TDistanceDeltaDatum>
+//    __device__ void SSSPAsync(
+//            const WorkList<index_t> &work_source,
+//            WorkList<index_t> &work_immediate_target,
+//            WorkList<index_t> &work_later_target,
+//            const distance_t priority_threshold,
+//            const TGraph &graph,
+//            const TWeightDatum &edge_weights,
+//            TDistanceDatum<distance_t> &node_distances,
+//            TDistanceDeltaDatum<distance_t> &node_distances_delta) {
+//        uint32_t tid = TID_1D;
+//        uint32_t nthreads = TOTAL_THREADS_1D;
+//
+//
+//        uint32_t work_size = work_source.count();
+//
+//        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+//
+//            index_t node = work_source.read(i);
+//
+//            distance_t old_value = node_distances[node];
+//            distance_t old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+//            distance_t new_value = min(old_value, old_delta);
+//
+//            if (new_value != old_value) {
+//                for (index_t edge = graph.begin_edge(node), end_edge = graph.end_edge(node); edge < end_edge; ++edge) {
+//                    index_t dest = graph.edge_dest(edge);
+//                    distance_t weight = edge_weights.get_item(edge);
+//                    distance_t new_delta = old_delta + weight;
+//                    distance_t before = atomicMin(node_distances_delta.get_item_ptr(dest), new_delta);
+//
+//                    if (new_delta < before) {
+//                        if (new_delta < priority_threshold)
+//                            work_immediate_target.append_warp(dest);
+//                        else
+//                            work_later_target.append_warp(dest);
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
+    template<template<typename> class WorkTarget,
+            typename TGraph, typename TWeightDatum,
+            template<typename> class TDistanceDatum,
+            template<typename> class TDistanceDeltaDatum>
+    __device__
+//    __global__
+    void SSSPAsync(
+            WorkTarget<index_t> work_source,
+            WorkTarget<index_t> work_immediate_target,
+            WorkTarget<index_t> work_later_target,
+            distance_t priority_threshold,
+            const TGraph graph,
+            TWeightDatum edge_weights,
+            TDistanceDatum<distance_t> node_distances,
+            TDistanceDeltaDatum<distance_t> node_distances_delta) {
+        uint32_t tid = TID_1D;
+        uint32_t nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.count();
+
+        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+            index_t node = work_source.read(i);
+            distance_t old_value = node_distances[node];
+            distance_t old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+            distance_t new_value = min(old_value, old_delta);
+
+
+            if (new_value < old_value) {
+                node_distances[node] = new_value;
+
+                for (index_t edge = graph.begin_edge(node), end_edge = graph.end_edge(node); edge < end_edge; ++edge) {
+                    index_t dest = graph.edge_dest(edge);
+                    distance_t weight = edge_weights.get_item(edge);
+
+                    distance_t new_delta = old_delta + weight;
+
+                    distance_t before_update = atomicMin(node_distances_delta.get_item_ptr(dest), new_delta);
+
+                    //If update the dest success, expand the worklist
+
+                    if (new_delta < before_update) {
+                        if (new_delta < priority_threshold) {
+                            work_immediate_target.append_warp(dest);
+                        } else {
+                            work_later_target.append_warp(dest);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     template<
             template<typename> class WorkList,
             typename TGraph, typename TWeightDatum,
             template<typename> class TDistanceDatum,
             template<typename> class TDistanceDeltaDatum>
-    __device__ void SSSPAsync(
-            const WorkList<index_t> &work_source,
-            WorkList<index_t> &work_immediate_target,
-            WorkList<index_t> &work_later_target,
+    __device__
+//    __global__
+    void SSSPAsyncCTA(
+            const WorkList<index_t> work_source,
+            WorkList<index_t> work_immediate_target,
+            WorkList<index_t> work_later_target,
             const distance_t priority_threshold,
-            const TGraph &graph,
-            const TWeightDatum &edge_weights,
-            TDistanceDatum<distance_t> &node_distances,
-            TDistanceDeltaDatum<distance_t> &node_distances_delta) {
+            const TGraph graph,
+            const TWeightDatum edge_weights,
+            TDistanceDatum<distance_t> node_distances,
+            TDistanceDeltaDatum<distance_t> node_distances_delta) {
         uint32_t tid = TID_1D;
         uint32_t nthreads = TOTAL_THREADS_1D;
 
@@ -82,19 +184,19 @@ namespace sssp_expr {
         uint32_t work_size_rup =
                 round_up(work_size, blockDim.x) * blockDim.x; // we want all threads in active blocks to enter the loop
 
-        if (tid == 0)
-            printf("work size:%d\n", work_size);
-
         for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
             groute::dev::np_local<distance_t> np_local = {0, 0, 0};
 
             if (i < work_size) {
                 index_t node = work_source.read(i);
+
                 distance_t old_value = node_distances[node];
                 distance_t old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
                 distance_t new_value = min(old_value, old_delta);
 
-                if (new_value != old_value) {
+                if (new_value < old_value) {
+                    node_distances[node] = new_value;
+
                     np_local.start = graph.begin_edge(node);
                     np_local.size = graph.end_edge(node) - np_local.start;
                     np_local.meta_data = old_delta;
@@ -210,20 +312,21 @@ namespace sssp_expr {
 //
         int iteration = 0;
         while (in_wl->count() > 0) {
-            SSSPAsync(*in_wl,
-                      *out_immediate_wl,
-                      *out_later_wl,
-                      curr_threshold,
-                      graph,
-                      edge_weights,
-                      node_distances,
-                      node_distances_delta);
+            SSSPAsyncCTA(*in_wl,
+                         *out_immediate_wl,
+                         *out_later_wl,
+                         curr_threshold,
+                         graph,
+                         edge_weights,
+                         node_distances,
+                         node_distances_delta);
 
-           // grid_barrier.Sync();
+            grid_barrier.Sync();
 
             if (tid == 0) {
-                printf("INPUT %d IMMEDIATE %d LATER %d\n", in_wl->count(), out_immediate_wl->count(),
-                       out_later_wl->count());
+//                printf("INPUT %d IMMEDIATE %d LATER %d\n", in_wl->count(), out_immediate_wl->count(),
+//                       out_later_wl->count());
+
                 in_wl->reset();
                 iteration++;
             }
@@ -236,8 +339,9 @@ namespace sssp_expr {
                 WorkList<index_t> *tmp_wl = in_wl;
                 in_wl = out_later_wl;
                 out_later_wl = tmp_wl;
+                curr_threshold += priority_threshold;
             }
-
+            grid_barrier.Sync();
         }
 
         if (tid == 0) {
@@ -409,17 +513,21 @@ bool SSSPExpr() {
                                                                 node_delta_distances.DeviceObject(),
                                                                 node_last_delta_distances.DeviceObject());
     stream.Sync();
-
-//    while (!work_seg.Empty()) {
-//        if (mode == 0) {
-//            problem.RelaxSync(work_seg, *out_immediate_wl, *out_later_wl, stream, syncIteration++);
-//        } else {
-//            problem.RelaxAsync(work_seg, *out_immediate_wl, *out_later_wl, stream);
-//        }
+//    int iteration = 0;
+//    groute::Queue<index_t> *in_wl = &wl1, *out_immediate_wl = &wl2, *out_later_wl = &wl3;
+//    while (in_wl->GetCount(stream) > 0) {
+//        sssp_expr::SSSPAsyncCTA << < FLAGS_grid_size, FLAGS_block_size, 0, stream.cuda_stream >> > (
+//                in_wl->DeviceObject(),
+//                        out_immediate_wl->DeviceObject(),
+//                        out_later_wl->DeviceObject(),
+//                        FLAGS_prio_delta,
+//                        dev_graph_allocator.DeviceObject(),
+//                        edge_weights.DeviceObject(),
+//                        node_distances.DeviceObject(),
+//                        node_delta_distances.DeviceObject());
 //
-//        printf("After iteration: %d input: %lu immediate output: %u later output: %u\n", iteration++,
-//               work_seg.GetSegmentSize(), out_immediate_wl->GetCount(stream),
-//               out_later_wl->GetCount(stream));
+//        printf("After iteration: %u input: %u immediate output: %u later output: %u\n", iteration++,
+//               in_wl->GetCount(stream), out_immediate_wl->GetCount(stream), out_later_wl->GetCount(stream));
 //
 //        in_wl->ResetAsync(stream);
 //        stream.Sync();
@@ -428,7 +536,6 @@ bool SSSPExpr() {
 //            std::swap(out_immediate_wl, in_wl);
 //        else
 //            std::swap(out_later_wl, in_wl);
-//        work_seg = in_wl->GetSeg(stream);
 //    }
 
     sw.stop();
