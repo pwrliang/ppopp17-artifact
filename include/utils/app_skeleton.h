@@ -53,6 +53,12 @@ DEFINE_bool(interactive, false, "Run an interactive session");
 DEFINE_string(cmdfile, "", "A file with commands to execute");
 DEFINE_int32(num_gpus, 2, "Override number of GPUs (or negative to use the amount of available GPUs)");
 DEFINE_int32(startwith, 1, "Start with a specific number of GPUs");
+
+// MOD
+DEFINE_int32(async_to_sync, -1, "async to sync");
+DEFINE_int32(sync_to_async, -1, "sync to async");
+
+
 // Variants
 DEFINE_bool(all, false, "Run all variants");
 DEFINE_bool(single, false, "Run the single GPU variant");

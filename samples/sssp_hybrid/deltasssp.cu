@@ -52,14 +52,72 @@ DECLARE_int32(grid_size);
 DECLARE_int32(block_size);
 DECLARE_int32(mode);
 DECLARE_int32(source_node);
+DECLARE_int32(async_to_sync);
+DECLARE_int32(sync_to_async);
+
+
 const distance_t INF = UINT_MAX;
 namespace sssp_expr {
-    const distance_t IDENTITY_ELEMENT = 9999999;
+    const distance_t IDENTITY_ELEMENT = UINT_MAX;
 
     struct Algo {
         static const char *Name() { return "SSSP"; }
     };
 
+
+    __inline__ __device__ uint32_t warpReduce(uint32_t localSum) {
+        localSum += __shfl_xor_sync(0xfffffff, localSum, 16);
+        localSum += __shfl_xor_sync(0xfffffff, localSum, 8);
+        localSum += __shfl_xor_sync(0xfffffff, localSum, 4);
+        localSum += __shfl_xor_sync(0xfffffff, localSum, 2);
+        localSum += __shfl_xor_sync(0xfffffff, localSum, 1);
+
+        return localSum;
+    }
+
+    template<template<typename> class TDistanceDatum>
+    __device__ void SSSPCheck__Single__(TDistanceDatum<distance_t> current_ranks,
+                                        distance_t *block_sum_buffer, distance_t *rtn_sum) {
+        unsigned tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+        int laneIdx = threadIdx.x % warpSize;
+        int warpIdx = threadIdx.x / warpSize;
+        const int SMEMDIM = blockDim.x / warpSize;
+        __shared__ distance_t smem[32];
+
+        uint32_t work_size = current_ranks.size;
+        distance_t local_sum = 0;
+
+        for (uint32_t node = 0 + tid; node < work_size; node += nthreads) {
+            distance_t dist = current_ranks[node];
+            if (dist != IDENTITY_ELEMENT)
+                local_sum += dist;
+        }
+
+        local_sum = warpReduce(local_sum);
+
+        if (laneIdx == 0)
+            smem[warpIdx] = local_sum;
+        __syncthreads();
+
+        local_sum = (threadIdx.x < SMEMDIM) ? smem[threadIdx.x] : 0;
+
+        if (warpIdx == 0)
+            local_sum = warpReduce(local_sum);
+
+        if (threadIdx.x == 0) {
+            block_sum_buffer[blockIdx.x] = local_sum;
+        }
+
+        if (tid == 0) {
+            uint32_t sum = 0;
+            for (int bid = 0; bid < gridDim.x; bid++) {
+
+                sum += block_sum_buffer[bid];
+            }
+            *rtn_sum = sum;
+        }
+    }
 
 //    template<
 //            template<typename> class WorkList,
@@ -110,6 +168,43 @@ namespace sssp_expr {
 
     template<template<typename> class WorkTarget,
             typename TGraph, typename TWeightDatum,
+            template<typename> class TDistanceDatum>
+    __device__
+    void SSSPKernel__NF__(
+            WorkTarget<index_t> work_source,
+            WorkTarget<index_t> work_immediate_target,
+            WorkTarget<index_t> work_later_target,
+            int delta,
+            TGraph graph,
+            TWeightDatum edge_weights,
+            TDistanceDatum<distance_t> node_distances) {
+        uint32_t tid = TID_1D;
+        unsigned nthreads = TOTAL_THREADS_1D;
+
+        uint32_t work_size = work_source.count();
+
+        for (uint32_t i = 0 + tid; i < work_size; i += nthreads) {
+            index_t node = work_source.read(i);
+            distance_t distance = node_distances.get_item(node);
+
+            for (index_t edge = graph.begin_edge(node), end_edge = graph.end_edge(node); edge < end_edge; ++edge) {
+                index_t dest = graph.edge_dest(edge);
+                distance_t weight = edge_weights.get_item(edge);
+
+                if (distance + weight < atomicMin(node_distances.get_item_ptr(dest), distance + weight)) {
+
+                    if (distance + weight <= delta) {
+                        work_immediate_target.append_warp(dest);
+                    } else {
+                        work_later_target.append_warp(dest);
+                    }
+                }
+            }
+        }
+    }
+
+    template<template<typename> class WorkTarget,
+            typename TGraph, typename TWeightDatum,
             template<typename> class TDistanceDatum,
             template<typename> class TDistanceDeltaDatum>
     __device__
@@ -118,8 +213,8 @@ namespace sssp_expr {
             WorkTarget<index_t> work_source,
             WorkTarget<index_t> work_immediate_target,
             WorkTarget<index_t> work_later_target,
-            distance_t priority_threshold,
-            const TGraph graph,
+            int priority_threshold,
+            TGraph graph,
             TWeightDatum edge_weights,
             TDistanceDatum<distance_t> node_distances,
             TDistanceDeltaDatum<distance_t> node_distances_delta) {
@@ -142,13 +237,11 @@ namespace sssp_expr {
                     index_t dest = graph.edge_dest(edge);
                     distance_t weight = edge_weights.get_item(edge);
 
-                    distance_t new_delta = old_delta + weight;
-
-                    distance_t before_update = atomicMin(node_distances_delta.get_item_ptr(dest), new_delta);
+                    //assert(old_delta != IDENTITY_ELEMENT);
 
                     //If update the dest success, expand the worklist
-                    if (new_delta < before_update) {
-                        if (new_delta < priority_threshold) {
+                    if (old_delta + weight < atomicMin(node_distances_delta.get_item_ptr(dest), old_delta + weight)) {
+                        if (old_delta + weight <= priority_threshold) {
                             work_immediate_target.append_warp(dest);
                         } else {
                             work_later_target.append_warp(dest);
@@ -164,8 +257,8 @@ namespace sssp_expr {
             typename TGraph, typename TWeightDatum,
             template<typename> class TDistanceDatum,
             template<typename> class TDistanceDeltaDatum>
-//    __device__
-    __global__
+    __device__
+//    __global__
     void SSSPAsyncCTA(
             const WorkList<index_t> work_source,
             WorkList<index_t> work_immediate_target,
@@ -367,23 +460,30 @@ namespace sssp_expr {
         }
     }
 
+    template<typename T>
+    __device__ void swap(T &a, T &b) {
+        T tmp = a;
+        a = b;
+        b = tmp;
+    }
 
-    template<bool Async,
-            template<typename> class WorkList,
+    template<template<typename> class WorkList,
             typename TGraph,
             template<typename> class TWeightDatum,
             template<typename> class TDistanceDatum,
             template<typename> class TDistanceDeltaDatum>
-    __global__ void SSSPControl__Single__(cub::GridBarrier grid_barrier,
-                                          WorkList<index_t> work_source,
-                                          WorkList<index_t> work_immediate_target,
-                                          WorkList<index_t> work_later_target,
-                                          const distance_t priority_threshold,
-                                          const TGraph graph,
-                                          const TWeightDatum<distance_t> edge_weights,
-                                          TDistanceDatum<distance_t> node_distances,
-                                          TDistanceDeltaDatum<distance_t> node_distances_delta,
-                                          TDistanceDeltaDatum<distance_t> node_distances_last_delta) {
+    __global__ void SSSPControlHybrid__Single__(uint32_t async_to_sync,
+                                                uint32_t sync_to_async,
+                                                cub::GridBarrier grid_barrier,
+                                                WorkList<index_t> work_source,
+                                                WorkList<index_t> work_immediate_target,
+                                                WorkList<index_t> work_later_target,
+                                                const distance_t priority_threshold,
+                                                const TGraph graph,
+                                                const TWeightDatum<distance_t> edge_weights,
+                                                TDistanceDatum<distance_t> node_distances,
+                                                TDistanceDeltaDatum<distance_t> node_distances_delta,
+                                                TDistanceDeltaDatum<distance_t> node_distances_last_delta) {
 
         uint32_t tid = TID_1D;
         uint32_t nthreads = TOTAL_THREADS_1D;
@@ -391,23 +491,39 @@ namespace sssp_expr {
         WorkList<index_t> *out_immediate_wl = &work_immediate_target;
         WorkList<index_t> *out_later_wl = &work_later_target;
         distance_t curr_threshold = priority_threshold;
+        distance_t last_distance_sum = 0;
+        TDistanceDeltaDatum<distance_t> *available_delta = &node_distances_delta;
+
+
+        //Async->Sync->Async
+        //Async -> Sync, no limitation
+        //Sync -> Async, iteration % 2 == 1
+
 
         if (tid == 0) {
-            printf("CALL SSSPControl%s__Single__ InitPrio:%d\n", Async ? "Async" : "Sync", priority_threshold);
+            printf("CALL SSSPControl%s__Single__ InitPrio:%d\n", "Hybrid", priority_threshold);
         }
 //
         uint32_t iteration = 0;
+        int mode = 1;//1-> Async, 0->Sync
         while (in_wl->count() > 0) {
             while (in_wl->count() > 0) {
-                if (Async) {
-                    SSSPAsync(*in_wl,
+                if (true && iteration < async_to_sync || iteration >= sync_to_async) {
+//                    SSSPKernel__NF__(*in_wl,
+//                                     *out_immediate_wl,
+//                                     *out_later_wl,
+//                                     curr_threshold,
+//                                     graph,
+//                                     edge_weights,
+//                                     node_distances_delta);
+                    SSSPAsyncCTA(*in_wl,
                                  *out_immediate_wl,
                                  *out_later_wl,
                                  curr_threshold,
                                  graph,
                                  edge_weights,
                                  node_distances,
-                                 node_distances_delta);
+                                 *available_delta);
                 } else {
                     SSSPSyncCTA(*in_wl,
                                 *out_immediate_wl,
@@ -419,6 +535,9 @@ namespace sssp_expr {
                                 node_distances,
                                 node_distances_delta,
                                 node_distances_last_delta);
+                    if (iteration % 2 == 0) {
+                        available_delta = &node_distances_last_delta;
+                    }
                 }
                 grid_barrier.Sync();
 
@@ -427,19 +546,17 @@ namespace sssp_expr {
 //                       out_later_wl->count());
                     in_wl->reset();
                 }
-
-                WorkList<index_t> *tmp_wl = in_wl;
-                in_wl = out_immediate_wl;
-                out_immediate_wl = tmp_wl;
+                grid_barrier.Sync();
+                swap(in_wl, out_immediate_wl);
 
                 iteration++;
                 grid_barrier.Sync();
             }
 
-            WorkList<index_t> *tmp_wl = in_wl;
-            in_wl = out_later_wl;
-            out_later_wl = tmp_wl;
+            swap(in_wl, out_later_wl);
+
             curr_threshold += priority_threshold;
+
             grid_barrier.Sync();
         }
 
@@ -448,11 +565,111 @@ namespace sssp_expr {
         }
 
 
-        for (uint32_t i = 0 + tid; i < graph.nnodes; i += nthreads) {
-            assert(node_distances_delta[i] == IDENTITY_ELEMENT &&
-                   node_distances_last_delta[i] == IDENTITY_ELEMENT);
-        }
+//        for (uint32_t i = 0 + tid; i < graph.nnodes; i += nthreads) {
+//            assert(node_distances_delta[i] == IDENTITY_ELEMENT &&
+//                   node_distances_last_delta[i] == IDENTITY_ELEMENT);
+//        }
     }
+
+
+//    template<bool Async,
+//            template<typename> class WorkList,
+//            typename TGraph,
+//            template<typename> class TWeightDatum,
+//            template<typename> class TDistanceDatum,
+//            template<typename> class TDistanceDeltaDatum>
+//    __global__ void SSSPControl__Single__(distance_t *block_sum_buffer,
+//                                          cub::GridBarrier grid_barrier,
+//                                          WorkList<index_t> work_source,
+//                                          WorkList<index_t> work_immediate_target,
+//                                          WorkList<index_t> work_later_target,
+//                                          const distance_t priority_threshold,
+//                                          const TGraph graph,
+//                                          const TWeightDatum<distance_t> edge_weights,
+//                                          TDistanceDatum<distance_t> node_distances,
+//                                          TDistanceDeltaDatum<distance_t> node_distances_delta,
+//                                          TDistanceDeltaDatum<distance_t> node_distances_last_delta) {
+//
+//        uint32_t tid = TID_1D;
+//        uint32_t nthreads = TOTAL_THREADS_1D;
+//        WorkList<index_t> *in_wl = &work_source;
+//        WorkList<index_t> *out_immediate_wl = &work_immediate_target;
+//        WorkList<index_t> *out_later_wl = &work_later_target;
+//        distance_t curr_threshold = priority_threshold;
+//        distance_t last_distance_sum = 0;
+//
+//        if (tid == 0) {
+//            printf("CALL SSSPControl%s__Single__ InitPrio:%d\n", Async ? "Async" : "Sync", priority_threshold);
+//        }
+////
+//        uint32_t iteration = 0;
+//        while (in_wl->count() > 0) {
+//            while (in_wl->count() > 0) {
+//                if (Async) {
+//                    SSSPAsync(*in_wl,
+//                              *out_immediate_wl,
+//                              *out_later_wl,
+//                              curr_threshold,
+//                              graph,
+//                              edge_weights,
+//                              node_distances,
+//                              node_distances_delta);
+//                } else {
+//                    SSSPSyncCTA(*in_wl,
+//                                *out_immediate_wl,
+//                                *out_later_wl,
+//                                curr_threshold,
+//                                iteration,
+//                                graph,
+//                                edge_weights,
+//                                node_distances,
+//                                node_distances_delta,
+//                                node_distances_last_delta);
+//                }
+//                grid_barrier.Sync();
+//
+//                if (tid == 0) {
+////                printf("INPUT %d IMMEDIATE %d LATER %d\n", in_wl->count(), out_immediate_wl->count(),
+////                       out_later_wl->count());
+//                    in_wl->reset();
+//                }
+//
+//                WorkList<index_t> *tmp_wl = in_wl;
+//                in_wl = out_immediate_wl;
+//                out_immediate_wl = tmp_wl;
+//
+//                iteration++;
+//                grid_barrier.Sync();
+//            }
+//
+//            WorkList<index_t> *tmp_wl = in_wl;
+//            in_wl = out_later_wl;
+//            out_later_wl = tmp_wl;
+//
+//            curr_threshold += priority_threshold;
+//
+//
+////            distance_t distance_sum;
+////            SSSPCheck__Single__(node_distances, block_sum_buffer, &distance_sum);
+////            if (distance_sum == last_distance_sum) {
+////                printf("distance sum:%u\n", distance_sum);
+////                break;
+////            }
+////            last_distance_sum = distance_sum;
+//
+//            grid_barrier.Sync();
+//        }
+//
+//        if (tid == 0) {
+//            printf("Total iterations: %d\n", iteration);
+//        }
+//
+//
+////        for (uint32_t i = 0 + tid; i < graph.nnodes; i += nthreads) {
+////            assert(node_distances_delta[i] == IDENTITY_ELEMENT &&
+////                   node_distances_last_delta[i] == IDENTITY_ELEMENT);
+////        }
+//    }
 
 
     template<template<typename> class DistanceDatum,
@@ -572,9 +789,26 @@ bool SSSPExpr() {
 
     Stopwatch sw(true);
 
-    sssp_expr::SSSPControl__Single__<true>
+    utils::SharedArray<distance_t> block_sum_buffer(FLAGS_grid_size);
+//    sssp_expr::SSSPControl__Single__<true>
+//            << < occupancy_per_MP, FLAGS_block_size, 0, stream.cuda_stream >> >
+//                                                        (block_sum_buffer.dev_ptr,
+//                                                                grid_barrier,
+//                                                                wl1.DeviceObject(),
+//                                                                wl2.DeviceObject(),
+//                                                                wl3.DeviceObject(),
+//                                                                FLAGS_prio_delta,
+//                                                                dev_graph_allocator.DeviceObject(),
+//                                                                edge_weights.DeviceObject(),
+//                                                                node_distances.DeviceObject(),
+//                                                                node_delta_distances.DeviceObject(),
+//                                                                node_last_delta_distances.DeviceObject());
+
+    sssp_expr::SSSPControlHybrid__Single__
             << < occupancy_per_MP, FLAGS_block_size, 0, stream.cuda_stream >> >
-                                                        (grid_barrier,
+                                                        (FLAGS_async_to_sync,
+                                                                FLAGS_sync_to_async,
+                                                                grid_barrier,
                                                                 wl1.DeviceObject(),
                                                                 wl2.DeviceObject(),
                                                                 wl3.DeviceObject(),
@@ -616,6 +850,8 @@ bool SSSPExpr() {
     if (FLAGS_output.size() > 0) {
         dev_graph_allocator.GatherDatum(node_distances);
         SSSPOutput(FLAGS_output.data(), node_distances.GetHostData());
+//        dev_graph_allocator.GatherDatum(node_delta_distances);
+//        SSSPOutput(FLAGS_output.data(), node_delta_distances.GetHostData());
     }
     return true;
 }

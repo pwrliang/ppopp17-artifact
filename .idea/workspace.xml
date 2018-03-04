@@ -13,7 +13,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d1dbebb8-7a3f-4882-a6bf-3d5660e12fac" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/hybrid_new.xlsx" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.bak" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/include/utils/app_skeleton.h" afterPath="$PROJECT_DIR$/include/utils/app_skeleton.h" />
+      <change beforePath="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu" afterPath="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu" />
+      <change beforePath="$PROJECT_DIR$/samples/exprs/main.cpp" afterPath="$PROJECT_DIR$/samples/exprs/main.cpp" />
       <change beforePath="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" afterPath="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -26,32 +31,30 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.47945204">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="525">
-          <file leaf-file-name="deltasssp.cu" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
+        <leaf>
+          <file leaf-file-name="hybrid_datadriven.cu" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="123">
-                  <caret line="131" column="22" lean-forward="false" selection-start-line="131" selection-start-column="22" selection-end-line="131" selection-end-column="22" />
+                <state relative-caret-position="408">
+                  <caret line="158" column="36" lean-forward="true" selection-start-line="158" selection-start-column="36" selection-end-line="158" selection-end-column="36" />
                   <folding>
-                    <element signature="e#4578#4778#0" expanded="true" />
-                    <element signature="e#4587#4597#0" expanded="true" />
-                    <element signature="e#4688#4698#0" expanded="true" />
-                    <element signature="e#4741#4751#0" expanded="true" />
-                    <element signature="e#15542#15792#0" expanded="true" />
-                    <element signature="e#15575#15585#0" expanded="true" />
-                    <element signature="e#15651#15661#0" expanded="true" />
+                    <element signature="e#38#55#0" expanded="true" />
+                    <element signature="e#1173#1356#0" expanded="true" />
+                    <element signature="e#5517#5700#0" expanded="true" />
+                    <element signature="e#7371#7548#0" expanded="true" />
+                    <element signature="e#7393#7403#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="csr_graph.h" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/include/groute/graphs/csr_graph.h">
+          <file leaf-file-name="experiments.txt" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/experiments.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="9126">
-                  <caret line="507" column="15" lean-forward="false" selection-start-line="507" selection-start-column="15" selection-end-line="507" selection-end-column="15" />
+                <state relative-caret-position="468">
+                  <caret line="26" column="109" lean-forward="false" selection-start-line="26" selection-start-column="91" selection-end-line="26" selection-end-column="109" />
                   <folding />
                 </state>
               </provider>
@@ -60,34 +63,41 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="aligned_outlined_pr_async.cu" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu">
+        <leaf>
+          <file leaf-file-name="hybrid_datadriven.cu" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="0">
-                  <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+                <state relative-caret-position="-186">
+                  <caret line="107" column="9" lean-forward="false" selection-start-line="107" selection-start-column="9" selection-end-line="107" selection-end-column="9" />
+                  <folding>
+                    <element signature="e#38#55#0" expanded="true" />
+                    <element signature="e#1051#1063#0" expanded="true" />
+                    <element signature="e#1173#1356#0" expanded="true" />
+                    <element signature="e#7371#7548#0" expanded="true" />
+                    <element signature="e#7393#7403#0" expanded="true" />
+                    <element signature="e#7469#7479#0" expanded="true" />
+                    <element signature="e#7517#7527#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="deltasssp.cu" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="3598">
+                  <caret line="562" column="6" lean-forward="false" selection-start-line="562" selection-start-column="6" selection-end-line="564" selection-end-column="9" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="deltasssp.cu" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
+          <file leaf-file-name="app_skeleton.h" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/include/utils/app_skeleton.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="177">
-                  <caret line="168" column="14" lean-forward="false" selection-start-line="168" selection-start-column="14" selection-end-line="168" selection-end-column="14" />
-                  <folding>
-                    <element signature="e#4578#4778#0" expanded="true" />
-                    <element signature="e#4587#4597#0" expanded="true" />
-                    <element signature="e#4688#4698#0" expanded="true" />
-                    <element signature="e#4741#4751#0" expanded="true" />
-                    <element signature="e#12067#12301#0" expanded="true" />
-                    <element signature="e#12110#12120#0" expanded="true" />
-                    <element signature="e#12211#12221#0" expanded="true" />
-                    <element signature="e#12264#12274#0" expanded="true" />
-                    <element signature="e#15542#15792#0" expanded="true" />
-                    <element signature="e#15651#15661#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="324">
+                  <caret line="57" column="26" lean-forward="false" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="26" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -105,11 +115,32 @@
       <find>SSSPSyncCTA</find>
       <find>priority_threshold</find>
       <find>printf</find>
-      <find>SSSPAsync</find>
-      <find>SSSPControl__Single__</find>
       <find>nthreads</find>
       <find>SSSPAsyncCTA</find>
+      <find>IDENTITY_ELEMENT</find>
+      <find>warpReduce</find>
+      <find>SSSPControl__Single__</find>
+      <find>SSSPKernel__NF__</find>
+      <find>INF</find>
+      <find>SSSPAsync</find>
+      <find>FILTER_THRESHOLD</find>
+      <find>distance_t</find>
+      <find>node_distances</find>
+      <find>node_distances_delta</find>
+      <find>SSSPControlHybrid__Single__</find>
+      <find>get_work</find>
+      <find>InitWorklist</find>
+      <find>PageRankControl__Single__</find>
+      <find>PageRankInit__Single__</find>
+      <find>PageRankAsyncKernelCTA__Single__</find>
+      <find>PageRankSyncKernelCTA__Single__</find>
     </findStrings>
+    <replaceStrings>
+      <replace>PageRank</replace>
+      <replace>rank_t</replace>
+      <replace>current_ranks</replace>
+      <replace>residual</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -117,15 +148,23 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/samples/exprs/hybrid_pr.cu" />
+        <option value="$PROJECT_DIR$/include/utils/app_skeleton.h" />
         <option value="$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu" />
+        <option value="$PROJECT_DIR$/samples/exprs/main.cpp" />
+        <option value="$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu" />
       </list>
     </option>
   </component>
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="762" />
-    <option name="y" value="145" />
-    <option name="width" value="1866" />
-    <option name="height" value="1113" />
+    <option name="x" value="708" />
+    <option name="y" value="31" />
+    <option name="width" value="1870" />
+    <option name="height" value="1111" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -152,6 +191,23 @@
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
               <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
+              <item name="groute" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
               <item name="samples" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -164,13 +220,31 @@
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
               <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
               <item name="samples" type="462c0819:PsiDirectoryNode" />
-              <item name="pr" type="462c0819:PsiDirectoryNode" />
+              <item name="sssp_hybrid" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
               <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
-              <item name="samples" type="462c0819:PsiDirectoryNode" />
-              <item name="sssp_hybrid" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="groute" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="groute" type="462c0819:PsiDirectoryNode" />
+              <item name="graphs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="groute" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
+              <item name="ppopp17-artifact" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -182,6 +256,11 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="last_opened_file_path" value="$USER_HOME$/sda2/ppopp17-artifact/code/groute" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/samples/exprs" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -195,11 +274,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.sssp_expr">
+  <component name="RunManager" selected="Application.exprs">
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <envs />
     </configuration>
-    <configuration name="exprs" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="exprs" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="exprs">
+    <configuration name="exprs" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -graphfile /mnt/ssd/liang/datasets/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -async_to_sync 5 -sync_to_async 10" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="exprs" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="exprs">
       <envs />
     </configuration>
     <configuration name="sssp_expr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-noasync_multi -num_gpus 1 -startwith 1 -single -v=1 -graphfile /mnt/ssd/liang/datasets/soc-LiveJournal1/soc-LiveJournal1-weighted-1.gr -prio_delta=10000 -output=/mnt/ssd/liang/tmp/sssp_test" PASS_PARENT_ENVS_2="true" PROJECT_NAME="groute" TARGET_NAME="sssp_expr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="groute" RUN_TARGET_NAME="sssp_expr">
@@ -227,7 +306,7 @@
       <workItem from="1520063373360" duration="318000" />
       <workItem from="1520064291386" duration="654000" />
       <workItem from="1520090314537" duration="12219000" />
-      <workItem from="1520104798175" duration="9542000" />
+      <workItem from="1520104798175" duration="26331000" />
     </task>
     <task id="LOCAL-00001" summary="temp save">
       <created>1520098278428</created>
@@ -236,32 +315,39 @@
       <option name="project" value="LOCAL" />
       <updated>1520098278428</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="temp save">
+      <created>1520115751541</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1520115751541</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23751000" />
+    <option name="totallyTimeSpent" value="40540000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-3" y="31" width="1926" height="1003" extended-state="6" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18387777" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27326265" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22261484" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32896462" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32273263" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39929327" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -294,7 +380,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -311,7 +397,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#8979#9036#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -319,15 +407,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10008">
           <caret line="556" column="20" lean-forward="false" selection-start-line="556" selection-start-column="14" selection-end-line="556" selection-end-column="20" />
-          <folding>
-            <element signature="e#4578#4778#0" expanded="true" />
-            <element signature="e#4587#4597#0" expanded="true" />
-            <element signature="e#4688#4698#0" expanded="true" />
-            <element signature="e#4741#4751#0" expanded="true" />
-            <element signature="e#15542#15792#0" expanded="true" />
-            <element signature="e#15575#15585#0" expanded="true" />
-            <element signature="e#15651#15661#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -356,13 +436,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/utils/app_skeleton.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="228" column="0" lean-forward="false" selection-start-line="228" selection-start-column="0" selection-end-line="228" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -377,14 +450,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -403,18 +468,114 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/samples/pr/aligned_outlined_pr_async.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="225" column="4" lean-forward="false" selection-start-line="225" selection-start-column="4" selection-end-line="265" selection-end-column="5" />
+          <folding>
+            <element signature="e#8979#9036#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/sssp_async.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3123">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/groute/device/queue.cuh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="109" column="0" lean-forward="false" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="119" column="16" lean-forward="false" selection-start-line="119" selection-start-column="16" selection-end-line="119" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_pr.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2291">
+          <caret line="210" column="14" lean-forward="true" selection-start-line="210" selection-start-column="14" selection-end-line="210" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/exprs/pr_common.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="36" column="20" lean-forward="false" selection-start-line="36" selection-start-column="14" selection-end-line="36" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.bak">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/utils/app_skeleton.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="57" column="26" lean-forward="false" selection-start-line="57" selection-start-column="13" selection-end-line="57" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/experiments.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="26" column="109" lean-forward="false" selection-start-line="26" selection-start-column="91" selection-end-line="26" selection-end-column="109" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/samples/sssp_hybrid/deltasssp.cu">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="131" column="22" lean-forward="false" selection-start-line="131" selection-start-column="22" selection-end-line="131" selection-end-column="22" />
+        <state relative-caret-position="3598">
+          <caret line="562" column="6" lean-forward="false" selection-start-line="562" selection-start-column="6" selection-end-line="564" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/exprs/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/cuda/include/vector_types.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="414" column="24" lean-forward="false" selection-start-line="414" selection-start-column="24" selection-end-line="414" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samples/exprs/hybrid_datadriven.cu">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="158" column="36" lean-forward="true" selection-start-line="158" selection-start-column="36" selection-end-line="158" selection-end-column="36" />
           <folding>
-            <element signature="e#4578#4778#0" expanded="true" />
-            <element signature="e#4587#4597#0" expanded="true" />
-            <element signature="e#4688#4698#0" expanded="true" />
-            <element signature="e#4741#4751#0" expanded="true" />
-            <element signature="e#15542#15792#0" expanded="true" />
-            <element signature="e#15575#15585#0" expanded="true" />
-            <element signature="e#15651#15661#0" expanded="true" />
+            <element signature="e#38#55#0" expanded="true" />
+            <element signature="e#1173#1356#0" expanded="true" />
+            <element signature="e#5517#5700#0" expanded="true" />
+            <element signature="e#7371#7548#0" expanded="true" />
+            <element signature="e#7393#7403#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -45,6 +45,7 @@ DEFINE_bool(append_warp, true, "Parallel append warp");
 DEFINE_int32(mode, 0, "0 sync 1 async 2 hybrid");
 DEFINE_int32(switch_threshold, -1, "using sync mode when iteration times below threshold otherwise async mode");
 DEFINE_bool(topology, true, "default topology");
+DEFINE_bool(sync, false, "force sync");
 
 bool HybridDataDriven();
 
@@ -63,10 +64,11 @@ namespace pr {
         static bool Single() {
 //            return TestPageRankAsyncMulti();
 //            return DualGPU();
-            if (FLAGS_topology)
-                HybridTopologyDriven();
-            else
-                HybridDataDriven();
+            HybridDataDriven();
+//            if (FLAGS_topology)
+//                HybridTopologyDriven();
+//            else
+//                HybridDataDriven();
         }
 
         static bool AsyncMulti(int G) {
