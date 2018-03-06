@@ -393,7 +393,6 @@ namespace sssp_expr {
     void SSSPSyncCTA(
             const WorkSource work_source,
             WorkTarget<index_t> work_immediate_target,
-            WorkTarget<index_t> work_later_target,
             distance_t priority_threshold,
             index_t iteration,
             const TGraph graph,
@@ -434,7 +433,7 @@ namespace sssp_expr {
 
             groute::dev::CTAWorkScheduler<distance_t>::template schedule(
                     np_local,
-                    [&iteration, &work_immediate_target, &work_later_target, &priority_threshold, &graph, &edge_weights, &node_distances_delta, &node_distances_last_delta](
+                    [&iteration, &work_immediate_target, &priority_threshold, &graph, &edge_weights, &node_distances_delta, &node_distances_last_delta](
                             index_t edge,
                             index_t size,
                             distance_t old_delta) {
@@ -452,9 +451,72 @@ namespace sssp_expr {
                         if (new_delta < before_update) {
                             if (new_delta < priority_threshold) {
                                 work_immediate_target.append_warp(dest);
-                            } else {
-                                work_later_target.append_warp(dest);
                             }
+                        }
+                    });
+        }
+    }
+
+    template<
+            typename TGraph, typename TWeightDatum,
+            template<typename> class TDistanceDatum,
+            template<typename> class TDistanceDeltaDatum>
+    __device__
+    void SSSPSyncCTATopo(
+            index_t iteration,
+            const TGraph graph,
+            TWeightDatum edge_weights,
+            TDistanceDatum<distance_t> node_distances,
+            TDistanceDeltaDatum<distance_t> node_distances_delta,
+            TDistanceDeltaDatum<distance_t> node_distances_last_delta) {
+        uint32_t tid = TID_1D;
+        uint32_t nthreads = TOTAL_THREADS_1D;
+        uint32_t work_size = graph.owned_nnodes();
+        uint32_t work_size_rup =
+                round_up(work_size, blockDim.x) * blockDim.x; // we want all threads in active blocks to enter the loop
+        bool updated = false;
+
+        for (uint32_t i = 0 + tid; i < work_size_rup; i += nthreads) {
+            groute::dev::np_local<distance_t> np_local = {0, 0, 0};
+
+            if (i < work_size) {
+                index_t node = i;
+                distance_t old_value = node_distances[node];
+                distance_t old_delta;
+
+                if (iteration % 2 == 0) {
+                    old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+                } else {
+                    old_delta = atomicExch(node_distances_last_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+                }
+
+                distance_t new_value = min(old_value, old_delta);
+
+                if (new_value < old_value) {
+                    node_distances[node] = new_value;
+
+                    np_local.start = graph.begin_edge(node);
+                    np_local.size = graph.end_edge(node) - np_local.start;
+                    np_local.meta_data = old_delta;
+                    updated = true;
+                }
+            }
+
+            groute::dev::CTAWorkScheduler<distance_t>::template schedule(
+                    np_local,
+                    [&iteration, &graph, &edge_weights, &node_distances_delta, &node_distances_last_delta](
+                            index_t edge,
+                            index_t size,
+                            distance_t old_delta) {
+                        index_t dest = graph.edge_dest(edge);
+                        distance_t weight = edge_weights.get_item(edge);
+                        distance_t new_delta = old_delta + weight;
+                        distance_t before_update;
+
+                        if (iteration % 2 == 0) {
+                            before_update = atomicMin(node_distances_last_delta.get_item_ptr(dest), new_delta);
+                        } else {
+                            before_update = atomicMin(node_distances_delta.get_item_ptr(dest), new_delta);
                         }
                     });
         }
@@ -511,7 +573,7 @@ namespace sssp_expr {
         int last_iteration = 0;
         while (in_wl->count() > 0) {
             while (in_wl->count() > 0) {
-                if (false && (iteration < async_to_sync || iteration >= sync_to_async)) {
+                if ((iteration < async_to_sync || iteration >= sync_to_async)) {
 //                    SSSPKernel__NF__(*in_wl,
 //                                     *out_immediate_wl,
 //                                     *out_later_wl,
@@ -519,19 +581,24 @@ namespace sssp_expr {
 //                                     graph,
 //                                     edge_weights,
 //                                     node_distances_delta);
-//                    SSSPAsyncCTA(*in_wl,
-//                                 *out_immediate_wl,
-//                                 *out_later_wl,
-//                                 curr_threshold,
-//                                 graph,
-//                                 edge_weights,
-//                                 node_distances,
-//                                 *available_delta);
+                    SSSPAsyncCTA(*in_wl,
+                                 *out_immediate_wl,
+                                 *out_later_wl,
+                                 curr_threshold,
+                                 graph,
+                                 edge_weights,
+                                 node_distances,
+                                 *available_delta);
                     mode = 1;
                 } else {
-                    SSSPSync(*in_wl,
+//                    SSSPSyncCTATopo(iteration,
+//                                    graph,
+//                                    edge_weights,
+//                                    node_distances,
+//                                    node_distances_delta,
+//                                    node_distances_last_delta);
+                    SSSPSyncCTA(*in_wl,
                              *out_immediate_wl,
-                             *out_later_wl,
                              curr_threshold,
                              iteration,
                              graph,
@@ -546,14 +613,10 @@ namespace sssp_expr {
                 }
                 grid_barrier.Sync();
 
-                if (iteration - last_iteration == 2) {
-                    if (tid == 0) {
-                        printf("%s INPUT %d IMMEDIATE %d LATER %d\n", mode == 1 ? "Async" : "Sync",
-                               in_wl->count(), out_immediate_wl->count(), out_later_wl->count());
-
-                        in_wl->reset();
-                    }
-                    last_iteration = iteration;
+                if (tid == 0) {
+                    printf("%s INPUT %d IMMEDIATE %d LATER %d\n", mode == 1 ? "Async" : "Sync",
+                           in_wl->count(), out_immediate_wl->count(), out_later_wl->count());
+                    in_wl->reset();
                 }
                 grid_barrier.Sync();
                 swap(in_wl, out_immediate_wl);
