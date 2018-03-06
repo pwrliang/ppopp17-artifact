@@ -38,6 +38,8 @@
 
 DEFINE_int32(mode, -1, "Sync 0 Async 1 Hybrid 2");
 DEFINE_int32(source_node, 0, "The source node for the SSSP traversal (clamped to [0, nnodes-1])");
+DEFINE_bool(force_sync, false, "");
+DEFINE_bool(force_async, false, "");
 
 
 bool MyTestSSSPSingle();
@@ -48,7 +50,7 @@ bool TestSSSPAsyncMulti(int ngpus);
 
 bool TestSSSPAsyncMultiOptimized(int ngpus);
 
-bool SSSPExpr();
+bool SSSPExpr1();
 
 
 void CleanupGraphs();
@@ -62,7 +64,7 @@ namespace sssp {
 
         static bool Single() {
 //            return TestSSSPSingle();
-            return SSSPExpr();
+            return SSSPExpr1();
 //            return MyTestSSSPSingle();
 //            return TestSSSPSingle();
         }

@@ -34,7 +34,8 @@ DECLARE_int32(grid_size);
 DECLARE_int32(block_size);
 DECLARE_int32(async_to_sync);
 DECLARE_int32(sync_to_async);
-DECLARE_bool(sync);
+DECLARE_bool(force_sync);
+DECLARE_bool(force_async);
 #define EPSILON 0.01
 
 namespace hybrid_datadriven {
@@ -366,15 +367,28 @@ bool HybridDataDriven() {
     auto *out_wl = &wl2;
     uint32_t iteration = 0;
     auto *available_delta = &residual;
+    auto *last_available_delta = &last_residual;
 
     int mode;
+
+
+    mgpu::standard_context_t mgpu_context(true, stream.cuda_stream);
+
+    mgpu::mem_t<double> checkSum(1, mgpu_context);
+    mgpu::mem_t<int> deviceOffsets = mgpu::mem_t<int>(context.host_graph.nnodes, mgpu_context);
+
+    int *scanned_offsets = deviceOffsets.data();
 
     Stopwatch sw(true);
 
     while (in_wl->GetCount(stream) > 0) {
         KernelSizing(grid_dims, block_dims, in_wl->GetCount(stream));
-
-        if (!FLAGS_sync && (iteration < FLAGS_async_to_sync || iteration >= FLAGS_sync_to_async)) {
+        if (FLAGS_force_async)
+            goto async;
+        else if (FLAGS_force_sync)
+            goto sync;
+        if (iteration < FLAGS_async_to_sync || iteration >= FLAGS_sync_to_async) {
+            async:
             hybrid_datadriven::PageRankAsyncKernelCTA__Single__
                     << < grid_dims, block_dims, 0, stream.cuda_stream >> >
                                                    (dev_graph_allocator.DeviceObject(),
@@ -384,6 +398,7 @@ bool HybridDataDriven() {
                                                            available_delta->DeviceObject());
             mode = 1;
         } else {
+            sync:
             hybrid_datadriven::PageRankSyncKernelCTA__Single__
                     << < grid_dims, block_dims, 0, stream.cuda_stream >> >
                                                    (dev_graph_allocator.DeviceObject(),
@@ -391,14 +406,33 @@ bool HybridDataDriven() {
                                                            out_wl->DeviceObject(),
                                                            iteration,
                                                            current_ranks.DeviceObject(),
-                                                           residual.DeviceObject(),
-                                                           last_residual.DeviceObject());
+                                                           available_delta->DeviceObject(),
+                                                           last_available_delta->DeviceObject());
             if (iteration % 2 == 0) {
                 available_delta = &last_residual;
             }
             mode = 0;
         }
         stream.Sync();
+
+
+        rank_t *tmp = current_ranks.DeviceObject().data_ptr;
+
+        auto func_data_sum_func = [=]__device__(int idx) {
+            return tmp[idx];
+        };
+
+
+        mgpu::transform_scan<double>(func_data_sum_func, context.host_graph.nnodes,
+                                     scanned_offsets, mgpu::plus_t<double>(), checkSum.data(), mgpu_context);
+
+        double pr_sum = mgpu::from_mem(checkSum)[0];
+
+        if (pr_sum / context.host_graph.nnodes >= FLAGS_threshold)
+            break;
+
+        VLOG(1) << "Checking... SUM: " << pr_sum << " Relative SUM: " << pr_sum / context.host_graph.nnodes;
+
         printf("%s Iter:%d Input:%d Output:%d\n", mode == 0 ? "Sync" : "Async", iteration, in_wl->GetCount(stream),
                out_wl->GetCount(stream));
         in_wl->ResetAsync(stream);

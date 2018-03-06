@@ -283,7 +283,7 @@ namespace sssp_expr {
                 index_t node = work_source.read(i);
 
                 distance_t old_value = node_distances[node];
-                distance_t old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+                distance_t old_delta = node_distances_delta[node];// atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
                 distance_t new_value = min(old_value, old_delta);
 
                 if (new_value < old_value) {
@@ -307,9 +307,9 @@ namespace sssp_expr {
                         distance_t before_update = atomicMin(node_distances_delta.get_item_ptr(dest), new_delta);
 
                         if (new_delta < before_update) {
-                            if (new_delta < priority_threshold)
+                            if (new_delta < priority_threshold) {
                                 work_immediate_target.append_warp(dest);
-                            else {
+                            } else {
                                 work_later_target.append_warp(dest);
                             }
                         }
@@ -347,9 +347,9 @@ namespace sssp_expr {
 
 
             if (iteration % 2 == 0) {
-                old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+                old_delta = node_distances_delta[node];//atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
             } else {
-                old_delta = atomicExch(node_distances_last_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+                old_delta = node_distances_last_delta[node];//atomicExch(node_distances_last_delta.get_item_ptr(node), IDENTITY_ELEMENT);
             }
 
             distance_t new_value = min(old_value, old_delta);
@@ -382,6 +382,7 @@ namespace sssp_expr {
         }
     }
 
+    //for later nodes, even though...delta > value, but as long as delta != INF, we stil have to send delta to the neighbors.
     template<
             typename WorkSource, template<typename> class WorkTarget,
             typename TGraph, typename TWeightDatum,
@@ -412,15 +413,14 @@ namespace sssp_expr {
 
             if (i < work_size) {
                 index_t node = work_source.read(i);
+
+
                 distance_t old_value = node_distances[node];
                 distance_t old_delta;
-
-                if (iteration % 2 == 0) {
-                    old_delta = atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
-                } else {
-                    old_delta = atomicExch(node_distances_last_delta.get_item_ptr(node), IDENTITY_ELEMENT);
-                }
-
+                if (iteration % 2 == 0)
+                    old_delta = node_distances_delta[node];// atomicExch(node_distances_delta.get_item_ptr(node), IDENTITY_ELEMENT);
+                else
+                    old_delta = node_distances_last_delta[node];
                 distance_t new_value = min(old_value, old_delta);
 
                 if (new_value < old_value) {
@@ -467,6 +467,8 @@ namespace sssp_expr {
         b = tmp;
     }
 
+    //try to use topologoy
+
     template<template<typename> class WorkList,
             typename TGraph,
             template<typename> class TWeightDatum,
@@ -506,9 +508,10 @@ namespace sssp_expr {
 //
         uint32_t iteration = 0;
         int mode = 1;//1-> Async, 0->Sync
+        int last_iteration = 0;
         while (in_wl->count() > 0) {
             while (in_wl->count() > 0) {
-                if (true && iteration < async_to_sync || iteration >= sync_to_async) {
+                if (false && (iteration < async_to_sync || iteration >= sync_to_async)) {
 //                    SSSPKernel__NF__(*in_wl,
 //                                     *out_immediate_wl,
 //                                     *out_later_wl,
@@ -516,35 +519,41 @@ namespace sssp_expr {
 //                                     graph,
 //                                     edge_weights,
 //                                     node_distances_delta);
-                    SSSPAsyncCTA(*in_wl,
-                                 *out_immediate_wl,
-                                 *out_later_wl,
-                                 curr_threshold,
-                                 graph,
-                                 edge_weights,
-                                 node_distances,
-                                 *available_delta);
+//                    SSSPAsyncCTA(*in_wl,
+//                                 *out_immediate_wl,
+//                                 *out_later_wl,
+//                                 curr_threshold,
+//                                 graph,
+//                                 edge_weights,
+//                                 node_distances,
+//                                 *available_delta);
+                    mode = 1;
                 } else {
-                    SSSPSyncCTA(*in_wl,
-                                *out_immediate_wl,
-                                *out_later_wl,
-                                curr_threshold,
-                                iteration,
-                                graph,
-                                edge_weights,
-                                node_distances,
-                                node_distances_delta,
-                                node_distances_last_delta);
+                    SSSPSync(*in_wl,
+                             *out_immediate_wl,
+                             *out_later_wl,
+                             curr_threshold,
+                             iteration,
+                             graph,
+                             edge_weights,
+                             node_distances,
+                             node_distances_delta,
+                             node_distances_last_delta);
                     if (iteration % 2 == 0) {
                         available_delta = &node_distances_last_delta;
                     }
+                    mode = 0;
                 }
                 grid_barrier.Sync();
 
-                if (tid == 0) {
-//                printf("INPUT %d IMMEDIATE %d LATER %d\n", in_wl->count(), out_immediate_wl->count(),
-//                       out_later_wl->count());
-                    in_wl->reset();
+                if (iteration - last_iteration == 2) {
+                    if (tid == 0) {
+                        printf("%s INPUT %d IMMEDIATE %d LATER %d\n", mode == 1 ? "Async" : "Sync",
+                               in_wl->count(), out_immediate_wl->count(), out_later_wl->count());
+
+                        in_wl->reset();
+                    }
+                    last_iteration = iteration;
                 }
                 grid_barrier.Sync();
                 swap(in_wl, out_immediate_wl);
@@ -730,7 +739,7 @@ namespace sssp_expr {
 }
 
 
-bool SSSPExpr() {
+bool SSSPExpr1() {
     typedef sssp_expr::Problem<groute::graphs::dev::CSRGraph, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum, groute::graphs::dev::GraphDatum> Problem;
 
     utils::traversal::Context<sssp_expr::Algo> context(1);
